@@ -1,5 +1,27 @@
+import os
+
 from django.db import models
 from django.utils.text import slugify
+
+
+def _ext(filename):
+    return os.path.splitext(filename)[1] or '.jpg'
+
+
+def news_image_upload(instance, filename):
+    return f'news/{instance.slug}{_ext(filename)}'
+
+
+def leader_photo_upload(instance, filename):
+    return f'leaders/{instance.slug}{_ext(filename)}'
+
+
+def gallery_image_upload(instance, filename):
+    return f'gallery/{instance.album_id}/{instance.sort_order}_{os.path.basename(filename)}'
+
+
+def carousel_image_upload(instance, filename):
+    return f'carousel/{instance.sort_order}_{os.path.basename(filename)}'
 
 
 class SiteSettings(models.Model):
@@ -70,7 +92,7 @@ class NewsArticle(models.Model):
     excerpt_am = models.TextField(blank=True)
     body_en = models.TextField(help_text='Separate paragraphs with a blank line')
     body_am = models.TextField(blank=True, help_text='Separate paragraphs with a blank line')
-    image_url = models.URLField()
+    image = models.ImageField(upload_to=news_image_upload, blank=True)
     published_at = models.DateField()
     search_keywords = models.TextField(blank=True)
     is_published = models.BooleanField(default=True)
@@ -112,7 +134,7 @@ class Leader(models.Model):
     role_am = models.CharField(max_length=120, blank=True)
     short_bio_en = models.TextField(blank=True)
     short_bio_am = models.TextField(blank=True)
-    photo_url = models.URLField()
+    photo = models.ImageField(upload_to=leader_photo_upload, blank=True)
     wide_photo = models.BooleanField(default=False, help_text='Use landscape crop on listing card')
     sort_order = models.PositiveIntegerField(default=0)
     is_published = models.BooleanField(default=True)
@@ -161,7 +183,7 @@ class GalleryAlbum(models.Model):
 
 class GalleryImage(models.Model):
     album = models.ForeignKey(GalleryAlbum, related_name='images', on_delete=models.CASCADE)
-    image_url = models.URLField()
+    image = models.ImageField(upload_to=gallery_image_upload, blank=True)
     alt_en = models.CharField(max_length=200, blank=True)
     alt_am = models.CharField(max_length=200, blank=True)
     sort_order = models.PositiveIntegerField(default=0)
@@ -172,7 +194,7 @@ class GalleryImage(models.Model):
         verbose_name_plural = 'Gallery images'
 
     def __str__(self):
-        return self.alt_en or self.image_url[:60]
+        return self.alt_en or (self.image.name if self.image else 'Gallery image')
 
 
 class Document(models.Model):
@@ -203,7 +225,7 @@ class CarouselSlide(models.Model):
     tag_am = models.CharField(max_length=80, blank=True)
     title_en = models.CharField(max_length=300)
     title_am = models.CharField(max_length=300, blank=True)
-    image_url = models.URLField()
+    image = models.ImageField(upload_to=carousel_image_upload, blank=True)
     link_url = models.CharField(max_length=300, blank=True, help_text='Internal path or full URL')
     sort_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)

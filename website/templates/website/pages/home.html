@@ -9,7 +9,9 @@
   <section class="hero" id="hero">
     <div class="hero__bg">
       {% for slide in carousel_slides %}
-      <img class="hero__bg-image{% if forloop.first %} active{% endif %}" src="{{ slide.image_url }}" alt="" data-index="{{ forloop.counter0 }}">
+      {% if slide.image %}
+      <img class="hero__bg-image{% if forloop.first %} active{% endif %}" src="{{ slide.image.url }}" alt="" data-index="{{ forloop.counter0 }}">
+      {% endif %}
       {% empty %}
       <img class="hero__bg-image active" src="https://mopd.gov.et/media/photos/2025/07/29/fs_1.jpg" alt="" data-index="0">
       <img class="hero__bg-image" src="https://mopd.gov.et/media/photos/2025/07/29/summi_22.jpg" alt="" data-index="1">
@@ -360,7 +362,9 @@
         {% for article in featured_articles %}
         <article class="news-card{% if forloop.first %} news-card--featured{% endif %} reveal">
           <div class="news-card__image">
-            <img src="{{ article.image_url }}" alt="" class="content-img">
+            {% if article.image %}
+            <img src="{{ article.image.url }}" alt="" class="content-img">
+            {% endif %}
             <span class="news-card__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
           </div>
           <div class="news-card__body">
@@ -421,7 +425,9 @@
         {% for leader in leaders %}
         <article class="leader-card reveal">
           <a href="{% url 'leader_detail' leader.slug %}" class="leader-card__photo">
-            <img src="{{ leader.photo_url }}" alt="{{ leader.name_en }}"{% if leader.wide_photo %} class="leader-card__img--wide"{% endif %}>
+            {% if leader.photo %}
+            <img src="{{ leader.photo.url }}" alt="{{ leader.name_en }}"{% if leader.wide_photo %} class="leader-card__img--wide"{% endif %}>
+            {% endif %}
           </a>
           <div class="leader-card__info">
             <h3><a href="{% url 'leader_detail' leader.slug %}">{% include 'website/includes/bilingual.html' with en=leader.name_en am=leader.name_am %}</a></h3>

@@ -23,9 +23,11 @@
         <h2 class="gallery-album__date">{% include 'website/includes/bilingual.html' with en=album.date_label_en am=album.date_label_am %}</h2>
         <div class="gallery__grid" id="galleryGrid">
           {% for image in album.images.all %}
-          <button type="button" class="gallery__item" data-full="{{ image.image_url }}">
-            <img src="{{ image.image_url }}" alt="{% firstof image.alt_en 'MoPD gallery photo' %}">
+          {% if image.image %}
+          <button type="button" class="gallery__item" data-full="{{ image.image.url }}">
+            <img src="{{ image.image.url }}" alt="{% firstof image.alt_en 'MoPD gallery photo' %}">
           </button>
+          {% endif %}
           {% endfor %}
         </div>
       </section>

@@ -19,9 +19,11 @@
   <section class="page-body page-body--narrow">
     <div class="container">
       <article class="article-page__body reveal">
+        {% if article.image %}
         <figure class="article-page__hero-img">
-          <img src="{{ article.image_url }}" alt="" class="content-img">
+          <img src="{{ article.image.url }}" alt="" class="content-img">
         </figure>
+        {% endif %}
         {% for para_en, para_am in article.body_pairs %}
         <p><span class="bilingual" data-en="{{ para_en }}" data-am="{{ para_am|default:para_en }}">{{ para_en }}</span></p>
         {% endfor %}

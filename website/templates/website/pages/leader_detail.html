@@ -18,9 +18,11 @@
   <section class="page-body page-body--narrow">
     <div class="container">
       <article class="article-page__body reveal">
+        {% if leader.photo %}
         <figure class="article-page__hero-img">
-          <img src="{{ leader.photo_url }}" alt="{{ leader.name_en }}" class="content-img">
+          <img src="{{ leader.photo.url }}" alt="{{ leader.name_en }}" class="content-img">
         </figure>
+        {% endif %}
         {% for para in leader.paragraphs.all %}
         <p>{% include 'website/includes/bilingual.html' with en=para.text_en am=para.text_am %}</p>
         {% empty %}

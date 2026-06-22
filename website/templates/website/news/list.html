@@ -31,9 +31,11 @@
           <div class="news__grid news-page__grid" id="newsGrid">
             {% for article in articles %}
             <article class="news-card reveal" data-category="{{ article.category }}" data-search="{{ article.search_keywords }} {{ article.title_en }} {{ article.title_am }} {{ article.excerpt_en }}">
+              {% if article.image %}
               <a href="{% url 'news_detail' article.slug %}" class="news-card__image">
-                <img src="{{ article.image_url }}" alt="" class="content-img">
+                <img src="{{ article.image.url }}" alt="" class="content-img">
               </a>
+              {% endif %}
               <div class="news-card__body">
                 <span class="news-card__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
                 <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>

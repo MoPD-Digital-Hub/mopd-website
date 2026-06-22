@@ -1,5 +1,3 @@
-import json
-
 from django.contrib import admin
 from django.utils.html import format_html
 
@@ -15,6 +13,16 @@ from .models import (
     SiteSettings,
     SiteTranslation,
 )
+
+
+def _image_thumb(image_field, height=40):
+    if image_field:
+        return format_html(
+            '<img src="{}" style="height:{}px;border-radius:4px;object-fit:cover;" />',
+            image_field.url,
+            height,
+        )
+    return '—'
 
 
 @admin.register(SiteSettings)
@@ -65,19 +73,24 @@ class LeaderAdmin(admin.ModelAdmin):
     inlines = [LeaderParagraphInline]
     fieldsets = (
         (None, {'fields': ('slug', 'sort_order', 'is_published', 'wide_photo')}),
-        ('Profile', {'fields': ('name_en', 'name_am', 'role_en', 'role_am', 'photo_url')}),
+        ('Profile', {'fields': ('name_en', 'name_am', 'role_en', 'role_am', 'photo', 'photo_preview')}),
         ('Listing card bio', {'fields': ('short_bio_en', 'short_bio_am')}),
     )
+    readonly_fields = ('photo_preview',)
+
+    @admin.display(description='Current photo')
+    def photo_preview(self, obj):
+        return _image_thumb(obj.photo, 120)
 
     @admin.display(description='Photo')
     def thumb(self, obj):
-        return format_html('<img src="{}" style="height:40px;border-radius:4px;" />', obj.photo_url)
+        return _image_thumb(obj.photo)
 
 
 class GalleryImageInline(admin.TabularInline):
     model = GalleryImage
     extra = 3
-    fields = ('sort_order', 'image_url', 'alt_en', 'alt_am')
+    fields = ('sort_order', 'image', 'alt_en', 'alt_am')
 
 
 @admin.register(GalleryAlbum)
@@ -105,10 +118,20 @@ class CarouselSlideAdmin(admin.ModelAdmin):
     list_display = ('title_en', 'tag_en', 'sort_order', 'is_active', 'thumb')
     list_editable = ('sort_order', 'is_active')
     list_filter = ('is_active',)
+    fieldsets = (
+        (None, {'fields': ('sort_order', 'is_active', 'link_url')}),
+        ('Slide content', {'fields': ('tag_en', 'tag_am', 'title_en', 'title_am')}),
+        ('Image', {'fields': ('image', 'image_preview')}),
+    )
+    readonly_fields = ('image_preview',)
+
+    @admin.display(description='Current image')
+    def image_preview(self, obj):
+        return _image_thumb(obj.image, 120)
 
     @admin.display(description='Image')
     def thumb(self, obj):
-        return format_html('<img src="{}" style="height:36px;border-radius:4px;" />', obj.image_url)
+        return _image_thumb(obj.image, 36)
 
 
 @admin.register(AffiliateLink)
@@ -127,7 +150,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title_en',)}
     date_hierarchy = 'published_at'
     fieldsets = (
-        (None, {'fields': ('slug', 'category', 'published_at', 'is_published', 'image_url', 'search_keywords')}),
+        (None, {'fields': ('slug', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords')}),
         ('Tags', {'fields': ('tag_en', 'tag_am')}),
         ('Article content', {'fields': ('title_en', 'title_am', 'excerpt_en', 'excerpt_am', 'body_en', 'body_am')}),
         ('Homepage placement', {
@@ -135,10 +158,15 @@ class NewsArticleAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
     )
+    readonly_fields = ('image_preview',)
+
+    @admin.display(description='Current image')
+    def image_preview(self, obj):
+        return _image_thumb(obj.image, 120)
 
     @admin.display(description='Image')
     def thumb(self, obj):
-        return format_html('<img src="{}" style="height:36px;border-radius:4px;" />', obj.image_url)
+        return _image_thumb(obj.image, 36)
 
 
 admin.site.site_header = 'MoPD Site Administration'

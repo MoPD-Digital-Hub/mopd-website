@@ -23,7 +23,9 @@
         {% for leader in leaders %}
         <article class="leader-card reveal">
           <a href="{% url 'leader_detail' leader.slug %}" class="leader-card__photo">
-            <img src="{{ leader.photo_url }}" alt="{{ leader.name_en }}"{% if leader.wide_photo %} class="leader-card__img--wide"{% endif %}>
+            {% if leader.photo %}
+            <img src="{{ leader.photo.url }}" alt="{{ leader.name_en }}"{% if leader.wide_photo %} class="leader-card__img--wide"{% endif %}>
+            {% endif %}
           </a>
           <div class="leader-card__info">
             <h3><a href="{% url 'leader_detail' leader.slug %}">{% include 'website/includes/bilingual.html' with en=leader.name_en am=leader.name_am %}</a></h3>

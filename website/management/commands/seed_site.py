@@ -6,6 +6,7 @@ from pathlib import Path
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from website.media_utils import assign_image_from_url
 from website.models import (
     AffiliateLink,
     CarouselSlide,
@@ -325,49 +326,49 @@ class Command(BaseCommand):
     def seed_news(self, en, am):
         for item in NEWS_ARTICLES:
             pub = date.fromisoformat(item['published_at'])
-            NewsArticle.objects.update_or_create(
-                slug=item['slug'],
-                defaults={
-                    'category': item['category'],
-                    'tag_en': text_for(item['tag_key'], en, am),
-                    'tag_am': text_for(item['tag_key'], en, am, 'am'),
-                    'title_en': text_for(item['title_key'], en, am),
-                    'title_am': text_for(item['title_key'], en, am, 'am'),
-                    'excerpt_en': text_for(item.get('excerpt_key', ''), en, am) if item.get('excerpt_key') else '',
-                    'excerpt_am': text_for(item.get('excerpt_key', ''), en, am, 'am') if item.get('excerpt_key') else '',
-                    'body_en': join_paragraphs(item['body_keys'], en, am),
-                    'body_am': join_paragraphs(item['body_keys'], en, am, 'am'),
-                    'image_url': item['image_url'],
-                    'published_at': pub,
-                    'search_keywords': item['search_keywords'],
-                    'is_published': True,
-                    'is_featured_home': item.get('is_featured_home', False),
-                    'is_featured_carousel': item.get('is_featured_carousel', False),
-                    'carousel_tag_en': text_for(item.get('carousel_tag_key', ''), en, am),
-                    'carousel_tag_am': text_for(item.get('carousel_tag_key', ''), en, am, 'am'),
-                    'carousel_title_en': text_for(item.get('carousel_title_key', ''), en, am),
-                    'carousel_title_am': text_for(item.get('carousel_title_key', ''), en, am, 'am'),
-                },
-            )
+            article = NewsArticle.objects.filter(slug=item['slug']).first()
+            if article is None:
+                article = NewsArticle(slug=item['slug'])
+            article.category = item['category']
+            article.tag_en = text_for(item['tag_key'], en, am)
+            article.tag_am = text_for(item['tag_key'], en, am, 'am')
+            article.title_en = text_for(item['title_key'], en, am)
+            article.title_am = text_for(item['title_key'], en, am, 'am')
+            article.excerpt_en = text_for(item.get('excerpt_key', ''), en, am) if item.get('excerpt_key') else ''
+            article.excerpt_am = text_for(item.get('excerpt_key', ''), en, am, 'am') if item.get('excerpt_key') else ''
+            article.body_en = join_paragraphs(item['body_keys'], en, am)
+            article.body_am = join_paragraphs(item['body_keys'], en, am, 'am')
+            article.published_at = pub
+            article.search_keywords = item['search_keywords']
+            article.is_published = True
+            article.is_featured_home = item.get('is_featured_home', False)
+            article.is_featured_carousel = item.get('is_featured_carousel', False)
+            article.carousel_tag_en = text_for(item.get('carousel_tag_key', ''), en, am)
+            article.carousel_tag_am = text_for(item.get('carousel_tag_key', ''), en, am, 'am')
+            article.carousel_title_en = text_for(item.get('carousel_title_key', ''), en, am)
+            article.carousel_title_am = text_for(item.get('carousel_title_key', ''), en, am, 'am')
+            if item.get('image_url'):
+                assign_image_from_url(article, 'image', item['image_url'])
+            article.save()
         self.stdout.write(f'  News articles ({len(NEWS_ARTICLES)})')
 
     def seed_leaders(self, en, am):
         for item in LEADERS:
-            leader, _ = Leader.objects.update_or_create(
-                slug=item['slug'],
-                defaults={
-                    'name_en': text_for(item['name_key'], en, am),
-                    'name_am': text_for(item['name_key'], en, am, 'am'),
-                    'role_en': text_for(item['role_key'], en, am),
-                    'role_am': text_for(item['role_key'], en, am, 'am'),
-                    'short_bio_en': text_for(item['bio_key'], en, am),
-                    'short_bio_am': text_for(item['bio_key'], en, am, 'am'),
-                    'photo_url': item['photo_url'],
-                    'wide_photo': item.get('wide_photo', False),
-                    'sort_order': item['sort_order'],
-                    'is_published': True,
-                },
-            )
+            leader = Leader.objects.filter(slug=item['slug']).first()
+            if leader is None:
+                leader = Leader(slug=item['slug'])
+            leader.name_en = text_for(item['name_key'], en, am)
+            leader.name_am = text_for(item['name_key'], en, am, 'am')
+            leader.role_en = text_for(item['role_key'], en, am)
+            leader.role_am = text_for(item['role_key'], en, am, 'am')
+            leader.short_bio_en = text_for(item['bio_key'], en, am)
+            leader.short_bio_am = text_for(item['bio_key'], en, am, 'am')
+            leader.wide_photo = item.get('wide_photo', False)
+            leader.sort_order = item['sort_order']
+            leader.is_published = True
+            if item.get('photo_url'):
+                assign_image_from_url(leader, 'photo', item['photo_url'])
+            leader.save()
             leader.paragraphs.all().delete()
             for idx, key in enumerate(item['paragraph_keys']):
                 LeaderParagraph.objects.create(
@@ -392,13 +393,14 @@ class Command(BaseCommand):
         alt_en = en.get('page.gallery.alt', 'MoPD event — May 19, 2025')
         alt_am = am.get('page.gallery.alt', '')
         for idx, url in enumerate(GALLERY_IMAGES):
-            GalleryImage.objects.create(
+            image = GalleryImage(
                 album=album,
-                image_url=url,
                 alt_en=alt_en,
                 alt_am=alt_am,
                 sort_order=idx,
             )
+            assign_image_from_url(image, 'image', url)
+            image.save()
         self.stdout.write('  Gallery album')
 
     def seed_documents(self):
@@ -450,16 +452,17 @@ class Command(BaseCommand):
         ]
         CarouselSlide.objects.all().delete()
         for slide in slides:
-            CarouselSlide.objects.create(
+            obj = CarouselSlide(
                 tag_en=text_for(slide['tag_key'], en, am),
                 tag_am=text_for(slide['tag_key'], en, am, 'am'),
                 title_en=text_for(slide['title_key'], en, am),
                 title_am=text_for(slide['title_key'], en, am, 'am'),
-                image_url=slide['image_url'],
                 link_url=slide['link_url'],
                 sort_order=slide['sort_order'],
                 is_active=True,
             )
+            assign_image_from_url(obj, 'image', slide['image_url'])
+            obj.save()
         self.stdout.write(f'  Carousel slides ({len(slides)})')
 
     def seed_affiliates(self, en, am):
