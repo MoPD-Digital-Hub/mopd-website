@@ -382,9 +382,12 @@ window.MOPD_I18N = {
   window.initMopdI18n = function initMopdI18n() {
     if (window.MOPD_I18N_DB) {
       Object.entries(window.MOPD_I18N_DB).forEach(([key, val]) => {
-        if (val && val.am) {
-          window.MOPD_I18N.am[key] = val.am;
-        }
+        if (!val || typeof val !== 'object') return;
+        Object.entries(val).forEach(([lang, text]) => {
+          if (!text) return;
+          if (!window.MOPD_I18N[lang]) window.MOPD_I18N[lang] = {};
+          window.MOPD_I18N[lang][key] = text;
+        });
       });
     }
     storeI18nDefaults();
@@ -392,55 +395,81 @@ window.MOPD_I18N = {
   };
 })();
 
-function mopdDbText(key, isAm) {
+const MOPD_DEFAULT_LANG = 'en';
+
+function mopdLanguageCodes() {
+  if (Array.isArray(window.MOPD_LANGUAGES) && window.MOPD_LANGUAGES.length) {
+    return window.MOPD_LANGUAGES.map((item) => item.code);
+  }
+  return ['en', 'am'];
+}
+
+function mopdDbText(key, lang) {
   const row = window.MOPD_I18N_DB && window.MOPD_I18N_DB[key];
   if (!row) return undefined;
-  if (isAm && row.am) return row.am;
-  if (!isAm && row.en) return row.en;
+  if (row[lang]) return row[lang];
+  if (lang !== MOPD_DEFAULT_LANG && row[MOPD_DEFAULT_LANG]) return row[MOPD_DEFAULT_LANG];
+  return undefined;
+}
+
+function mopdStaticText(key, lang) {
+  const dict = window.MOPD_I18N[lang];
+  if (dict && dict[key] !== undefined) return dict[key];
+  if (lang !== MOPD_DEFAULT_LANG) {
+    const fallback = window.MOPD_I18N[MOPD_DEFAULT_LANG];
+    if (fallback && fallback[key] !== undefined) return fallback[key];
+  }
   return undefined;
 }
 
 window.applyMopdLanguage = function applyMopdLanguage(lang) {
-  const isAm = lang === 'am';
-  const dict = window.MOPD_I18N.am;
+  const codes = mopdLanguageCodes();
+  if (!codes.includes(lang)) lang = MOPD_DEFAULT_LANG;
+  const isDefault = lang === MOPD_DEFAULT_LANG;
 
-  document.documentElement.lang = isAm ? 'am' : 'en';
-  document.body.classList.toggle('lang-am', isAm);
+  document.documentElement.lang = lang;
+  document.body.classList.toggle('lang-am', lang === 'am');
 
   document.querySelectorAll('.bilingual').forEach((el) => {
-    const en = el.dataset.en || '';
-    const am = el.dataset.am || en;
-    el.textContent = isAm ? am : en;
+    const text = el.dataset[lang] || el.dataset[MOPD_DEFAULT_LANG] || '';
+    el.textContent = text;
   });
 
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.dataset.i18n;
-    const dbText = mopdDbText(key, isAm);
+    const dbText = mopdDbText(key, lang);
     if (dbText !== undefined) {
       el.textContent = dbText;
-    } else if (isAm && dict[key] !== undefined) {
-      el.textContent = dict[key];
-    } else if (el.dataset.i18nDefault !== undefined) {
-      el.textContent = el.dataset.i18nDefault;
+    } else {
+      const staticText = mopdStaticText(key, lang);
+      if (staticText !== undefined) {
+        el.textContent = staticText;
+      } else if (el.dataset.i18nDefault !== undefined) {
+        el.textContent = el.dataset.i18nDefault;
+      }
     }
   });
 
   document.querySelectorAll('[data-i18n-html]').forEach((el) => {
     const key = el.dataset.i18nHtml;
-    const dbText = mopdDbText(key, isAm);
+    const dbText = mopdDbText(key, lang);
     if (dbText !== undefined) {
       el.innerHTML = dbText;
-    } else if (isAm && dict[key] !== undefined) {
-      el.innerHTML = dict[key];
-    } else if (el.dataset.i18nDefault !== undefined) {
-      el.innerHTML = el.dataset.i18nDefault;
+    } else {
+      const staticText = mopdStaticText(key, lang);
+      if (staticText !== undefined) {
+        el.innerHTML = staticText;
+      } else if (el.dataset.i18nDefault !== undefined) {
+        el.innerHTML = el.dataset.i18nDefault;
+      }
     }
   });
 
   document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
     const key = el.dataset.i18nPlaceholder;
-    if (isAm && dict[key] !== undefined) {
-      el.placeholder = dict[key];
+    const staticText = mopdStaticText(key, lang);
+    if (staticText !== undefined) {
+      el.placeholder = staticText;
     } else if (el.dataset.i18nDefaultPlaceholder !== undefined) {
       el.placeholder = el.dataset.i18nDefaultPlaceholder;
     }
@@ -448,8 +477,9 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
 
   document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
     const key = el.dataset.i18nAria;
-    if (isAm && dict[key] !== undefined) {
-      el.setAttribute('aria-label', dict[key]);
+    const staticText = mopdStaticText(key, lang);
+    if (staticText !== undefined) {
+      el.setAttribute('aria-label', staticText);
     } else if (el.dataset.i18nDefaultAria) {
       el.setAttribute('aria-label', el.dataset.i18nDefaultAria);
     }
@@ -457,8 +487,9 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
 
   document.querySelectorAll('[data-i18n-alt]').forEach((el) => {
     const key = el.dataset.i18nAlt;
-    if (isAm && dict[key] !== undefined) {
-      el.setAttribute('alt', dict[key]);
+    const staticText = mopdStaticText(key, lang);
+    if (staticText !== undefined) {
+      el.setAttribute('alt', staticText);
     } else if (el.dataset.i18nDefaultAlt) {
       el.setAttribute('alt', el.dataset.i18nDefaultAlt);
     }
@@ -466,8 +497,9 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
 
   document.querySelectorAll('[data-i18n-title]').forEach((el) => {
     const key = el.dataset.i18nTitle;
-    if (isAm && dict[key] !== undefined) {
-      el.setAttribute('title', dict[key]);
+    const staticText = mopdStaticText(key, lang);
+    if (staticText !== undefined) {
+      el.setAttribute('title', staticText);
     } else if (el.dataset.i18nDefaultTitle) {
       el.setAttribute('title', el.dataset.i18nDefaultTitle);
     }
@@ -475,7 +507,7 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
 
   document.querySelectorAll('a.site-link').forEach((a) => {
     if (a.dataset.hrefEn && a.dataset.hrefAm) {
-      a.href = isAm ? a.dataset.hrefAm : a.dataset.hrefEn;
+      a.href = lang === 'am' ? a.dataset.hrefAm : a.dataset.hrefEn;
     }
   });
 
@@ -484,17 +516,17 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
     if (!metaDesc.dataset.i18nDefault) {
       metaDesc.dataset.i18nDefault = metaDesc.content;
     }
-    metaDesc.content = isAm && dict['meta.description']
-      ? dict['meta.description']
-      : metaDesc.dataset.i18nDefault;
+    const desc = mopdStaticText('meta.description', lang) ?? mopdDbText('meta.description', lang);
+    metaDesc.content = !isDefault && desc ? desc : metaDesc.dataset.i18nDefault;
   }
 
   const titleEl = document.querySelector('title');
   if (titleEl && !titleEl.dataset.i18nDefault) {
     titleEl.dataset.i18nDefault = document.title;
   }
-  document.title = isAm && dict['meta.title']
-    ? dict['meta.title']
+  const title = mopdStaticText('meta.title', lang) ?? mopdDbText('meta.title', lang);
+  document.title = !isDefault && title
+    ? title
     : (titleEl?.dataset.i18nDefault || 'Ministry of Planning and Development — Ethiopia');
 
   document.querySelectorAll('.lang-switch__btn').forEach((btn) => {
@@ -506,5 +538,8 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
 };
 
 window.getMopdLanguage = function getMopdLanguage() {
-  return localStorage.getItem('mopd-lang') === 'am' ? 'am' : 'en';
+  const stored = localStorage.getItem('mopd-lang');
+  const codes = mopdLanguageCodes();
+  if (stored && codes.includes(stored)) return stored;
+  return MOPD_DEFAULT_LANG;
 };

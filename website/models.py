@@ -33,21 +33,16 @@ def affiliate_logo_upload(instance, filename):
 
 class SiteSettings(models.Model):
     """Singleton site-wide settings (edit only the first row)."""
-    site_name_en = models.CharField(max_length=200, default='Ministry of Planning and Development')
-    site_name_am = models.CharField(max_length=200, blank=True)
-    topbar_tag_en = models.CharField(max_length=200, default='Federal Democratic Republic of Ethiopia')
-    topbar_tag_am = models.CharField(max_length=200, blank=True)
+    site_name = models.CharField(max_length=200, default='Ministry of Planning and Development')
+    topbar_tag = models.CharField(max_length=200, default='Federal Democratic Republic of Ethiopia')
     phone = models.CharField(max_length=40, default='011 140 3049')
     email = models.EmailField(default='info@mopd.gov.et')
-    address_en = models.CharField(max_length=255, blank=True, default='6 Kilo, Addis Ababa, Ethiopia')
-    address_am = models.CharField(max_length=255, blank=True)
+    address = models.CharField(max_length=255, blank=True, default='6 Kilo, Addis Ababa, Ethiopia')
     facebook_url = models.URLField(blank=True, default='https://www.facebook.com/MoPDETH')
     twitter_url = models.URLField(blank=True, default='https://twitter.com/mopd_ethiopia')
     linkedin_url = models.URLField(blank=True, default='https://www.linkedin.com/company/ministry-of-planning-and-development-ethiopia/')
-    copyright_text_en = models.CharField(max_length=255, default='© 2026 Ministry of Planning and Development. All rights reserved.')
-    copyright_text_am = models.CharField(max_length=255, blank=True)
-    footer_desc_en = models.TextField(blank=True)
-    footer_desc_am = models.TextField(blank=True)
+    copyright_text = models.CharField(max_length=255, default='© 2026 Ministry of Planning and Development. All rights reserved.')
+    footer_desc = models.TextField(blank=True)
     development_plan_pdf_url = models.URLField(
         blank=True,
         default='https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf',
@@ -70,8 +65,7 @@ class SiteSettings(models.Model):
 class SiteTranslation(models.Model):
     """UI labels and static page copy — keys match data-i18n attributes."""
     key = models.CharField(max_length=120, unique=True, db_index=True)
-    text_en = models.TextField(blank=True)
-    text_am = models.TextField(blank=True)
+    text = models.TextField(blank=True)
     notes = models.CharField(max_length=200, blank=True, help_text='Admin note only')
 
     class Meta:
@@ -103,14 +97,10 @@ class NewsArticle(models.Model):
     )
     slug = models.SlugField(unique=True, max_length=200)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    tag_en = models.CharField(max_length=80, default='News')
-    tag_am = models.CharField(max_length=80, blank=True)
-    title_en = models.CharField(max_length=500)
-    title_am = models.CharField(max_length=500, blank=True)
-    excerpt_en = models.TextField(blank=True)
-    excerpt_am = models.TextField(blank=True)
-    body_en = models.TextField(help_text='Separate paragraphs with a blank line')
-    body_am = models.TextField(blank=True, help_text='Separate paragraphs with a blank line')
+    tag = models.CharField(max_length=80, default='News')
+    title = models.CharField(max_length=500)
+    excerpt = models.TextField(blank=True)
+    body = models.TextField(help_text='Separate paragraphs with a blank line')
     image = models.ImageField(upload_to=news_image_upload, blank=True)
     published_at = models.DateField()
     search_keywords = models.TextField(blank=True)
@@ -157,12 +147,9 @@ class NewsArticle(models.Model):
 
 class Leader(models.Model):
     slug = models.SlugField(unique=True)
-    name_en = models.CharField(max_length=200)
-    name_am = models.CharField(max_length=200, blank=True)
-    role_en = models.CharField(max_length=120)
-    role_am = models.CharField(max_length=120, blank=True)
-    short_bio_en = models.TextField(blank=True)
-    short_bio_am = models.TextField(blank=True)
+    name = models.CharField(max_length=200)
+    role = models.CharField(max_length=120)
+    short_bio = models.TextField(blank=True)
     photo = models.ImageField(upload_to=leader_photo_upload, blank=True)
     wide_photo = models.BooleanField(default=False, help_text='Use landscape crop on listing card')
     sort_order = models.PositiveIntegerField(default=0)
@@ -184,8 +171,7 @@ class Leader(models.Model):
 
 class LeaderParagraph(models.Model):
     leader = models.ForeignKey(Leader, related_name='paragraphs', on_delete=models.CASCADE)
-    text_en = models.TextField()
-    text_am = models.TextField(blank=True)
+    text = models.TextField()
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -195,8 +181,7 @@ class LeaderParagraph(models.Model):
 
 
 class GalleryAlbum(models.Model):
-    date_label_en = models.CharField(max_length=120, help_text='e.g. Photos from May 19, 2025')
-    date_label_am = models.CharField(max_length=120, blank=True)
+    date_label = models.CharField(max_length=120, help_text='e.g. Photos from May 19, 2025')
     event_date = models.DateField(null=True, blank=True)
     sort_order = models.PositiveIntegerField(default=0)
     is_published = models.BooleanField(default=True)
@@ -213,8 +198,7 @@ class GalleryAlbum(models.Model):
 class GalleryImage(models.Model):
     album = models.ForeignKey(GalleryAlbum, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=gallery_image_upload, blank=True)
-    alt_en = models.CharField(max_length=200, blank=True)
-    alt_am = models.CharField(max_length=200, blank=True)
+    alt = models.CharField(max_length=200, blank=True)
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -232,10 +216,8 @@ class Document(models.Model):
         STATISTICS = 'statistics', 'Statistics documents'
 
     doc_type = models.CharField(max_length=20, choices=DocType.choices)
-    title_en = models.CharField(max_length=300)
-    title_am = models.CharField(max_length=300, blank=True)
-    description_en = models.TextField(blank=True)
-    description_am = models.TextField(blank=True)
+    title = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
     file_url = models.URLField()
     sort_order = models.PositiveIntegerField(default=0)
     is_published = models.BooleanField(default=True)
@@ -250,10 +232,8 @@ class Document(models.Model):
 
 
 class CarouselSlide(models.Model):
-    tag_en = models.CharField(max_length=80, blank=True)
-    tag_am = models.CharField(max_length=80, blank=True)
-    title_en = models.CharField(max_length=300)
-    title_am = models.CharField(max_length=300, blank=True)
+    tag = models.CharField(max_length=80, blank=True)
+    title = models.CharField(max_length=300)
     image = models.ImageField(upload_to=carousel_image_upload, blank=True)
     link_url = models.CharField(max_length=300, blank=True, help_text='Internal path or full URL')
     sort_order = models.PositiveIntegerField(default=0)
@@ -269,8 +249,7 @@ class CarouselSlide(models.Model):
 
 
 class AffiliateLink(models.Model):
-    name_en = models.CharField(max_length=200)
-    name_am = models.CharField(max_length=200, blank=True)
+    name = models.CharField(max_length=200)
     url = models.URLField()
     logo = models.ImageField(upload_to=affiliate_logo_upload, blank=True)
     sort_order = models.PositiveIntegerField(default=0)

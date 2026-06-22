@@ -72,4 +72,25 @@ Old `.html` paths redirect automatically (e.g. `/news.html` → `/news/`).
 
 ## Language
 
-Client-side Amharic/English switching via `static/js/i18n.js` (unchanged from static site).
+The site uses [django-modeltranslation](https://django-modeltranslation.readthedocs.io/en/latest/) for CMS content (news, leaders, settings, etc.) and client-side switching via `static/js/i18n.js` for UI labels.
+
+**Current languages:** English (`en`) and Amharic (`am`), configured in `config/i18n.py`.
+
+### Adding a language
+
+1. Edit `config/i18n.py`:
+   - Add the code to `MODELTRANSLATION_LANGUAGES` (keep `en` first).
+   - Add a `('code', _('Name'))` entry to `LANGUAGES`.
+   - If Django does not recognize the code, add it to `EXTRA_LANG_INFO` (see the `am` example).
+   - Optionally set a short label in `LANG_BUTTON_LABELS` for the top-bar switcher.
+2. Create database columns for the new language:
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
+   If you prefer raw SQL (e.g. third-party apps), you can use `python manage.py sync_translation_fields --noinput` instead of makemigrations.
+3. Open Django admin — translatable models show a tab per language. Fill in the new fields.
+4. For static UI strings (nav, buttons, etc.), add a block under that code in `static/js/i18n.js` (same shape as the existing `am` object).
+5. Templates that use `data-en` / `data-am` on `.bilingual` elements may need `data-<code>` attributes for the new language.
+
+Re-seed or sync commands (`seed_site`, `sync_official_news`) continue to work; they write English via `*_en` fields and Amharic via `*_am` where available.

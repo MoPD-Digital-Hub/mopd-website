@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from config.i18n import (
+    LANGUAGES,
+    MODELTRANSLATION_DEFAULT_LANGUAGE,
+    MODELTRANSLATION_LANGUAGES,
+)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,6 +36,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
     'website.apps.WebsiteConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -100,10 +108,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# Internationalization — see config/i18n.py to add languages
+LANGUAGE_CODE = 'en'
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGES = LANGUAGES
+MODELTRANSLATION_DEFAULT_LANGUAGE = MODELTRANSLATION_DEFAULT_LANGUAGE
+MODELTRANSLATION_LANGUAGES = MODELTRANSLATION_LANGUAGES
 
 USE_I18N = True
 

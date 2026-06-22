@@ -11,8 +11,9 @@
           <span class="top-bar__text">{{ site_settings.email }}</span>
       </a>
       <div class="lang-switch">
-        <button class="lang-switch__btn active" data-lang="en">EN</button>
-        <button class="lang-switch__btn" data-lang="am">አማ</button>
+        {% for lang in site_languages %}
+        <button class="lang-switch__btn{% if forloop.first %} active{% endif %}" data-lang="{{ lang.code }}" title="{{ lang.name }}">{{ lang.label }}</button>
+        {% endfor %}
       </div>
     </div>
   </div>

@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=25">
   {% block extra_head %}{% endblock %}
   <script>window.MOPD_I18N_DB = {{ translations_json|safe }};</script>
+  <script>window.MOPD_LANGUAGES = {{ site_languages_json|safe }};</script>
 </head>
 <body data-page="{% block page_id %}{{ current_page }}{% endblock %}">
 

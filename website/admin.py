@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 
 from .models import (
     AffiliateLink,
@@ -25,13 +26,18 @@ def _image_thumb(image_field, height=40):
     return '—'
 
 
+def _lang_preview(obj, field_base, lang_code, max_len=80):
+    value = getattr(obj, f'{field_base}_{lang_code}', '') or ''
+    return (value[:max_len] + '…') if len(value) > max_len else value
+
+
 @admin.register(SiteSettings)
-class SiteSettingsAdmin(admin.ModelAdmin):
+class SiteSettingsAdmin(TabbedTranslationAdmin):
     fieldsets = (
-        ('Site identity', {'fields': ('site_name_en', 'site_name_am', 'topbar_tag_en', 'topbar_tag_am')}),
-        ('Contact', {'fields': ('phone', 'email', 'address_en', 'address_am')}),
+        ('Site identity', {'fields': ('site_name', 'topbar_tag')}),
+        ('Contact', {'fields': ('phone', 'email', 'address')}),
         ('Social media', {'fields': ('facebook_url', 'twitter_url', 'linkedin_url')}),
-        ('Footer', {'fields': ('footer_desc_en', 'footer_desc_am', 'copyright_text_en', 'copyright_text_am')}),
+        ('Footer', {'fields': ('footer_desc', 'copyright_text')}),
         ('Downloads', {'fields': ('development_plan_pdf_url',)}),
     )
 
@@ -43,29 +49,30 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 
 
 @admin.register(SiteTranslation)
-class SiteTranslationAdmin(admin.ModelAdmin):
+class SiteTranslationAdmin(TabbedTranslationAdmin):
     list_display = ('key', 'preview_en', 'preview_am', 'notes')
     list_filter = ('key',)
     search_fields = ('key', 'text_en', 'text_am', 'notes')
     ordering = ('key',)
+    fields = ('key', 'text', 'notes')
 
     @admin.display(description='English')
     def preview_en(self, obj):
-        return (obj.text_en[:80] + '…') if len(obj.text_en) > 80 else obj.text_en
+        return _lang_preview(obj, 'text', 'en')
 
     @admin.display(description='Amharic')
     def preview_am(self, obj):
-        return (obj.text_am[:80] + '…') if len(obj.text_am) > 80 else obj.text_am
+        return _lang_preview(obj, 'text', 'am')
 
 
-class LeaderParagraphInline(admin.TabularInline):
+class LeaderParagraphInline(TranslationTabularInline):
     model = LeaderParagraph
     extra = 1
-    fields = ('sort_order', 'text_en', 'text_am')
+    fields = ('sort_order', 'text')
 
 
 @admin.register(Leader)
-class LeaderAdmin(admin.ModelAdmin):
+class LeaderAdmin(TabbedTranslationAdmin):
     list_display = ('name_en', 'role_en', 'sort_order', 'is_published', 'thumb')
     list_editable = ('sort_order', 'is_published')
     list_filter = ('is_published',)
@@ -74,8 +81,8 @@ class LeaderAdmin(admin.ModelAdmin):
     inlines = [LeaderParagraphInline]
     fieldsets = (
         (None, {'fields': ('slug', 'sort_order', 'is_published', 'wide_photo')}),
-        ('Profile', {'fields': ('name_en', 'name_am', 'role_en', 'role_am', 'photo', 'photo_preview')}),
-        ('Listing card bio', {'fields': ('short_bio_en', 'short_bio_am')}),
+        ('Profile', {'fields': ('name', 'role', 'photo', 'photo_preview')}),
+        ('Listing card bio', {'fields': ('short_bio',)}),
     )
     readonly_fields = ('photo_preview',)
 
@@ -88,17 +95,18 @@ class LeaderAdmin(admin.ModelAdmin):
         return _image_thumb(obj.photo)
 
 
-class GalleryImageInline(admin.TabularInline):
+class GalleryImageInline(TranslationTabularInline):
     model = GalleryImage
     extra = 3
-    fields = ('sort_order', 'image', 'alt_en', 'alt_am')
+    fields = ('sort_order', 'image', 'alt')
 
 
 @admin.register(GalleryAlbum)
-class GalleryAlbumAdmin(admin.ModelAdmin):
+class GalleryAlbumAdmin(TabbedTranslationAdmin):
     list_display = ('date_label_en', 'event_date', 'image_count', 'sort_order', 'is_published')
     list_editable = ('sort_order', 'is_published')
     list_filter = ('is_published',)
+    fields = ('date_label', 'event_date', 'sort_order', 'is_published')
     inlines = [GalleryImageInline]
 
     @admin.display(description='Images')
@@ -107,21 +115,22 @@ class GalleryAlbumAdmin(admin.ModelAdmin):
 
 
 @admin.register(Document)
-class DocumentAdmin(admin.ModelAdmin):
+class DocumentAdmin(TabbedTranslationAdmin):
     list_display = ('title_en', 'doc_type', 'sort_order', 'is_published')
     list_editable = ('sort_order', 'is_published')
     list_filter = ('doc_type', 'is_published')
     search_fields = ('title_en', 'title_am', 'description_en')
+    fields = ('doc_type', 'title', 'description', 'file_url', 'sort_order', 'is_published')
 
 
 @admin.register(CarouselSlide)
-class CarouselSlideAdmin(admin.ModelAdmin):
+class CarouselSlideAdmin(TabbedTranslationAdmin):
     list_display = ('title_en', 'tag_en', 'sort_order', 'is_active', 'thumb')
     list_editable = ('sort_order', 'is_active')
     list_filter = ('is_active',)
     fieldsets = (
         (None, {'fields': ('sort_order', 'is_active', 'link_url')}),
-        ('Slide content', {'fields': ('tag_en', 'tag_am', 'title_en', 'title_am')}),
+        ('Slide content', {'fields': ('tag', 'title')}),
         ('Image', {'fields': ('image', 'image_preview')}),
     )
     readonly_fields = ('image_preview',)
@@ -136,12 +145,12 @@ class CarouselSlideAdmin(admin.ModelAdmin):
 
 
 @admin.register(AffiliateLink)
-class AffiliateLinkAdmin(admin.ModelAdmin):
+class AffiliateLinkAdmin(TabbedTranslationAdmin):
     list_display = ('name_en', 'url', 'sort_order', 'is_published', 'logo_preview')
     list_editable = ('sort_order', 'is_published')
     search_fields = ('name_en', 'name_am')
     readonly_fields = ('logo_preview',)
-    fields = ('name_en', 'name_am', 'url', 'logo', 'logo_preview', 'sort_order', 'is_published')
+    fields = ('name', 'url', 'logo', 'logo_preview', 'sort_order', 'is_published')
 
     @admin.display(description='Logo')
     def logo_preview(self, obj):
@@ -149,7 +158,7 @@ class AffiliateLinkAdmin(admin.ModelAdmin):
 
 
 @admin.register(NewsArticle)
-class NewsArticleAdmin(admin.ModelAdmin):
+class NewsArticleAdmin(TabbedTranslationAdmin):
     list_display = ('title_en', 'category', 'published_at', 'is_published', 'is_featured_home', 'thumb')
     list_editable = ('is_published', 'is_featured_home')
     list_filter = ('category', 'is_published', 'published_at')
@@ -158,8 +167,8 @@ class NewsArticleAdmin(admin.ModelAdmin):
     date_hierarchy = 'published_at'
     fieldsets = (
         (None, {'fields': ('slug', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords')}),
-        ('Tags', {'fields': ('tag_en', 'tag_am')}),
-        ('Article content', {'fields': ('title_en', 'title_am', 'excerpt_en', 'excerpt_am', 'body_en', 'body_am')}),
+        ('Tags', {'fields': ('tag',)}),
+        ('Article content', {'fields': ('title', 'excerpt', 'body')}),
         ('Homepage', {
             'fields': ('is_featured_home',),
             'classes': ('collapse',),
