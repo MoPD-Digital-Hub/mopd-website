@@ -1,0 +1,35 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}Minister Advisor Profile — MoPD{% endblock %}
+
+{% block page_id %}leader{% endblock %}
+
+{% block content %}
+<main class="page">
+<section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a><span>/</span>
+          <a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a><span>/</span>
+          <span data-i18n="leader.2.name">H.E. Tirumar Abate</span>
+        </nav>
+        <h1 class="page-hero__title" data-i18n="leader.2.name">H.E. Tirumar Abate</h1>
+        <p class="page-hero__desc" data-i18n="leader.2.role">State Minister</p>
+      </div>
+    </section>
+    <section class="page-body">
+      <div class="container">
+        <div class="profile-hero reveal">
+          <figure class="profile-hero__photo">
+            <img src="https://mopd.gov.et/media/photos/2023/06/27/Tirumar-Abate-1-768x609.jpg" alt="H.E. Tirumar Abate">
+          </figure>
+          <div class="profile-hero__bio">
+            <p data-i18n="page.leader4.p1">H.E. Tirumar Abate is one of Ethiopia's young high government officials serving as State Minister for Planning and Development. She studied Business Management at undergraduate level and holds an MA in Leadership and Governance.</p>
+            <p data-i18n="leader.2.bio">State Minister for Planning and Development with an MA in Leadership and Governance and background in Business Management.</p>
+            <a href="{% url 'leadership' %}" class="btn btn--outline" style="margin-top:20px;" data-i18n="page.leader.back">← Back to Management</a>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}

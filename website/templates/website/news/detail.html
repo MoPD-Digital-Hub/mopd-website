@@ -1,0 +1,33 @@
+{% extends 'website/base.html' %}
+
+{% block title %}{{ article.title_en }} — MoPD{% endblock %}
+{% block page_id %}news{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a><span>/</span>
+        <a href="{% url 'news' %}" data-i18n="nav.sub.news">News</a><span>/</span>
+        <span>{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
+      </nav>
+      <span class="article-page__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
+      <h1 class="page-hero__title">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</h1>
+    </div>
+  </section>
+  <section class="page-body page-body--narrow">
+    <div class="container">
+      <article class="article-page__body reveal">
+        <figure class="article-page__hero-img">
+          <img src="{{ article.image_url }}" alt="" class="content-img">
+        </figure>
+        {% for para_en, para_am in article.body_pairs %}
+        <p><span class="bilingual" data-en="{{ para_en }}" data-am="{{ para_am|default:para_en }}">{{ para_en }}</span></p>
+        {% endfor %}
+        <a href="{% url 'news' %}" class="btn btn--outline" style="margin-top:32px;" data-i18n="page.news.back">← Back to News</a>
+      </article>
+    </div>
+  </section>
+</main>
+{% endblock %}

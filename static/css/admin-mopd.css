@@ -1,0 +1,868 @@
+/* MoPD Django Admin — matches public site aesthetics */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Noto+Sans+Ethiopic:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+html[data-theme="light"],
+:root {
+  --primary: #0f7a45;
+  --secondary: #0a3d24;
+  --accent: #e8b82e;
+  --primary-fg: #ffffff;
+
+  --body-fg: #1a1a2e;
+  --body-bg: #faf8f4;
+  --body-quiet-color: #6b6b80;
+  --body-medium-color: #3d3d56;
+  --body-loud-color: #052e1a;
+
+  --header-color: #ffffff;
+  --header-branding-color: #ffffff;
+  --header-bg: #052e1a;
+  --header-link-color: rgba(255, 255, 255, 0.92);
+
+  --breadcrumbs-fg: rgba(255, 255, 255, 0.75);
+  --breadcrumbs-link-fg: #ffffff;
+  --breadcrumbs-bg: #0a3d24;
+
+  --link-fg: #0d5c35;
+  --link-hover-color: #052e1a;
+  --link-selected-fg: #0f7a45;
+
+  --hairline-color: #e8f0eb;
+  --border-color: #d4dfd8;
+
+  --error-fg: #c41e3a;
+
+  --message-success-bg: #e8f5ee;
+  --message-warning-bg: #fef9e7;
+  --message-error-bg: #fde8ec;
+
+  --darkened-bg: #f0ebe3;
+  --selected-bg: #e8f5ee;
+  --selected-row: #f5f0e6;
+
+  --button-fg: #ffffff;
+  --button-bg: #0d5c35;
+  --button-hover-bg: #052e1a;
+  --default-button-bg: #0a3d24;
+  --default-button-hover-bg: #052e1a;
+  --close-button-bg: #6b6b80;
+  --close-button-hover-bg: #3d3d56;
+  --delete-button-bg: #c41e3a;
+  --delete-button-hover-bg: #a01830;
+
+  --object-tools-fg: #ffffff;
+  --object-tools-bg: #0f7a45;
+  --object-tools-hover-bg: #0d5c35;
+
+  --font-family-primary: 'Outfit', system-ui, sans-serif;
+  --font-family-monospace: ui-monospace, Menlo, Monaco, monospace;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Header & branding ---- */
+#header {
+  background: linear-gradient(135deg, #052e1a 0%, #0a3d24 55%, #0d5c35 100%);
+  box-shadow: 0 4px 24px rgba(5, 46, 26, 0.18);
+  padding: 14px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+#header #branding {
+  flex: 1;
+  min-width: 0;
+}
+
+#header #nav-global a,
+#header .nav-global a {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+#header #nav-global a:hover,
+#header .nav-global a:hover {
+  color: var(--accent);
+}
+
+#branding {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mopd-admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.mopd-admin-brand__logo {
+  height: 48px;
+  width: auto;
+  max-width: 180px;
+  display: block;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.mopd-admin-brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mopd-admin-brand__title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.mopd-admin-brand__subtitle {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+#user-tools {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+#user-tools a,
+#user-tools button {
+  color: rgba(255, 255, 255, 0.88);
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+#user-tools a:hover,
+#user-tools button:hover {
+  color: var(--accent);
+}
+
+#user-tools form#logout-form {
+  display: inline;
+}
+
+/* Hide Django dark-mode toggle — site uses light MoPD theme */
+.theme-toggle {
+  display: none !important;
+}
+
+/* ---- Breadcrumbs ---- */
+div.breadcrumbs {
+  background: var(--breadcrumbs-bg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 24px;
+  font-size: 0.85rem;
+}
+
+/* ---- Content area ---- */
+#content {
+  padding: 24px 28px;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+body.dashboard #content {
+  width: 100% !important;
+  max-width: 1280px;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.dashboard #content.colM,
+body.dashboard #content.colMS {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+body.dashboard {
+  background: var(--body-bg);
+}
+
+body.dashboard #main {
+  max-width: none;
+  width: 100%;
+}
+
+body.dashboard .main > .content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+body.dashboard #content-main {
+  float: none;
+  width: auto;
+}
+
+body.dashboard #content-related {
+  display: none;
+}
+
+body.dashboard br.clear {
+  display: none;
+}
+
+#content h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  color: var(--body-loud-color);
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+#content .mopd-admin-hero h1 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+
+.mopd-admin-lead {
+  color: var(--body-quiet-color);
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+}
+
+.dashboard #content {
+  width: 100% !important;
+  max-width: 1280px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ---- Dashboard ---- */
+.mopd-admin-page {
+  width: 100%;
+}
+
+.mopd-admin-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 272px;
+  grid-template-areas:
+    "hero aside"
+    "shortcuts shortcuts"
+    "system system";
+  gap: 24px 28px;
+  align-items: start;
+}
+
+.mopd-admin-hero {
+  grid-area: hero;
+  background: linear-gradient(135deg, #0a3d24 0%, #0f7a45 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin: 0;
+  box-shadow: 0 12px 40px rgba(10, 61, 36, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.mopd-admin-aside {
+  grid-area: aside;
+  position: sticky;
+  top: 20px;
+}
+
+.mopd-admin-shortcuts-panel {
+  grid-area: shortcuts;
+  background: #fff;
+  border: 1px solid var(--hairline-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(10, 61, 36, 0.04);
+}
+
+.mopd-admin-system {
+  grid-area: system;
+  background: #fff;
+  border: 1px solid var(--hairline-color);
+  border-radius: 12px;
+  padding: 22px 24px 24px;
+  box-shadow: 0 2px 8px rgba(10, 61, 36, 0.04);
+  margin: 0;
+}
+
+.mopd-admin-hero::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(232, 184, 46, 0.12);
+  pointer-events: none;
+}
+
+.mopd-admin-hero h1,
+.mopd-admin-hero h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+  position: relative;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.mopd-admin-hero p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 60ch;
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.mopd-admin-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  align-items: stretch;
+  grid-auto-rows: minmax(132px, auto);
+}
+
+.mopd-admin-card {
+  background: var(--body-bg);
+  border: 1px solid var(--hairline-color);
+  border-radius: 12px;
+  padding: 20px 20px 18px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  min-height: 132px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.mopd-admin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(10, 61, 36, 0.1);
+  border-color: #b8d4c4;
+  background: #fff;
+  color: inherit;
+}
+
+.mopd-admin-card__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #e8f5ee;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  margin: 0 0 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.mopd-admin-card h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--body-loud-color);
+  line-height: 1.35;
+}
+
+.mopd-admin-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--body-quiet-color);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.mopd-admin-system__title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--body-loud-color);
+  margin: 0 0 16px;
+}
+
+.mopd-admin-system__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 20px;
+  row-gap: 0;
+}
+
+.mopd-admin-system__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: var(--darkened-bg);
+  text-decoration: none;
+  color: var(--body-loud-color);
+  font-weight: 500;
+  font-size: 0.92rem;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mopd-admin-system__link:hover {
+  background: #e8f5ee;
+  color: var(--primary);
+}
+
+.mopd-admin-system__action {
+  font-size: 0.78rem;
+  color: var(--body-quiet-color);
+  white-space: nowrap;
+}
+
+.mopd-admin-recent {
+  margin: 0;
+}
+
+.mopd-admin-recent h2 {
+  background: var(--darkened-bg) !important;
+  color: var(--body-loud-color) !important;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 0.95rem !important;
+  padding: 12px 16px !important;
+  margin: 0;
+}
+
+.mopd-admin-recent__empty {
+  padding: 14px 16px;
+  margin: 0;
+  color: var(--body-quiet-color);
+  font-size: 0.88rem;
+}
+
+.mopd-admin-recent .actionlist {
+  padding: 8px 16px 14px;
+  margin: 0;
+}
+
+.mopd-admin-recent .actionlist li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--hairline-color);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.mopd-admin-recent .actionlist li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.mopd-admin-recent .actionlist .mini {
+  display: block;
+  margin-top: 2px;
+}
+
+/* ---- Modules (app list) ---- */
+.module {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--hairline-color);
+  box-shadow: 0 2px 8px rgba(10, 61, 36, 0.04);
+  background: #fff;
+}
+
+.module h2,
+.module caption {
+  background: linear-gradient(90deg, #0a3d24, #0d5c35);
+  color: #fff;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+.module table th {
+  background: var(--darkened-bg);
+}
+
+#content-related .module h2 {
+  background: var(--darkened-bg);
+  color: var(--body-loud-color);
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+/* ---- Forms & inputs ---- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  border-radius: 8px;
+  border-color: var(--border-color);
+  font-family: var(--font-family-primary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  outline: 2px solid rgba(15, 122, 69, 0.15);
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input {
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.button:active,
+input[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+.button.default,
+input[type="submit"].default,
+.submit-row input.default {
+  background: var(--default-button-bg);
+}
+
+/* ---- Login page ---- */
+body.login {
+  background: linear-gradient(160deg, #052e1a 0%, #0a3d24 40%, #0f7a45 100%);
+  min-height: 100vh;
+}
+
+body.login #container {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: visible !important;
+}
+
+body.login #main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+body.login main.content,
+body.login #content-start {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+body.login #content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+body.login #content.colM,
+body.login #content.colMS {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+body.login .mopd-login-wrap {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+}
+
+body.login .mopd-login-card,
+body.login #content-main.mopd-login-card {
+  width: 100%;
+  max-width: none;
+  background: #fff;
+  border-radius: 20px;
+  padding: 0 0 28px;
+  box-shadow: 0 24px 80px rgba(5, 46, 26, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+body.login .mopd-login-logo-wrap {
+  background: #052e1a;
+  padding: 20px 24px;
+  margin-bottom: 0;
+}
+
+body.login .mopd-login-logo {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+body.login .mopd-login-form,
+body.login .errornote {
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+body.login .mopd-login-form {
+  padding-top: 28px;
+}
+
+body.login .errornote {
+  margin: 20px 32px 0;
+}
+
+body.login .mopd-login-form .form-row {
+  margin-bottom: 18px;
+}
+
+body.login .mopd-login-form .form-row label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--body-medium-color);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+body.login .mopd-login-form .form-row input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  min-height: 46px;
+}
+
+body.login .mopd-login-form .form-row input:focus {
+  border-color: var(--primary);
+  outline: 2px solid rgba(15, 122, 69, 0.15);
+}
+
+body.login .submit-row {
+  padding: 8px 0 0;
+  margin: 0;
+  background: none;
+  border: none;
+  text-align: center;
+}
+
+body.login .submit-row input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-height: 48px;
+  background: linear-gradient(135deg, #0d5c35, #0f7a45);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+body.login .submit-row input:hover {
+  background: linear-gradient(135deg, #0a3d24, #0d5c35);
+}
+
+body.login .password-reset-link {
+  text-align: center;
+  margin: 4px 0 16px;
+}
+
+body.login .password-reset-link a {
+  color: var(--primary);
+  font-size: 0.82rem;
+}
+
+body.login .errornote {
+  border-radius: 8px;
+}
+
+body.login #footer {
+  display: none;
+}
+
+body.login br.clear {
+  display: none;
+}
+
+body.login .mopd-login-footer {
+  text-align: center;
+}
+
+body.login .mopd-login-footer a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+body.login .mopd-login-footer a:hover {
+  color: var(--accent);
+}
+
+/* ---- Nav sidebar ---- */
+#nav-sidebar {
+  background: #fff;
+  border-right: 1px solid var(--hairline-color);
+}
+
+#nav-sidebar .current-app .section {
+  color: var(--primary);
+}
+
+#nav-sidebar .current-model {
+  background: var(--selected-bg);
+}
+
+/* ---- Changelist ---- */
+#changelist-filter {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--hairline-color);
+}
+
+#changelist-filter h2 {
+  background: var(--darkened-bg);
+  color: var(--body-loud-color);
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.results {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--hairline-color);
+}
+
+/* ---- Messages ---- */
+.messagelist li {
+  border-radius: 8px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1100px) {
+  .mopd-admin-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "hero"
+      "aside"
+      "shortcuts"
+      "system";
+    gap: 20px;
+  }
+
+  .mopd-admin-aside {
+    position: static;
+  }
+
+  .mopd-admin-shortcuts-panel {
+    padding: 20px;
+  }
+
+  .mopd-admin-shortcuts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  #header {
+    padding: 12px 16px;
+  }
+
+  .mopd-admin-brand__subtitle {
+    display: none;
+  }
+
+  .mopd-admin-shortcuts-panel {
+    padding: 16px;
+  }
+
+  .mopd-admin-shortcuts {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .mopd-admin-system__grid {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+
+  body.login #content {
+    padding: 20px 16px;
+  }
+
+  body.login .mopd-login-card,
+  body.login #content-main.mopd-login-card {
+    padding-bottom: 24px;
+  }
+
+  body.login .mopd-login-form,
+  body.login .errornote {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  body.login .errornote {
+    margin-left: 22px;
+    margin-right: 22px;
+  }
+
+  body.login .mopd-login-logo-wrap {
+    padding: 16px 18px;
+  }
+}

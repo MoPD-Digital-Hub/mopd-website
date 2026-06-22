@@ -1,0 +1,40 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Statistics Documents — MoPD{% endblock %}
+{% block page_id %}stats{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="nav.sub.stats">Statistics Documents</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="page.stats.title">Data &amp; Statistics Documents</h1>
+      <p class="page-hero__desc" data-i18n="page.stats.desc">Official statistics frameworks, development programs, and monitoring tools published by MoPD.</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      <ul class="doc-list">
+        {% for doc in documents %}
+        <li class="doc-list__item reveal">
+          <span class="doc-list__icon">PDF</span>
+          <div>
+            <h3><a href="{{ doc.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=doc.title_en am=doc.title_am %}</a></h3>
+            {% if doc.description_en %}
+            <p>{% include 'website/includes/bilingual.html' with en=doc.description_en am=doc.description_am %}</p>
+            {% endif %}
+          </div>
+        </li>
+        {% empty %}
+        <li>No documents published. Add statistics documents in the <a href="/admin/website/document/">admin</a>.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+</main>
+{% endblock %}

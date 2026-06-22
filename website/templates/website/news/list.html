@@ -1,0 +1,84 @@
+{% extends 'website/base.html' %}
+
+{% block title %}News — Ministry of Planning and Development{% endblock %}
+{% block page_id %}news{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="nav.sub.news">News</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="news.title">Latest Updates</h1>
+      <p class="page-hero__desc" data-i18n="page.news.desc">Official announcements, press coverage, and ministry updates.</p>
+    </div>
+  </section>
+
+  <section class="page-body news-page" id="news">
+    <div class="container">
+      <form class="news-search" id="newsSearchForm" role="search">
+        <label class="visually-hidden" for="newsSearchInput" data-i18n="page.news.search_label">Search news</label>
+        <input type="search" id="newsSearchInput" class="news-search__input" placeholder="Search news…" data-i18n-placeholder="page.news.search_placeholder" autocomplete="off">
+        <button type="submit" class="news-search__btn" data-i18n="page.news.search_btn">Search</button>
+      </form>
+
+      <div class="news-page__layout">
+        <div class="news-page__main">
+          <p class="news-page__empty" id="newsEmpty" hidden data-i18n="page.news.no_results">No news articles match your search.</p>
+          <div class="news__grid news-page__grid" id="newsGrid">
+            {% for article in articles %}
+            <article class="news-card reveal" data-category="{{ article.category }}" data-search="{{ article.search_keywords }} {{ article.title_en }} {{ article.title_am }} {{ article.excerpt_en }}">
+              <a href="{% url 'news_detail' article.slug %}" class="news-card__image">
+                <img src="{{ article.image_url }}" alt="" class="content-img">
+              </a>
+              <div class="news-card__body">
+                <span class="news-card__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
+                <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>
+                <h3><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></h3>
+                {% if article.excerpt_en %}
+                <p>{% include 'website/includes/bilingual.html' with en=article.excerpt_en am=article.excerpt_am %}</p>
+                {% endif %}
+                <a href="{% url 'news_detail' article.slug %}" class="news-card__link" data-i18n="news.link">Read More →</a>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+
+        <aside class="news-page__sidebar" aria-label="News filters and recent posts">
+          <div class="news-sidebar__block">
+            <h2 class="news-sidebar__title" data-i18n="page.news.category">Category</h2>
+            <ul class="news-categories" id="newsCategories">
+              <li><button type="button" class="news-categories__btn active" data-news-category="all" data-i18n="page.news.cat.all">All</button></li>
+              <li><button type="button" class="news-categories__btn" data-news-category="politics" data-i18n="page.news.cat.politics">Politics</button></li>
+              <li><button type="button" class="news-categories__btn" data-news-category="climate" data-i18n="page.news.cat.climate">Climate</button></li>
+              <li><button type="button" class="news-categories__btn" data-news-category="economic" data-i18n="page.news.cat.economic">Economic</button></li>
+              <li><button type="button" class="news-categories__btn" data-news-category="policy" data-i18n="page.news.cat.policy">Policy</button></li>
+              <li><button type="button" class="news-categories__btn" data-news-category="demography" data-i18n="page.news.cat.demography">Demography</button></li>
+              <li><button type="button" class="news-categories__btn" data-news-category="social" data-i18n="page.news.cat.social">Social</button></li>
+              <li><button type="button" class="news-categories__btn" data-news-category="others" data-i18n="page.news.cat.others">Others</button></li>
+            </ul>
+          </div>
+
+          <div class="news-sidebar__block">
+            <h2 class="news-sidebar__title" data-i18n="page.news.recent">Recent News</h2>
+            <ul class="news-recent">
+              {% for article in recent_articles %}
+              <li class="news-recent__item">
+                <a href="{% url 'news_detail' article.slug %}">
+                  <span class="news-recent__title">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</span>
+                  <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

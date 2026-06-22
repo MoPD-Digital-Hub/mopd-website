@@ -1,0 +1,233 @@
+from django.db import models
+from django.utils.text import slugify
+
+
+class SiteSettings(models.Model):
+    """Singleton site-wide settings (edit only the first row)."""
+    site_name_en = models.CharField(max_length=200, default='Ministry of Planning and Development')
+    site_name_am = models.CharField(max_length=200, blank=True)
+    topbar_tag_en = models.CharField(max_length=200, default='Federal Democratic Republic of Ethiopia')
+    topbar_tag_am = models.CharField(max_length=200, blank=True)
+    phone = models.CharField(max_length=40, default='011 140 3049')
+    email = models.EmailField(default='info@mopd.gov.et')
+    address_en = models.CharField(max_length=255, blank=True, default='6 Kilo, Addis Ababa, Ethiopia')
+    address_am = models.CharField(max_length=255, blank=True)
+    facebook_url = models.URLField(blank=True, default='https://www.facebook.com/MoPDETH')
+    twitter_url = models.URLField(blank=True, default='https://twitter.com/mopd_ethiopia')
+    linkedin_url = models.URLField(blank=True, default='https://www.linkedin.com/company/ministry-of-planning-and-development-ethiopia/')
+    copyright_text_en = models.CharField(max_length=255, default='© 2026 Ministry of Planning and Development. All rights reserved.')
+    copyright_text_am = models.CharField(max_length=255, blank=True)
+    footer_desc_en = models.TextField(blank=True)
+    footer_desc_am = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = 'Site settings'
+        verbose_name_plural = 'Site settings'
+
+    def __str__(self):
+        return 'Site settings'
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class SiteTranslation(models.Model):
+    """UI labels and static page copy — keys match data-i18n attributes."""
+    key = models.CharField(max_length=120, unique=True, db_index=True)
+    text_en = models.TextField(blank=True)
+    text_am = models.TextField(blank=True)
+    notes = models.CharField(max_length=200, blank=True, help_text='Admin note only')
+
+    class Meta:
+        ordering = ['key']
+        verbose_name = 'Translation'
+        verbose_name_plural = 'Translations (UI & page copy)'
+
+    def __str__(self):
+        return self.key
+
+
+class NewsArticle(models.Model):
+    CATEGORY_CHOICES = [
+        ('politics', 'Politics'),
+        ('climate', 'Climate'),
+        ('economic', 'Economic'),
+        ('policy', 'Policy'),
+        ('demography', 'Demography'),
+        ('social', 'Social'),
+        ('others', 'Others'),
+    ]
+
+    slug = models.SlugField(unique=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    tag_en = models.CharField(max_length=80, default='News')
+    tag_am = models.CharField(max_length=80, blank=True)
+    title_en = models.CharField(max_length=300)
+    title_am = models.CharField(max_length=300, blank=True)
+    excerpt_en = models.TextField(blank=True)
+    excerpt_am = models.TextField(blank=True)
+    body_en = models.TextField(help_text='Separate paragraphs with a blank line')
+    body_am = models.TextField(blank=True, help_text='Separate paragraphs with a blank line')
+    image_url = models.URLField()
+    published_at = models.DateField()
+    search_keywords = models.TextField(blank=True)
+    is_published = models.BooleanField(default=True)
+    is_featured_home = models.BooleanField(default=False, help_text='Show on homepage news section')
+    is_featured_carousel = models.BooleanField(default=False, help_text='Show on homepage hero carousel')
+    carousel_tag_en = models.CharField(max_length=80, blank=True)
+    carousel_tag_am = models.CharField(max_length=80, blank=True)
+    carousel_title_en = models.CharField(max_length=300, blank=True)
+    carousel_title_am = models.CharField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-published_at', '-created_at']
+        verbose_name = 'News article'
+        verbose_name_plural = 'News articles'
+
+    def __str__(self):
+        return self.title_en
+
+    def body_paragraphs_en(self):
+        return [p.strip() for p in self.body_en.split('\n\n') if p.strip()]
+
+    def body_paragraphs_am(self):
+        return [p.strip() for p in self.body_am.split('\n\n') if p.strip()]
+
+    @property
+    def body_pairs(self):
+        en_parts = self.body_paragraphs_en()
+        am_parts = self.body_paragraphs_am()
+        return [(e, am_parts[i] if i < len(am_parts) else e) for i, e in enumerate(en_parts)]
+
+
+class Leader(models.Model):
+    slug = models.SlugField(unique=True)
+    name_en = models.CharField(max_length=200)
+    name_am = models.CharField(max_length=200, blank=True)
+    role_en = models.CharField(max_length=120)
+    role_am = models.CharField(max_length=120, blank=True)
+    short_bio_en = models.TextField(blank=True)
+    short_bio_am = models.TextField(blank=True)
+    photo_url = models.URLField()
+    wide_photo = models.BooleanField(default=False, help_text='Use landscape crop on listing card')
+    sort_order = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['sort_order', 'name_en']
+        verbose_name = 'Leader'
+        verbose_name_plural = 'Leadership profiles'
+
+    def __str__(self):
+        return self.name_en
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name_en)
+        super().save(*args, **kwargs)
+
+
+class LeaderParagraph(models.Model):
+    leader = models.ForeignKey(Leader, related_name='paragraphs', on_delete=models.CASCADE)
+    text_en = models.TextField()
+    text_am = models.TextField(blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order']
+        verbose_name = 'Profile paragraph'
+        verbose_name_plural = 'Profile paragraphs'
+
+
+class GalleryAlbum(models.Model):
+    date_label_en = models.CharField(max_length=120, help_text='e.g. Photos from May 19, 2025')
+    date_label_am = models.CharField(max_length=120, blank=True)
+    event_date = models.DateField(null=True, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-event_date', 'sort_order']
+        verbose_name = 'Gallery album'
+        verbose_name_plural = 'Gallery albums'
+
+    def __str__(self):
+        return self.date_label_en
+
+
+class GalleryImage(models.Model):
+    album = models.ForeignKey(GalleryAlbum, related_name='images', on_delete=models.CASCADE)
+    image_url = models.URLField()
+    alt_en = models.CharField(max_length=200, blank=True)
+    alt_am = models.CharField(max_length=200, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order']
+        verbose_name = 'Gallery image'
+        verbose_name_plural = 'Gallery images'
+
+    def __str__(self):
+        return self.alt_en or self.image_url[:60]
+
+
+class Document(models.Model):
+    class DocType(models.TextChoices):
+        CLIMATE = 'climate', 'Climate documents'
+        STATISTICS = 'statistics', 'Statistics documents'
+
+    doc_type = models.CharField(max_length=20, choices=DocType.choices)
+    title_en = models.CharField(max_length=300)
+    title_am = models.CharField(max_length=300, blank=True)
+    description_en = models.TextField(blank=True)
+    description_am = models.TextField(blank=True)
+    file_url = models.URLField()
+    sort_order = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['doc_type', 'sort_order', 'title_en']
+        verbose_name = 'Document'
+        verbose_name_plural = 'Documents (climate & statistics)'
+
+    def __str__(self):
+        return f'{self.get_doc_type_display()}: {self.title_en}'
+
+
+class CarouselSlide(models.Model):
+    tag_en = models.CharField(max_length=80, blank=True)
+    tag_am = models.CharField(max_length=80, blank=True)
+    title_en = models.CharField(max_length=300)
+    title_am = models.CharField(max_length=300, blank=True)
+    image_url = models.URLField()
+    link_url = models.CharField(max_length=300, blank=True, help_text='Internal path or full URL')
+    sort_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['sort_order']
+        verbose_name = 'Homepage carousel slide'
+        verbose_name_plural = 'Homepage carousel slides'
+
+    def __str__(self):
+        return self.title_en
+
+
+class AffiliateLink(models.Model):
+    name_en = models.CharField(max_length=200)
+    name_am = models.CharField(max_length=200, blank=True)
+    url = models.URLField()
+    sort_order = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['sort_order', 'name_en']
+        verbose_name = 'Affiliate link'
+        verbose_name_plural = 'Affiliate links (footer)'
+
+    def __str__(self):
+        return self.name_en

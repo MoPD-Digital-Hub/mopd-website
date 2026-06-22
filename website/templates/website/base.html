@@ -1,0 +1,32 @@
+{% load static website_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Ministry of Planning and Development — Ethiopia{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Official website of the Ministry of Planning and Development (MoPD), Ethiopia.{% endblock %}">
+  <link rel="icon" href="{% static 'picture/favicon-32.png' %}" type="image/png" sizes="32x32">
+  <link rel="icon" href="{% static 'picture/favicon.png' %}" type="image/png" sizes="any">
+  <link rel="apple-touch-icon" href="{% static 'picture/apple-touch-icon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Noto+Sans+Ethiopic:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=16">
+  {% block extra_head %}{% endblock %}
+  <script>window.MOPD_I18N_DB = {{ translations_json|safe }};</script>
+</head>
+<body data-page="{% block page_id %}{{ current_page }}{% endblock %}">
+
+  {% include 'website/includes/topbar.html' %}
+  {% include 'website/includes/header.html' %}
+
+  {% block content %}{% endblock %}
+
+  {% include 'website/includes/footer.html' %}
+
+  <script src="{% static 'js/i18n.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

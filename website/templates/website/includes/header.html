@@ -1,0 +1,49 @@
+{% load static website_extras %}
+<header class="header {% if current_page != 'home' %}header--inner scrolled{% endif %}" id="header">
+  <div class="container header__inner">
+    <a href="{% url 'home' %}" class="logo" aria-label="Ministry of Planning and Development">
+      <img class="logo__img" src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}" alt="Ministry of Planning and Development">
+    </a>
+    <nav class="nav" id="nav">
+      <ul class="nav__list">
+        <li class="nav__dropdown">
+          <a href="{% url 'about' %}" class="nav__link{% if current_page|nav_active:'about' %} active{% endif %}" data-i18n="nav.about">About</a>
+          <ul class="nav__submenu">
+            <li><a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a></li>
+            <li><a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a></li>
+          </ul>
+        </li>
+        <li class="nav__dropdown">
+          <a href="{% url 'news' %}" class="nav__link{% if current_page|nav_active:'news' %} active{% endif %}" data-i18n="nav.news">News &amp; Media</a>
+          <ul class="nav__submenu">
+            <li><a href="{% url 'news' %}" data-i18n="nav.sub.news">News</a></li>
+            <li><a href="{% url 'press' %}" data-i18n="nav.sub.press">Press Release</a></li>
+            <li><a href="{% url 'gallery' %}" data-i18n="nav.sub.gallery">Gallery</a></li>
+          </ul>
+        </li>
+        <li class="nav__dropdown">
+          <a href="{% url 'stats' %}" class="nav__link{% if current_page|nav_active:'data' %} active{% endif %}" data-i18n="nav.data">Data &amp; Links</a>
+          <ul class="nav__submenu">
+            <li><a href="{% url 'stats' %}" data-i18n="nav.sub.stats">Statistics Documents</a></li>
+            <li><a href="https://national-parameters.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.national_params">National Parameters</a></li>
+            <li><a href="https://sdg.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.sdg">SDG Goal-Tracker</a></li>
+          </ul>
+        </li>
+        <li class="nav__dropdown">
+          <a href="{% url 'climate' %}" class="nav__link{% if current_page|nav_active:'climate' %} active{% endif %}" data-i18n="nav.climate">Climate</a>
+          <ul class="nav__submenu">
+            <li><a href="{% url 'climate' %}" data-i18n="nav.sub.about_climate">About Climate</a></li>
+            <li><a href="{% url 'climate_docs' %}" data-i18n="nav.sub.climate_docs">Documents</a></li>
+            <li><a href="{% url 'green_tech' %}" data-i18n="nav.sub.green_tech">Green Technology</a></li>
+            <li><a href="https://climate.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.climate_portal">Climate Knowledge Portal</a></li>
+          </ul>
+        </li>
+        <li><a href="{% url 'devplan' %}" class="nav__link{% if current_page == 'devplan' %} active{% endif %}" data-i18n="nav.devplan">Development Planning</a></li>
+        <li><a href="{% url 'contact' %}" class="nav__link nav__link--cta{% if current_page == 'contact' %} active{% endif %}" data-i18n="nav.contact">Contact Us</a></li>
+      </ul>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" data-i18n-aria="aria.menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>

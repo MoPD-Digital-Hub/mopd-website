@@ -1,0 +1,89 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}Contact — Ministry of Planning and Development{% endblock %}
+{% block meta_description %}Contact the Ministry of Planning and Development, Ethiopia.{% endblock %}
+{% block page_id %}contact{% endblock %}
+
+{% block content %}
+<main class="page">
+<section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+          <span>/</span>
+          <span data-i18n="nav.contact">Contact Us</span>
+        </nav>
+        <h1 class="page-hero__title" data-i18n="contact.touch">Get in Touch</h1>
+        <p class="page-hero__desc" data-i18n="contact.desc">Get the latest updates on national development initiatives, policy changes, and ministry announcements.</p>
+      </div>
+    </section>
+
+    <section class="page-body">
+      <div class="container contact-page__grid">
+        <form class="contact-form reveal" id="contactForm">
+          <h2 class="section-title" style="font-size:1.5rem;margin-bottom:20px;" data-i18n="page.contact.form_title">Send Us a Message</h2>
+          <div class="contact-form__grid">
+            <div>
+              <label for="contact_name" data-i18n="page.contact.name">Contact Name</label>
+              <input type="text" id="contact_name" name="contact_name" required>
+            </div>
+            <div>
+              <label for="contact_email" data-i18n="page.contact.email">Contact Email</label>
+              <input type="email" id="contact_email" name="contact_email" required>
+            </div>
+            <div>
+              <label for="contact_phone" data-i18n="page.contact.phone">Contact Phone</label>
+              <input type="tel" id="contact_phone" name="contact_phone">
+            </div>
+            <div>
+              <label for="subject" data-i18n="page.contact.subject">Subject</label>
+              <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="field--full">
+              <label for="details" data-i18n="page.contact.details">Details</label>
+              <textarea id="details" name="details" required></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn--primary" style="margin-top:20px;" data-i18n="page.contact.send">Send Message</button>
+        </form>
+
+        <div class="contact__info reveal">
+          <span class="section-tag" data-i18n="contact.reach">Reach Us</span>
+          <ul class="contact__list" style="margin-top:20px;">
+            <li>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div>
+                <strong data-i18n="contact.address">Address</strong>
+                <span data-i18n="contact.address_value">6 Kilo, Addis Ababa, Ethiopia</span>
+              </div>
+            </li>
+            <li>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              <div>
+                <strong data-i18n="contact.phone">Phone</strong>
+                <span>011 140 3049</span>
+              </div>
+            </li>
+            <li>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <div>
+                <strong data-i18n="contact.email">Email</strong>
+                <a href="mailto:info@mopd.gov.et">info@mopd.gov.et</a>
+              </div>
+            </li>
+          </ul>
+          <div class="contact__map" style="margin-top:24px;">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2288.2357508217674!2d38.76139936421245!3d9.045011320667369!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b8f0ed6252815%3A0x9a386a8ea01f93d3!2sMinistry%20of%20planning%20and%20development(MoPD)!5e0!3m2!1sen!2set!4v1688054937756!5m2!1sen!2set"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Ministry of Planning and Development — 6 Kilo, Addis Ababa"
+              data-i18n-title="contact.map_title">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}

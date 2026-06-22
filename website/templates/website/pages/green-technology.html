@@ -1,0 +1,43 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}Green Technology — MoPD{% endblock %}
+{% block meta_description %}Green technology initiatives.{% endblock %}
+{% block page_id %}green_tech{% endblock %}
+
+{% block content %}
+<main class="page">
+<section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+          <span>/</span>
+          <span data-i18n="nav.sub.green_tech">Green Technology</span>
+        </nav>
+        <h1 class="page-hero__title" data-i18n="nav.sub.green_tech">Green Technology</h1>
+        <p class="page-hero__desc" data-i18n="page.green.lead">Promoting innovation and excellence in climate mitigation and green development across Ethiopia.</p>
+      </div>
+    </section>
+
+    <section class="page-body">
+      <div class="container">
+        <div class="about__grid reveal">
+          <div class="about__text">
+            <h2 class="section-title" style="font-size:1.5rem;margin-bottom:16px;" data-i18n="page.green.award_title">Green Award</h2>
+            <p class="lead" data-i18n="page.green.award_lead">The Green Award recognizes outstanding work and innovation in climate change mitigation and green development.</p>
+            <p data-i18n="page.green.award_p1">MoPD encourages organizations, innovators, and communities advancing green technology solutions that support Ethiopia's climate-resilient development goals and the Climate Resilient Green Economy (CRGE) strategy.</p>
+            <p data-i18n="page.green.award_p2">Through this initiative, the ministry highlights best practices in environmental stewardship, low-carbon innovation, and sustainable growth aligned with national and international climate commitments.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;">
+              <a href="{% url 'climate' %}" class="btn btn--outline" data-i18n="nav.sub.about_climate">About Climate</a>
+              <a href="{% url 'climate_docs' %}" class="btn btn--outline" data-i18n="nav.sub.climate_docs">Climate Documents</a>
+            </div>
+          </div>
+          <div class="about__visual">
+            <figure class="about__image-wrap">
+              <img src="https://mopd.gov.et/static/green.jpg" alt="Green Technology" class="about__image content-img">
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}About MoPD — Ministry of Planning and Development{% endblock %}
+{% block meta_description %}Learn about the Ministry of Planning and Development (MoPD).{% endblock %}
+{% block page_id %}about{% endblock %}
+
+{% block content %}
+<main class="page">
+<section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+          <span>/</span>
+          <span data-i18n="page.about.title">About MoPD</span>
+        </nav>
+        <h1 class="page-hero__title" data-i18n="page.about.title">About MoPD</h1>
+        <p class="page-hero__desc" data-i18n="about.lead">Welcome to the official website of the Ministry of Planning and Development (MoPD) in Ethiopia.</p>
+      </div>
+    </section>
+
+    <section class="page-body about" id="about">
+      <div class="container">
+        <div class="about__tabs reveal">
+          <button class="about__tab active" data-tab="about" data-i18n="about.tab.about">About</button>
+          <button class="about__tab" data-tab="mission" data-i18n="about.tab.mission">Mission</button>
+          <button class="about__tab" data-tab="vision" data-i18n="about.tab.vision">Vision</button>
+          <button class="about__tab" data-tab="values" data-i18n="about.tab.values">Values</button>
+        </div>
+
+        <div class="about__panels">
+          <div class="about__panel active" id="panel-about">
+            <div class="about__grid">
+              <div class="about__text">
+                <p class="lead" data-i18n="about.lead">Welcome to the official website of the Ministry of Planning and Development (MoPD) in Ethiopia.</p>
+                <p data-i18n="about.p1">As the primary government institution responsible for national planning and development, the MoPD plays a vital role in shaping Ethiopia's sustainable growth and socio-economic transformation.</p>
+                <p data-i18n="about.p2">Through this website, we provide comprehensive information about the MoPD's initiatives, projects, and services — including valuable resources, reports, and data related to our national development agenda.</p>
+                <a href="{% url 'contact' %}" class="btn btn--outline" data-i18n="about.cta">Get in Touch</a>
+                <div class="about__card about__card--accent about__card--inline">
+                  <div class="about__card-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  </div>
+                  <h4 data-i18n="about.me.title">Monitoring &amp; Evaluation</h4>
+                  <p data-i18n="about.me.desc">Data-driven assessment of development outcomes</p>
+                </div>
+              </div>
+              <div class="about__visual">
+                <figure class="about__image-wrap">
+                  <img src="https://mopd.gov.et/media/photos/2025/07/03/G92A3209.jpg" alt="Ministry of Planning and Development" class="about__image content-img">
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="about__panel" id="panel-mission">
+            <div class="about__grid">
+              <div class="about__text">
+                <p class="lead" data-i18n="mission.lead">Our mission is to provide comprehensive policy analysis, guidance, and support to drive the multidimensional development endeavors of our country.</p>
+                <p data-i18n="mission.p1">We aim to play a pivotal role in shaping Ethiopia's future through robust public investment administration, efficient appraisal and prioritization of development projects, and rigorous monitoring and evaluation practices.</p>
+                <p data-i18n="mission.p2">Our mission is grounded in transparency, accountability, and good governance — contributing to sustainable and inclusive growth that enables Ethiopia to thrive globally.</p>
+              </div>
+              <div class="about__visual about__visual--mission">
+                <blockquote class="mission-quote">
+                  <p data-i18n="mission.quote">"Through strategic direction and effective policy guidance, we enable Ethiopia to thrive in an ever-changing global landscape."</p>
+                  <cite data-i18n="mission.cite">— Ministry of Planning and Development</cite>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+
+          <div class="about__panel" id="panel-vision">
+            <div class="about__grid">
+              <div class="about__text">
+                <p class="lead" data-i18n="vision.lead">Our vision is to make Ethiopia an African beacon of prosperity, where the aspirations and dreams of its people are realized.</p>
+                <p data-i18n="vision.p1">We envision a future Ethiopia that stands as a shining example of sustainable economic growth, social harmony, and environmental stewardship — where poverty and inequality are significantly reduced.</p>
+                <p data-i18n="vision.p2">Together, we will transform Ethiopia into an African beacon of prosperity, where progress, innovation, and the well-being of its people are at the forefront.</p>
+              </div>
+              <div class="about__visual about__visual--vision">
+                <figure class="about__image-wrap about__image-wrap--vision">
+                  <img src="https://mopd.gov.et/media/photos/2023/06/29/ethiopia-an-african__1_-removebg-preview.png" alt="Ethiopia — An African Beacon of Prosperity" class="about__image about__image--vision content-img">
+                </figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="about__panel" id="panel-values">
+            <div class="values-grid">
+              <div class="value-card reveal">
+                <div class="value-card__icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+                <h4 data-i18n="value.0.title">Communication</h4>
+                <p data-i18n="value.0.desc">Open dialogue with all stakeholders</p>
+              </div>
+              <div class="value-card reveal">
+                <div class="value-card__icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div>
+                <h4 data-i18n="value.1.title">Professionalism</h4>
+                <p data-i18n="value.1.desc">Excellence in every undertaking</p>
+              </div>
+              <div class="value-card reveal">
+                <div class="value-card__icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                <h4 data-i18n="value.2.title">Integrity</h4>
+                <p data-i18n="value.2.desc">Upholding the highest ethical standards</p>
+              </div>
+              <div class="value-card reveal">
+                <div class="value-card__icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                <h4 data-i18n="value.3.title">Drive</h4>
+                <p data-i18n="value.3.desc">Relentless pursuit of national goals</p>
+              </div>
+              <div class="value-card reveal">
+                <div class="value-card__icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18h6"/><path d="M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/></svg></div>
+                <h4 data-i18n="value.4.title">Innovation</h4>
+                <p data-i18n="value.4.desc">Creative solutions, not imitation</p>
+              </div>
+              <div class="value-card reveal">
+                <div class="value-card__icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21l2.3-7-6-4.6h7.6z"/></svg></div>
+                <h4 data-i18n="value.5.title">Excellence</h4>
+                <p data-i18n="value.5.desc">Setting benchmarks for public service</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}

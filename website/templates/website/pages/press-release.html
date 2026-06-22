@@ -1,0 +1,33 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block title %}Press Release — MoPD{% endblock %}
+{% block meta_description %}Official press releases.{% endblock %}
+{% block page_id %}press{% endblock %}
+
+{% block content %}
+<main class="page">
+<section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+          <span>/</span>
+          <span data-i18n="nav.sub.press">Press Release</span>
+        </nav>
+        <h1 class="page-hero__title" data-i18n="nav.sub.press">Press Release</h1>
+      </div>
+    </section>
+
+    <section class="page-body">
+      <div class="container">
+        <div class="coming-soon reveal">
+          <div class="coming-soon__icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h2 class="coming-soon__title" data-i18n="page.coming.title">Coming Soon</h2>
+          <p class="coming-soon__desc" data-i18n="page.press.desc">Official press releases will be published here. In the meantime, browse the latest ministry news and announcements.</p>
+          <a href="{% url 'news' %}" class="btn btn--primary" data-i18n="nav.sub.news">View News</a>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}

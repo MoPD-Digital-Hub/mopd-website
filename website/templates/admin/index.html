@@ -1,0 +1,114 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static log %}
+
+{% block extrastyle %}{{ block.super }}{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content %}
+<div class="mopd-admin-page">
+  <div class="mopd-admin-layout">
+    <div class="mopd-admin-hero">
+      <h1>{% translate 'Manage website content' %}</h1>
+      <p>{% translate 'Edit news, leadership profiles, translations, documents, and all public-facing content for the Ministry of Planning and Development.' %}</p>
+    </div>
+
+    <aside class="mopd-admin-aside">
+      <div class="module mopd-admin-recent">
+        <h2>{% translate 'Recent actions' %}</h2>
+        {% get_admin_log 10 as admin_log for_user user %}
+        {% if not admin_log %}
+        <p class="mopd-admin-recent__empty">{% translate 'None available' %}</p>
+        {% else %}
+        <ul class="actionlist">
+        {% for entry in admin_log %}
+        <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+          <span class="visually-hidden">{% if entry.is_addition %}{% translate 'Added:' %}{% elif entry.is_change %}{% translate 'Changed:' %}{% elif entry.is_deletion %}{% translate 'Deleted:' %}{% endif %}</span>
+          {% if entry.is_deletion or not entry.get_admin_url %}
+            {{ entry.object_repr }}
+          {% else %}
+            <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+          {% endif %}
+          {% if entry.content_type %}
+          <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+          {% endif %}
+        </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+    </aside>
+
+    <section class="mopd-admin-shortcuts-panel">
+      <div class="mopd-admin-shortcuts">
+        <a href="{% url 'admin:website_sitesettings_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">S</div>
+          <h3>{% translate 'Site settings' %}</h3>
+          <p>{% translate 'Phone, email, social links, footer text' %}</p>
+        </a>
+        <a href="{% url 'admin:website_newsarticle_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">N</div>
+          <h3>{% translate 'News articles' %}</h3>
+          <p>{% translate 'Publish and edit bilingual news stories' %}</p>
+        </a>
+        <a href="{% url 'admin:website_leader_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">L</div>
+          <h3>{% translate 'Leadership' %}</h3>
+          <p>{% translate 'Minister and state minister profiles' %}</p>
+        </a>
+        <a href="{% url 'admin:website_sitetranslation_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">T</div>
+          <h3>{% translate 'Translations' %}</h3>
+          <p>{% translate 'UI labels and static page copy (EN / AM)' %}</p>
+        </a>
+        <a href="{% url 'admin:website_galleryalbum_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">G</div>
+          <h3>{% translate 'Gallery' %}</h3>
+          <p>{% translate 'Photo albums and event images' %}</p>
+        </a>
+        <a href="{% url 'admin:website_document_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">D</div>
+          <h3>{% translate 'Documents' %}</h3>
+          <p>{% translate 'Climate and statistics PDF links' %}</p>
+        </a>
+        <a href="{% url 'admin:website_carouselslide_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">C</div>
+          <h3>{% translate 'Homepage carousel' %}</h3>
+          <p>{% translate 'Hero slides on the homepage' %}</p>
+        </a>
+        <a href="{% url 'admin:website_affiliatelink_changelist' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">A</div>
+          <h3>{% translate 'Affiliate links' %}</h3>
+          <p>{% translate 'Footer partner organizations' %}</p>
+        </a>
+      </div>
+    </section>
+
+    {% for app in app_list %}
+    {% if app.app_label == 'auth' %}
+    <div class="mopd-admin-system">
+      <h2 class="mopd-admin-system__title">{% translate 'System' %}</h2>
+      <div class="mopd-admin-system__grid">
+        {% for model in app.models %}
+        <a href="{{ model.admin_url }}" class="mopd-admin-system__link">
+          <span>{{ model.name }}</span>
+          {% if model.add_url %}<span class="mopd-admin-system__action">{% translate 'Manage' %} →</span>{% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

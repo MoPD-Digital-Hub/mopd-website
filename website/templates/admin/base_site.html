@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('MoPD Admin') }}{% endblock %}
+
+{% block dark-mode-vars %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin-mopd.css' %}?v=9">
+{% endblock %}
+
+{% block branding %}
+<a href="{% url 'admin:index' %}" class="mopd-admin-brand">
+  <img src="{% static 'picture/logo1.png' %}" alt="Ministry of Planning and Development" class="mopd-admin-brand__logo">
+  <span class="mopd-admin-brand__text">
+    <span class="mopd-admin-brand__title">{{ site_header|default:'MoPD Site Administration' }}</span>
+    <span class="mopd-admin-brand__subtitle">Content management</span>
+  </span>
+</a>
+{% endblock %}
+
+{% block nav-global %}
+<a href="{% url 'home' %}">← View public site</a>
+{% endblock %}

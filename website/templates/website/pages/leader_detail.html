@@ -1,0 +1,36 @@
+{% extends 'website/base.html' %}
+{% block title %}{{ leader.name_en }} — MoPD{% endblock %}
+{% block page_id %}leader{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a><span>/</span>
+        <a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a><span>/</span>
+        <span>{% include 'website/includes/bilingual.html' with en=leader.name_en am=leader.name_am %}</span>
+      </nav>
+      <h1 class="page-hero__title">{% include 'website/includes/bilingual.html' with en=leader.name_en am=leader.name_am %}</h1>
+      <p class="page-hero__desc">{% include 'website/includes/bilingual.html' with en=leader.role_en am=leader.role_am %}</p>
+    </div>
+  </section>
+  <section class="page-body page-body--narrow">
+    <div class="container">
+      <article class="article-page__body reveal">
+        <figure class="article-page__hero-img">
+          <img src="{{ leader.photo_url }}" alt="{{ leader.name_en }}" class="content-img">
+        </figure>
+        {% for para in leader.paragraphs.all %}
+        <p>{% include 'website/includes/bilingual.html' with en=para.text_en am=para.text_am %}</p>
+        {% empty %}
+        {% if leader.short_bio_en %}
+        <p>{% include 'website/includes/bilingual.html' with en=leader.short_bio_en am=leader.short_bio_am %}</p>
+        {% endif %}
+        {% endfor %}
+        <a href="{% url 'leadership' %}" class="btn btn--outline" style="margin-top:32px;" data-i18n="page.leader.back">← Back to Leadership</a>
+      </article>
+    </div>
+  </section>
+</main>
+{% endblock %}
