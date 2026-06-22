@@ -40,7 +40,7 @@
   --radius-xl: 32px;
 
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --header-height: 84px;
+  --header-height: 96px;
   --sticky-top: calc(var(--header-height) + 24px);
 }
 
@@ -188,9 +188,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .logo__img {
-  height: 58px;
+  height: 70px;
   width: auto;
-  max-width: min(340px, 52vw);
+  max-width: min(380px, 54vw);
   object-fit: contain;
   display: block;
 }
@@ -2113,8 +2113,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   }
 
   .logo__img {
-    height: 50px;
-    max-width: min(260px, calc(100vw - 88px));
+    height: 58px;
+    max-width: min(300px, calc(100vw - 88px));
   }
 
   .nav {
@@ -2255,7 +2255,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .hero__actions .btn { width: 100%; justify-content: center; }
   .values-grid { grid-template-columns: 1fr; }
   .stats__grid { grid-template-columns: 1fr; }
-  .logo__img { height: 44px; max-width: 240px; }
+  .logo__img { height: 52px; max-width: 270px; }
 }
 
 /* ---- Full image display (no crop, natural height) ---- */
