@@ -22,15 +22,19 @@
       <form class="news-search" id="newsSearchForm" role="search">
         <label class="visually-hidden" for="newsSearchInput" data-i18n="page.news.search_label">Search news</label>
         <input type="search" id="newsSearchInput" class="news-search__input" placeholder="Search news…" data-i18n-placeholder="page.news.search_placeholder" autocomplete="off">
+        <label class="visually-hidden" for="newsDateFilter" data-i18n="page.news.date_filter">Filter by date</label>
+        <input type="date" id="newsDateFilter" class="news-search__date" data-i18n-title="page.news.date_filter" title="Filter by date">
         <button type="submit" class="news-search__btn" data-i18n="page.news.search_btn">Search</button>
+        <button type="button" class="news-search__clear" id="newsClearFilters" hidden data-i18n="page.news.clear_filters">Clear</button>
       </form>
+      <p class="news-page__results" id="newsResults" aria-live="polite" hidden data-template="Showing {count} of {total} articles" data-i18n="page.news.results">Showing {count} of {total} articles</p>
 
       <div class="news-page__layout">
         <div class="news-page__main">
           <p class="news-page__empty" id="newsEmpty" hidden data-i18n="page.news.no_results">No news articles match your search.</p>
           <div class="news-page__grid" id="newsGrid">
             {% for article in articles %}
-            <article class="news-card reveal" data-category="{{ article.category }}" data-search="{{ article.search_keywords }} {{ article.title_en }} {{ article.title_am }} {{ article.excerpt_en }}">
+            <article class="news-card reveal" data-category="{{ article.category }}" data-date="{{ article.published_at|date:'Y-m-d' }}" data-search="{{ article.search_keywords }} {{ article.title_en }} {{ article.title_am }} {{ article.card_excerpt_en }} {{ article.card_excerpt_am }}">
               <a href="{% url 'news_detail' article.slug %}" class="news-card__image">
                 {% if article.image %}
                 <img src="{{ article.image.url }}" alt="">

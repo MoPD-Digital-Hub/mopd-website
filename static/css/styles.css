@@ -1284,9 +1284,57 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .news-search {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 32px;
-  max-width: 640px;
+  margin-bottom: 16px;
+  max-width: none;
+}
+
+.news-search__date {
+  min-width: 148px;
+  padding: 14px 12px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1px solid rgba(10, 61, 36, 0.15);
+  border-radius: var(--radius-md);
+  background: white;
+  color: var(--gray-900);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.news-search__date:focus {
+  outline: none;
+  border-color: var(--green-500);
+  box-shadow: 0 0 0 3px rgba(18, 163, 92, 0.15);
+}
+
+.news-search__clear {
+  flex-shrink: 0;
+  padding: 14px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--green-800);
+  background: white;
+  border: 1px solid rgba(10, 61, 36, 0.15);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.news-search__clear[hidden] {
+  display: none;
+}
+
+.news-search__clear:hover {
+  background: var(--green-100);
+  border-color: rgba(10, 61, 36, 0.25);
+}
+
+.news-page__results {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+  color: var(--gray-500);
 }
 
 .news-search__input {
@@ -1440,8 +1488,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--gray-500);
 }
 
-.news-card[hidden] {
-  display: none;
+.news-card[hidden],
+.news-page #newsGrid .news-card.is-filtered-out {
+  display: none !important;
 }
 
 /* ---- Climate ---- */
@@ -2157,7 +2206,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .news__grid { grid-template-columns: 1fr; }
   .news-page #newsGrid { grid-template-columns: 1fr; }
   .news-search { flex-direction: column; max-width: none; }
-  .news-search__btn { width: 100%; }
+  .news-search__date,
+  .news-search__btn,
+  .news-search__clear { width: 100%; }
   .news-card--featured { grid-column: span 1; }
   .leadership__grid { grid-template-columns: 1fr; }
   .contact__grid { grid-template-columns: 1fr; }
