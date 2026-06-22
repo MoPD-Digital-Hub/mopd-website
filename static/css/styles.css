@@ -1764,83 +1764,105 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 /* ---- Affiliates ---- */
 .affiliates {
-  padding: 80px 0;
-  background: var(--cream-dark);
+  padding: 100px 0;
+  background: linear-gradient(180deg, var(--cream) 0%, var(--cream-dark) 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-.affiliates__carousel {
+.affiliates::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 10% 20%, rgba(18, 163, 92, 0.06), transparent 42%),
+              radial-gradient(circle at 90% 80%, rgba(212, 160, 23, 0.08), transparent 38%);
+  pointer-events: none;
+}
+
+.affiliates .container {
+  position: relative;
+  z-index: 1;
+}
+
+.affiliates__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.affiliate-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
-  padding: 40px;
+  text-align: center;
+  padding: 32px 28px 28px;
   background: white;
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
-  margin-bottom: 32px;
+  border: 1px solid rgba(10, 61, 36, 0.08);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  min-height: 100%;
 }
 
-.affiliate-logo {
+.affiliate-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(18, 163, 92, 0.25);
+}
+
+.affiliate-card__logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 28px;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(10, 61, 36, 0.08);
+  width: 100%;
+  min-height: 110px;
+  margin-bottom: 20px;
+  padding: 16px;
   background: var(--cream);
-  transition: all var(--transition);
-  min-width: 220px;
-  min-height: 120px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(10, 61, 36, 0.06);
 }
 
-.affiliate-logo:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--green-400);
-}
-
-.affiliate-logo img {
-  max-width: 200px;
-  max-height: 80px;
+.affiliate-card__logo img {
+  width: 100%;
+  max-width: 220px;
+  max-height: 72px;
   object-fit: contain;
 }
 
-.affiliate-logo--text span {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--green-800);
-  text-align: center;
-  line-height: 1.35;
-}
-
-.affiliates__links {
+.affiliate-card__logo--fallback,
+.affiliate-card__initial {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 12px 28px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-700), var(--green-500));
+  color: white;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
-.affiliates__links a {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--green-700);
+.affiliate-card__name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: var(--green-900);
+  margin-bottom: 14px;
+  flex: 1;
+}
+
+.affiliate-card__cta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--green-600);
   transition: color var(--transition);
 }
 
-.affiliates__links a:hover {
-  color: var(--gold-500);
-}
-
-.affiliates__links li::before {
-  content: '•';
-  margin-right: 8px;
-  color: var(--green-400);
-}
-
-.affiliates__links li {
-  display: flex;
-  align-items: center;
+.affiliate-card:hover .affiliate-card__cta {
+  color: var(--green-800);
 }
 
 /* ---- Contact ---- */
@@ -2072,8 +2094,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .leadership__grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
   .digital__grid { grid-template-columns: 1fr; }
   .climate__banner { grid-template-columns: 1fr; padding: 40px; }
-  .affiliates__carousel { gap: 24px; padding: 24px; }
-  .affiliate-logo { min-width: 160px; }
+  .affiliates__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .news-page__layout { grid-template-columns: 1fr; }
   .news-page #newsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2213,8 +2234,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .leadership__grid { grid-template-columns: 1fr; }
   .contact__grid { grid-template-columns: 1fr; }
   .newsletter__form { flex-direction: column; }
-  .affiliates__carousel { flex-direction: column; }
-  .affiliate-logo { width: 100%; }
+  .affiliates__grid { grid-template-columns: 1fr; }
   .footer__grid { grid-template-columns: 1fr; }
   .footer__bottom { flex-direction: column; gap: 16px; text-align: center; }
   .section-header--row { flex-direction: column; align-items: flex-start; gap: 16px; }

@@ -26,6 +26,11 @@ def carousel_image_upload(instance, filename):
     return f'carousel/{instance.sort_order}_{os.path.basename(filename)}'
 
 
+def affiliate_logo_upload(instance, filename):
+    slug = slugify(instance.name_en) or 'affiliate'
+    return f'affiliates/{slug}{_ext(filename)}'
+
+
 class SiteSettings(models.Model):
     """Singleton site-wide settings (edit only the first row)."""
     site_name_en = models.CharField(max_length=200, default='Ministry of Planning and Development')
@@ -267,6 +272,7 @@ class AffiliateLink(models.Model):
     name_en = models.CharField(max_length=200)
     name_am = models.CharField(max_length=200, blank=True)
     url = models.URLField()
+    logo = models.ImageField(upload_to=affiliate_logo_upload, blank=True)
     sort_order = models.PositiveIntegerField(default=0)
     is_published = models.BooleanField(default=True)
 

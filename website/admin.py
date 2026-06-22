@@ -137,9 +137,15 @@ class CarouselSlideAdmin(admin.ModelAdmin):
 
 @admin.register(AffiliateLink)
 class AffiliateLinkAdmin(admin.ModelAdmin):
-    list_display = ('name_en', 'url', 'sort_order', 'is_published')
+    list_display = ('name_en', 'url', 'sort_order', 'is_published', 'logo_preview')
     list_editable = ('sort_order', 'is_published')
     search_fields = ('name_en', 'name_am')
+    readonly_fields = ('logo_preview',)
+    fields = ('name_en', 'name_am', 'url', 'logo', 'logo_preview', 'sort_order', 'is_published')
+
+    @admin.display(description='Logo')
+    def logo_preview(self, obj):
+        return _image_thumb(obj.logo, 80)
 
 
 @admin.register(NewsArticle)

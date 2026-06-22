@@ -167,6 +167,8 @@ window.MOPD_I18N = {
 
     'affiliates.tag': 'አጋሮች',
     'affiliates.title': 'ተባባሪ ድርጅቶች',
+    'affiliates.desc': 'በብሔራዊ እቅድ እና ልማት ላይ ከፕላንና ልማት ሚኒስቴር ጋር የሚሰሩ የመንግሥት ተቋማት እና አጋሮች።',
+    'affiliates.visit': 'ድረ-ገጽ ይጎብኙ →',
     'affiliate.epa': 'የአካባቢ ጥበቃ ባለሥልጣን',
     'affiliate.csa': 'ማዕከላዊ የስታቲስቲክስ አገልግሎት',
     'affiliate.psi': 'የፖሊሲ ጥናት ተቋም',

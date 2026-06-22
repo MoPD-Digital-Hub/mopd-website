@@ -102,9 +102,24 @@ LEADERS = [
 ]
 
 AFFILIATES = [
-    ('Environmental Protection Authority', 'https://www.epa.gov.et/', 'affiliate.epa'),
-    ('Central Statistics Service', 'http://www.csa.gov.et/', 'affiliate.csa'),
-    ('Policy Study Institute', 'https://psi.org.et', 'affiliate.psi'),
+    (
+        'Environmental Protection Authority',
+        'https://www.epa.gov.et/',
+        'affiliate.epa',
+        'https://mopd.gov.et/media/photos/2025/01/09/epa-removebg-preview.png',
+    ),
+    (
+        'Central Statistics Service',
+        'http://www.csa.gov.et/',
+        'affiliate.csa',
+        'https://mopd.gov.et/media/photos/2025/01/09/photo_2025-01-09_13-42-42-removebg-preview.png',
+    ),
+    (
+        'Policy Study Institute',
+        'https://psi.org.et',
+        'affiliate.psi',
+        'https://mopd.gov.et/media/photos/2025/01/09/logo-psi-400x100-1-removebg-preview.png',
+    ),
 ]
 
 
@@ -343,12 +358,14 @@ class Command(BaseCommand):
 
     def seed_affiliates(self, en, am):
         AffiliateLink.objects.all().delete()
-        for idx, (name_en, url, name_key) in enumerate(AFFILIATES):
-            AffiliateLink.objects.create(
+        for idx, (name_en, url, name_key, logo_url) in enumerate(AFFILIATES):
+            affiliate = AffiliateLink(
                 name_en=name_en,
                 name_am=am.get(name_key, ''),
                 url=url,
                 sort_order=idx,
                 is_published=True,
             )
+            assign_image_from_url(affiliate, 'logo', logo_url)
+            affiliate.save()
         self.stdout.write(f'  Affiliate links ({len(AFFILIATES)})')

@@ -450,24 +450,34 @@
   </section>
 
   <!-- Affiliates -->
-  <section class="affiliates">
+  <section class="affiliates" id="partners">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-tag" data-i18n="affiliates.tag">Partners</span>
         <h2 class="section-title" data-i18n="affiliates.title">Affiliate Organizations</h2>
+        <p class="section-desc" data-i18n="affiliates.desc">Government institutions and partners working with MoPD on national planning and development.</p>
       </div>
-      <div class="affiliates__carousel reveal" id="affiliatesCarousel">
+      <div class="affiliates__grid">
         {% for affiliate in affiliates %}
-        <a href="{{ affiliate.url }}" target="_blank" rel="noopener" class="affiliate-logo affiliate-logo--text">
-          <span>{% include 'website/includes/bilingual.html' with en=affiliate.name_en am=affiliate.name_am %}</span>
+        <a href="{{ affiliate.url }}" target="_blank" rel="noopener" class="affiliate-card reveal">
+          <div class="affiliate-card__logo">
+            {% if affiliate.logo %}
+            <img src="{{ affiliate.logo.url }}" alt="{{ affiliate.name_en }}" loading="lazy">
+            {% else %}
+            <span class="affiliate-card__initial" aria-hidden="true">{{ affiliate.name_en|slice:":1" }}</span>
+            {% endif %}
+          </div>
+          <h3 class="affiliate-card__name">{% include 'website/includes/bilingual.html' with en=affiliate.name_en am=affiliate.name_am %}</h3>
+          <span class="affiliate-card__cta" data-i18n="affiliates.visit">Visit website →</span>
+        </a>
+        {% empty %}
+        <a href="https://www.epa.gov.et/" target="_blank" rel="noopener" class="affiliate-card reveal">
+          <div class="affiliate-card__logo affiliate-card__logo--fallback"><span class="affiliate-card__initial">E</span></div>
+          <h3 class="affiliate-card__name" data-i18n="affiliate.epa">Environmental Protection Authority</h3>
+          <span class="affiliate-card__cta" data-i18n="affiliates.visit">Visit website →</span>
         </a>
         {% endfor %}
       </div>
-      <ul class="affiliates__links reveal">
-        {% for affiliate in affiliates %}
-        <li><a href="{{ affiliate.url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=affiliate.name_en am=affiliate.name_am %}</a></li>
-        {% endfor %}
-      </ul>
     </div>
   </section>
 
