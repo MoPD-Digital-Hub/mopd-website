@@ -1751,9 +1751,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .affiliate-logo img {
   max-width: 200px;
   max-height: 80px;
-  width: auto;
-  height: auto;
   object-fit: contain;
+}
+
+.affiliate-logo--text span {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--green-800);
+  text-align: center;
+  line-height: 1.35;
 }
 
 .affiliates__links {

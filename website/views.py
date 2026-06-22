@@ -16,21 +16,45 @@ PAGE_TEMPLATES = {
     'development-planning': 'website/pages/development-planning.html',
 }
 
+PAGE_NAV_IDS = {
+    'about': 'about',
+    'contact': 'contact',
+    'leadership': 'leadership',
+    'gallery': 'gallery',
+    'press-release': 'press',
+    'about-climate': 'climate',
+    'climate-documents': 'climate_docs',
+    'green-technology': 'green_tech',
+    'statistics-documents': 'stats',
+    'development-planning': 'devplan',
+}
+
+
+def _page_context(page_id):
+    ctx = {'current_page': PAGE_NAV_IDS.get(page_id, page_id.replace('-', '_')), 'page_id': page_id}
+    if page_id == 'leadership':
+        ctx['leaders'] = Leader.objects.filter(is_published=True)
+    elif page_id == 'gallery':
+        ctx['albums'] = GalleryAlbum.objects.filter(is_published=True).prefetch_related('images')
+    elif page_id == 'climate-documents':
+        ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.CLIMATE)
+    elif page_id == 'statistics-documents':
+        ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.STATISTICS)
+    return ctx
+
 
 def home(request):
-    carousel_slides = CarouselSlide.objects.filter(is_active=True)
     featured_articles = NewsArticle.objects.filter(is_published=True, is_featured_home=True)[:3]
-    if featured_articles.count() < 1:
+    if not featured_articles.exists():
         featured_articles = NewsArticle.objects.filter(is_published=True)[:3]
-    leaders = Leader.objects.filter(is_published=True)[:4]
     return render(
         request,
         'website/pages/home.html',
         {
             'current_page': 'home',
-            'carousel_slides': carousel_slides,
+            'carousel_slides': CarouselSlide.objects.filter(is_active=True),
             'featured_articles': featured_articles,
-            'leaders': leaders,
+            'leaders': Leader.objects.filter(is_published=True)[:4],
         },
     )
 
@@ -39,28 +63,7 @@ def page(request, page_id):
     template = PAGE_TEMPLATES.get(page_id)
     if not template:
         raise Http404('Page not found')
-    ctx = {'current_page': page_id.replace('-', '_'), 'page_id': page_id}
-    if page_id == 'leadership':
-        ctx['leaders'] = Leader.objects.filter(is_published=True)
-        ctx['current_page'] = 'leadership'
-    elif page_id == 'gallery':
-        ctx['albums'] = GalleryAlbum.objects.filter(is_published=True).prefetch_related('images')
-        ctx['current_page'] = 'gallery'
-    elif page_id == 'climate-documents':
-        ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.CLIMATE)
-        ctx['current_page'] = 'climate_docs'
-    elif page_id == 'statistics-documents':
-        ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.STATISTICS)
-        ctx['current_page'] = 'stats'
-    elif page_id == 'about-climate':
-        ctx['current_page'] = 'climate'
-    elif page_id == 'green-technology':
-        ctx['current_page'] = 'green_tech'
-    elif page_id == 'press-release':
-        ctx['current_page'] = 'press'
-    elif page_id == 'development-planning':
-        ctx['current_page'] = 'devplan'
-    return render(request, template, ctx)
+    return render(request, template, _page_context(page_id))
 
 
 def leader_detail(request, slug):
@@ -74,14 +77,13 @@ def leader_detail(request, slug):
 
 def news_list(request):
     articles = NewsArticle.objects.filter(is_published=True)
-    recent_articles = articles[:3]
     return render(
         request,
         'website/news/list.html',
         {
             'current_page': 'news',
             'articles': articles,
-            'recent_articles': recent_articles,
+            'recent_articles': articles[:3],
         },
     )
 

@@ -4,6 +4,7 @@ from datetime import date
 from pathlib import Path
 
 from django.conf import settings
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 from website.media_utils import assign_image_from_url
@@ -60,109 +61,13 @@ GALLERY_IMAGES = [
     'https://mopd.gov.et/media/482302027_959816579633904_810442191452592327_n.jpg',
 ]
 
-NEWS_ARTICLES = [
-    {
-        'slug': 'un-guterres',
-        'category': 'economic',
-        'tag_key': 'news.0.tag',
-        'title_key': 'news.0.title',
-        'excerpt_key': 'news.0.excerpt',
-        'image_url': 'https://mopd.gov.et/media/photos/2025/07/29/fs_1.jpg',
-        'published_at': '2025-07-29',
-        'search_keywords': 'un secretary-general antonio guterres ethiopia climate food policy economic',
-        'body_keys': ['page.article.un.p1', 'page.article.un.p2', 'page.article.un.p3', 'page.article.un.p4', 'page.article.un.p5'],
-        'is_featured_home': True,
-        'is_featured_carousel': True,
-        'carousel_tag_key': 'carousel.0.tag',
-        'carousel_title_key': 'carousel.0.title',
-    },
-    {
-        'slug': 'acs2',
-        'category': 'climate',
-        'tag_key': 'news.1.tag',
-        'title_key': 'news.1.title',
-        'image_url': 'https://mopd.gov.et/media/photos/2025/07/29/summi_22.jpg',
-        'published_at': '2025-07-29',
-        'search_keywords': 'acs2 flagship initiatives africa climate summit',
-        'body_keys': ['page.article.acs2.p1', 'page.article.acs2.p2'],
-        'is_featured_home': True,
-        'is_featured_carousel': True,
-        'carousel_tag_key': 'carousel.1.tag',
-        'carousel_title_key': 'carousel.1.title',
-    },
-    {
-        'slug': 'state-minister-acs2',
-        'category': 'climate',
-        'tag_key': 'news.2.tag',
-        'title_key': 'news.2.title',
-        'image_url': 'https://mopd.gov.et/media/photos/2025/07/29/msur.jpg',
-        'published_at': '2025-07-29',
-        'search_keywords': 'state minister seyoum african leadership acs2 climate',
-        'body_keys': ['page.article.seyoum.p1', 'page.article.seyoum.p2', 'page.article.seyoum.p3'],
-        'is_featured_home': True,
-        'is_featured_carousel': True,
-        'carousel_tag_key': 'carousel.2.tag',
-        'carousel_title_key': 'carousel.2.title',
-    },
-    {
-        'slug': 'france-acs2',
-        'category': 'climate',
-        'tag_key': 'news.1.tag',
-        'title_key': 'page.news.5.title',
-        'image_url': 'https://mopd.gov.et/media/photos/2025/05/16/_92A1642.jpg',
-        'published_at': '2025-05-16',
-        'search_keywords': 'ethiopia france africa climate summit acs2 collaboration',
-        'body_keys': ['page.article.france.p1', 'page.article.france.p2', 'page.article.france.p3'],
-    },
-    {
-        'slug': 'donors-green',
-        'category': 'climate',
-        'tag_key': 'news.1.tag',
-        'title_key': 'page.news.7.title',
-        'image_url': 'https://mopd.gov.et/media/photos/2025/05/16/_92A1642.jpg',
-        'published_at': '2025-05-10',
-        'search_keywords': 'donors green economy crge cop29 amcen',
-        'body_keys': ['page.article.donors.p1', 'page.article.donors.p2', 'page.article.donors.p3'],
-    },
-    {
-        'slug': 'aprm-session',
-        'category': 'policy',
-        'tag_key': 'news.0.tag',
-        'title_key': 'page.news.3.title',
-        'image_url': 'https://mopd.gov.et/media/photos/2025/02/13/aprm.jpg',
-        'published_at': '2025-02-13',
-        'search_keywords': 'african peer review focal points steering committee aprm',
-        'body_keys': ['page.article.aprm.p1', 'page.article.aprm.p2', 'page.article.aprm.p3', 'page.article.aprm.p4'],
-    },
-    {
-        'slug': 'procurement',
-        'category': 'policy',
-        'tag_key': 'news.0.tag',
-        'title_key': 'page.news.4.title',
-        'image_url': 'https://mopd.gov.et/media/photos/2025/01/15/procurement.jpg',
-        'published_at': '2025-01-15',
-        'search_keywords': 'electronic public procurement ethiopia supervision',
-        'body_keys': ['page.article.proc.p1', 'page.article.proc.p2', 'page.article.proc.p3', 'page.article.proc.p4'],
-    },
-    {
-        'slug': 'finance-cop28',
-        'category': 'climate',
-        'tag_key': 'news.1.tag',
-        'title_key': 'page.news.6.title',
-        'image_url': 'https://mopd.gov.et/media/photos/2023/12/01/cop28.jpg',
-        'published_at': '2023-12-01',
-        'search_keywords': 'finance minister cop28 uae climate crge green legacy',
-        'body_keys': ['page.article.cop28.p1', 'page.article.cop28.p2', 'page.article.cop28.p3'],
-    },
-]
-
 LEADERS = [
     {
         'slug': 'fitsum-assefa',
         'name_key': 'leader.0.name',
         'role_key': 'leader.0.role',
         'bio_key': 'leader.0.bio',
-        'photo_url': 'https://mopd.gov.et/media/photos/2025/06/25/G92A3209_fVjDvC6.jpg',
+        'photo_src': 'https://mopd.gov.et/media/photos/2025/06/25/G92A3209_fVjDvC6.jpg',
         'paragraph_keys': ['page.leader1.p1', 'page.leader1.p2', 'page.leader1.p3'],
         'sort_order': 0,
     },
@@ -171,7 +76,7 @@ LEADERS = [
         'name_key': 'leader.1.name',
         'role_key': 'leader.1.role',
         'bio_key': 'leader.1.bio',
-        'photo_url': 'https://mopd.gov.et/media/photos/2024/10/08/photo_2024-12320-08_11-20-54.png',
+        'photo_src': 'https://mopd.gov.et/media/photos/2024/10/08/photo_2024-12320-08_11-20-54.png',
         'paragraph_keys': ['leader.1.bio', 'page.leader2.p1'],
         'sort_order': 1,
     },
@@ -180,7 +85,7 @@ LEADERS = [
         'name_key': 'leader.2.name',
         'role_key': 'leader.2.role',
         'bio_key': 'leader.2.bio',
-        'photo_url': 'https://mopd.gov.et/media/photos/2023/06/27/Tirumar-Abate-1-768x609.jpg',
+        'photo_src': 'https://mopd.gov.et/media/photos/2023/06/27/Tirumar-Abate-1-768x609.jpg',
         'paragraph_keys': ['page.leader4.p1', 'leader.2.bio'],
         'wide_photo': True,
         'sort_order': 2,
@@ -190,7 +95,7 @@ LEADERS = [
         'name_key': 'leader.3.name',
         'role_key': 'leader.3.role',
         'bio_key': 'leader.3.bio',
-        'photo_url': 'https://mopd.gov.et/media/photos/2024/03/06/WhatsApp_Image_2024-02-16_at_14.15.47_7c28a19d.jpg',
+        'photo_src': 'https://mopd.gov.et/media/photos/2024/03/06/WhatsApp_Image_2024-02-16_at_14.15.47_7c28a19d.jpg',
         'paragraph_keys': ['leader.3.bio', 'page.leader3.p1'],
         'sort_order': 3,
     },
@@ -223,20 +128,14 @@ def load_am_dict():
 
 def collect_en_defaults():
     en = {}
-    roots = [
-        Path(settings.BASE_DIR) / 'legacy_html',
-        Path(settings.BASE_DIR) / 'website/templates',
-    ]
-    for root in roots:
-        if not root.exists():
-            continue
-        for path in root.rglob('*.html'):
-            text = path.read_text(encoding='utf-8', errors='ignore')
-            for match in I18N_PATTERN.finditer(text):
-                key = match.group(1)
-                value = html.unescape(re.sub(r'\s+', ' ', match.group(2).strip()))
-                if value and key not in en:
-                    en[key] = value
+    root = Path(settings.BASE_DIR) / 'website' / 'templates'
+    for path in root.rglob('*.html'):
+        text = path.read_text(encoding='utf-8', errors='ignore')
+        for match in I18N_PATTERN.finditer(text):
+            key = match.group(1)
+            value = html.unescape(re.sub(r'\s+', ' ', match.group(2).strip()))
+            if value and key not in en:
+                en[key] = value
     return en
 
 
@@ -280,7 +179,7 @@ class Command(BaseCommand):
 
         self.seed_settings(en, am)
         self.seed_translations(en, am)
-        self.seed_news(en, am)
+        self.seed_news()
         self.seed_leaders(en, am)
         self.seed_gallery(en, am)
         self.seed_documents()
@@ -305,6 +204,9 @@ class Command(BaseCommand):
         )
         settings_obj.copyright_text_am = am.get('footer.copyright', '')
         settings_obj.topbar_tag_am = am.get('topbar.tag', '')
+        settings_obj.development_plan_pdf_url = (
+            'https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf'
+        )
         settings_obj.save()
         self.stdout.write('  Site settings')
 
@@ -323,34 +225,8 @@ class Command(BaseCommand):
                 created += 1
         self.stdout.write(f'  Translations ({len(keys)} keys, {created} new)')
 
-    def seed_news(self, en, am):
-        for item in NEWS_ARTICLES:
-            pub = date.fromisoformat(item['published_at'])
-            article = NewsArticle.objects.filter(slug=item['slug']).first()
-            if article is None:
-                article = NewsArticle(slug=item['slug'])
-            article.category = item['category']
-            article.tag_en = text_for(item['tag_key'], en, am)
-            article.tag_am = text_for(item['tag_key'], en, am, 'am')
-            article.title_en = text_for(item['title_key'], en, am)
-            article.title_am = text_for(item['title_key'], en, am, 'am')
-            article.excerpt_en = text_for(item.get('excerpt_key', ''), en, am) if item.get('excerpt_key') else ''
-            article.excerpt_am = text_for(item.get('excerpt_key', ''), en, am, 'am') if item.get('excerpt_key') else ''
-            article.body_en = join_paragraphs(item['body_keys'], en, am)
-            article.body_am = join_paragraphs(item['body_keys'], en, am, 'am')
-            article.published_at = pub
-            article.search_keywords = item['search_keywords']
-            article.is_published = True
-            article.is_featured_home = item.get('is_featured_home', False)
-            article.is_featured_carousel = item.get('is_featured_carousel', False)
-            article.carousel_tag_en = text_for(item.get('carousel_tag_key', ''), en, am)
-            article.carousel_tag_am = text_for(item.get('carousel_tag_key', ''), en, am, 'am')
-            article.carousel_title_en = text_for(item.get('carousel_title_key', ''), en, am)
-            article.carousel_title_am = text_for(item.get('carousel_title_key', ''), en, am, 'am')
-            if item.get('image_url'):
-                assign_image_from_url(article, 'image', item['image_url'])
-            article.save()
-        self.stdout.write(f'  News articles ({len(NEWS_ARTICLES)})')
+    def seed_news(self):
+        call_command('sync_official_news', featured=3)
 
     def seed_leaders(self, en, am):
         for item in LEADERS:
@@ -366,8 +242,8 @@ class Command(BaseCommand):
             leader.wide_photo = item.get('wide_photo', False)
             leader.sort_order = item['sort_order']
             leader.is_published = True
-            if item.get('photo_url'):
-                assign_image_from_url(leader, 'photo', item['photo_url'])
+            if item.get('photo_src'):
+                assign_image_from_url(leader, 'photo', item['photo_src'])
             leader.save()
             leader.paragraphs.all().delete()
             for idx, key in enumerate(item['paragraph_keys']):
@@ -431,21 +307,21 @@ class Command(BaseCommand):
             {
                 'tag_key': 'carousel.0.tag',
                 'title_key': 'carousel.0.title',
-                'image_url': 'https://mopd.gov.et/media/photos/2025/07/29/fs_1.jpg',
+                'image_src': 'https://mopd.gov.et/media/photos/2025/07/29/fs_1.jpg',
                 'link_url': '/news/un-guterres/',
                 'sort_order': 0,
             },
             {
                 'tag_key': 'carousel.1.tag',
                 'title_key': 'carousel.1.title',
-                'image_url': 'https://mopd.gov.et/media/photos/2025/07/29/summi_22.jpg',
+                'image_src': 'https://mopd.gov.et/media/photos/2025/07/29/summi_22.jpg',
                 'link_url': '/news/acs2/',
                 'sort_order': 1,
             },
             {
                 'tag_key': 'carousel.2.tag',
                 'title_key': 'carousel.2.title',
-                'image_url': 'https://mopd.gov.et/media/photos/2025/07/29/msur.jpg',
+                'image_src': 'https://mopd.gov.et/media/photos/2025/07/29/msur.jpg',
                 'link_url': '/news/state-minister-acs2/',
                 'sort_order': 2,
             },
@@ -461,7 +337,7 @@ class Command(BaseCommand):
                 sort_order=slide['sort_order'],
                 is_active=True,
             )
-            assign_image_from_url(obj, 'image', slide['image_url'])
+            assign_image_from_url(obj, 'image', slide['image_src'])
             obj.save()
         self.stdout.write(f'  Carousel slides ({len(slides)})')
 

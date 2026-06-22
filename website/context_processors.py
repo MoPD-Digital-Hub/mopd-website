@@ -3,15 +3,6 @@ import json
 from .models import AffiliateLink, SiteSettings, SiteTranslation
 
 
-def navigation(request):
-    page_id = ''
-    if request.resolver_match:
-        page_id = request.resolver_match.kwargs.get('page_id', '')
-        if not page_id:
-            page_id = request.resolver_match.url_name or ''
-    return {'current_page': page_id}
-
-
 def site_globals(request):
     settings = SiteSettings.load()
     translations = {

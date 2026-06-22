@@ -41,6 +41,11 @@ class SiteSettings(models.Model):
     copyright_text_am = models.CharField(max_length=255, blank=True)
     footer_desc_en = models.TextField(blank=True)
     footer_desc_am = models.TextField(blank=True)
+    development_plan_pdf_url = models.URLField(
+        blank=True,
+        default='https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf',
+        help_text='10-Year Development Plan PDF download link',
+    )
 
     class Meta:
         verbose_name = 'Site settings'
@@ -82,12 +87,19 @@ class NewsArticle(models.Model):
         ('others', 'Others'),
     ]
 
-    slug = models.SlugField(unique=True)
+    source_path = models.CharField(
+        max_length=300,
+        unique=True,
+        blank=True,
+        null=True,
+        help_text='Original article path on mopd.gov.et',
+    )
+    slug = models.SlugField(unique=True, max_length=200)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     tag_en = models.CharField(max_length=80, default='News')
     tag_am = models.CharField(max_length=80, blank=True)
-    title_en = models.CharField(max_length=300)
-    title_am = models.CharField(max_length=300, blank=True)
+    title_en = models.CharField(max_length=500)
+    title_am = models.CharField(max_length=500, blank=True)
     excerpt_en = models.TextField(blank=True)
     excerpt_am = models.TextField(blank=True)
     body_en = models.TextField(help_text='Separate paragraphs with a blank line')
@@ -97,11 +109,6 @@ class NewsArticle(models.Model):
     search_keywords = models.TextField(blank=True)
     is_published = models.BooleanField(default=True)
     is_featured_home = models.BooleanField(default=False, help_text='Show on homepage news section')
-    is_featured_carousel = models.BooleanField(default=False, help_text='Show on homepage hero carousel')
-    carousel_tag_en = models.CharField(max_length=80, blank=True)
-    carousel_tag_am = models.CharField(max_length=80, blank=True)
-    carousel_title_en = models.CharField(max_length=300, blank=True)
-    carousel_title_am = models.CharField(max_length=300, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -19,11 +19,3 @@ def nav_active(current, page_id):
     if page_id == 'data':
         return current in data_pages
     return current == page_id
-
-
-@register.simple_tag
-def bilingual(obj, field):
-    """Return dict with en/am for template data-bilingual usage."""
-    en = getattr(obj, f'{field}_en', '') or ''
-    am = getattr(obj, f'{field}_am', '') or en
-    return {'en': en, 'am': am}

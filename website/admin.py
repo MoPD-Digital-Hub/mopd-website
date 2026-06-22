@@ -32,6 +32,7 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         ('Contact', {'fields': ('phone', 'email', 'address_en', 'address_am')}),
         ('Social media', {'fields': ('facebook_url', 'twitter_url', 'linkedin_url')}),
         ('Footer', {'fields': ('footer_desc_en', 'footer_desc_am', 'copyright_text_en', 'copyright_text_am')}),
+        ('Downloads', {'fields': ('development_plan_pdf_url',)}),
     )
 
     def has_add_permission(self, request):
@@ -143,8 +144,8 @@ class AffiliateLinkAdmin(admin.ModelAdmin):
 
 @admin.register(NewsArticle)
 class NewsArticleAdmin(admin.ModelAdmin):
-    list_display = ('title_en', 'category', 'published_at', 'is_published', 'is_featured_home', 'is_featured_carousel', 'thumb')
-    list_editable = ('is_published', 'is_featured_home', 'is_featured_carousel')
+    list_display = ('title_en', 'category', 'published_at', 'is_published', 'is_featured_home', 'thumb')
+    list_editable = ('is_published', 'is_featured_home')
     list_filter = ('category', 'is_published', 'published_at')
     search_fields = ('title_en', 'title_am', 'slug', 'search_keywords')
     prepopulated_fields = {'slug': ('title_en',)}
@@ -153,8 +154,8 @@ class NewsArticleAdmin(admin.ModelAdmin):
         (None, {'fields': ('slug', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords')}),
         ('Tags', {'fields': ('tag_en', 'tag_am')}),
         ('Article content', {'fields': ('title_en', 'title_am', 'excerpt_en', 'excerpt_am', 'body_en', 'body_am')}),
-        ('Homepage placement', {
-            'fields': ('is_featured_home', 'is_featured_carousel', 'carousel_tag_en', 'carousel_tag_am', 'carousel_title_en', 'carousel_title_am'),
+        ('Homepage', {
+            'fields': ('is_featured_home',),
             'classes': ('collapse',),
         }),
     )

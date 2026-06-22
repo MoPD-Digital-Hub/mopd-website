@@ -28,17 +28,23 @@ python manage.py createsuperuser
 |---------|-------------------|
 | Site settings | Phone, email, social links, footer text |
 | Translations | All UI labels and static page copy (EN/AM) |
-| News articles | Full articles with bilingual body text |
+| News articles | Full articles with bilingual body text (sync from mopd.gov.et via `sync_official_news`) |
 | Leadership profiles | Minister & state ministers with bio paragraphs |
 | Gallery albums | Photo albums and images |
 | Documents | Climate & statistics PDF links |
 | Homepage carousel slides | Hero carousel tags, titles, images, links |
 | Affiliate links | Footer partner organizations |
 
-Re-seed default content from legacy files:
+Re-seed default content:
 
 ```bash
 python manage.py seed_site --clear
+```
+
+Sync news only from the official site:
+
+```bash
+python manage.py sync_official_news
 ```
 
 ## Project layout
@@ -47,8 +53,8 @@ python manage.py seed_site --clear
 MOPD/
 ├── config/           # Django settings & root URLs
 ├── website/          # Main app (views, models, templates)
-├── static/           # CSS, JS, images
-├── legacy_html/      # Original static HTML (reference)
+├── static/           # CSS, JS, images (picture/)
+├── media/            # Uploaded CMS images (gitignored)
 └── manage.py
 ```
 
