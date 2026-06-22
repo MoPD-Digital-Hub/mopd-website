@@ -9,6 +9,7 @@ from django.utils.text import slugify
 
 from website.media_utils import assign_image_from_url
 from website.models import NewsArticle
+from website.news_content import card_excerpt, filter_paragraphs, is_junk_paragraph
 
 BASE_URL = 'https://mopd.gov.et'
 
@@ -130,18 +131,19 @@ def scrape_article_detail(path):
         clean_text(p)
         for p in re.findall(r'<p[^>]*>(.*?)</p>', block, re.DOTALL | re.IGNORECASE)
     ]
+    title = clean_text(title_match.group(1)) if title_match else ''
+    published_at = parse_published_at(paragraphs)
     paragraphs = [
         p for p in paragraphs
-        if p and not set(p) <= {'='} and p.lower() != clean_text(title_match.group(1) if title_match else '').lower()
+        if p and p.lower() != title.lower() and not is_junk_paragraph(p)
     ]
-
-    title = clean_text(title_match.group(1)) if title_match else ''
+    usable = filter_paragraphs(paragraphs)
     return {
         'title_en': title,
         'image_src': urljoin(BASE_URL, image_match.group(1)) if image_match else '',
-        'body_en': '\n\n'.join(paragraphs),
-        'published_at': parse_published_at(paragraphs),
-        'excerpt_en': paragraphs[0][:300] if paragraphs else '',
+        'body_en': '\n\n'.join(usable if usable else paragraphs),
+        'published_at': published_at,
+        'excerpt_en': card_excerpt(title, '', usable, length=200),
     }
 
 

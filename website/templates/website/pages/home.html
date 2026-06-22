@@ -352,9 +352,7 @@
           <div class="news-card__body">
             <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>
             <h3><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></h3>
-            {% if article.excerpt_en %}
-            <p>{% include 'website/includes/bilingual.html' with en=article.excerpt_en am=article.excerpt_am %}</p>
-            {% endif %}
+            <p>{% include 'website/includes/bilingual.html' with en=article.card_excerpt_en am=article.card_excerpt_am %}</p>
             <a href="{% url 'news_detail' article.slug %}" class="news-card__link" data-i18n="news.link">Read More →</a>
           </div>
         </article>

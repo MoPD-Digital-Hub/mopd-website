@@ -28,21 +28,21 @@
       <div class="news-page__layout">
         <div class="news-page__main">
           <p class="news-page__empty" id="newsEmpty" hidden data-i18n="page.news.no_results">No news articles match your search.</p>
-          <div class="news__grid news-page__grid" id="newsGrid">
+          <div class="news-page__grid" id="newsGrid">
             {% for article in articles %}
             <article class="news-card reveal" data-category="{{ article.category }}" data-search="{{ article.search_keywords }} {{ article.title_en }} {{ article.title_am }} {{ article.excerpt_en }}">
-              {% if article.image %}
               <a href="{% url 'news_detail' article.slug %}" class="news-card__image">
-                <img src="{{ article.image.url }}" alt="" class="content-img">
-              </a>
-              {% endif %}
-              <div class="news-card__body">
+                {% if article.image %}
+                <img src="{{ article.image.url }}" alt="">
+                {% else %}
+                <div class="news-card__placeholder news-card__placeholder--{% cycle '1' '2' '3' %}" aria-hidden="true"></div>
+                {% endif %}
                 <span class="news-card__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
+              </a>
+              <div class="news-card__body">
                 <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>
                 <h3><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></h3>
-                {% if article.excerpt_en %}
-                <p>{% include 'website/includes/bilingual.html' with en=article.excerpt_en am=article.excerpt_am %}</p>
-                {% endif %}
+                <p class="news-card__excerpt">{% include 'website/includes/bilingual.html' with en=article.card_excerpt_en am=article.card_excerpt_am %}</p>
                 <a href="{% url 'news_detail' article.slug %}" class="news-card__link" data-i18n="news.link">Read More →</a>
               </div>
             </article>

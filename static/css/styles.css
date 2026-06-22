@@ -41,6 +41,7 @@
 
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --header-height: 84px;
+  --sticky-top: calc(var(--header-height) + 24px);
 }
 
 *, *::before, *::after {
@@ -1325,10 +1326,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   background: var(--green-600);
 }
 
-.news-page__grid {
-  grid-template-columns: repeat(2, 1fr);
-}
-
 .news-page__empty {
   padding: 48px 24px;
   text-align: center;
@@ -1343,6 +1340,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   display: flex;
   flex-direction: column;
   gap: 28px;
+  position: sticky;
+  top: var(--sticky-top);
+  align-self: start;
 }
 
 .news-sidebar__block {
@@ -1419,8 +1419,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .news-recent__title {
-  display: block;
-  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 0.85rem;
   font-weight: 500;
   line-height: 1.45;
   color: var(--gray-900);
@@ -2024,7 +2027,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .affiliate-logo { min-width: 160px; }
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .news-page__layout { grid-template-columns: 1fr; }
-  .news-page__grid { grid-template-columns: 1fr 1fr; }
+  .news-page #newsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .news-page__sidebar {
+    position: static;
+  }
 }
 
 /* Mobile / tablet navigation */
@@ -2149,7 +2155,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .values-grid { grid-template-columns: 1fr 1fr; }
   .services__grid { grid-template-columns: 1fr; }
   .news__grid { grid-template-columns: 1fr; }
-  .news-page__grid { grid-template-columns: 1fr; }
+  .news-page #newsGrid { grid-template-columns: 1fr; }
   .news-search { flex-direction: column; max-width: none; }
   .news-search__btn { width: 100%; }
   .news-card--featured { grid-column: span 1; }
@@ -2198,7 +2204,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .about__image-wrap,
 .development__figure,
-.news-card__image,
 .climate__photo,
 .digital__figure,
 .about__image-wrap--vision {
@@ -2206,6 +2211,107 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   min-height: 0;
   max-height: none;
   overflow: visible;
+}
+
+.news-card__image {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+/* News listing — constrain card images (overrides full-image rules above) */
+.news-page #newsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.news-page #newsGrid .news-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.news-page #newsGrid .news-card__image {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  padding: 0;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.news-page #newsGrid .news-card__image img,
+.news-page #newsGrid .news-card__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  max-height: none;
+}
+
+.news-page #newsGrid .news-card__placeholder {
+  object-fit: none;
+}
+
+.news-page #newsGrid .news-card__tag {
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  font-size: 0.62rem;
+}
+
+.news-page #newsGrid .news-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px;
+  min-height: 0;
+}
+
+.news-page #newsGrid .news-card__body time {
+  font-size: 0.72rem;
+}
+
+.news-page #newsGrid .news-card__body h3 {
+  font-size: 0.92rem;
+  margin: 6px 0 8px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.news-page #newsGrid .news-card__body h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.news-page #newsGrid .news-card__body h3 a:hover {
+  color: var(--green-700);
+}
+
+.news-page #newsGrid .news-card__excerpt {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  margin-bottom: 10px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.news-page #newsGrid .news-card__link {
+  margin-top: auto;
+  font-size: 0.78rem;
 }
 
 /* Amharic language */

@@ -3,6 +3,8 @@ import os
 from django.db import models
 from django.utils.text import slugify
 
+from website.news_content import card_excerpt, filter_paragraphs, is_junk_paragraph
+
 
 def _ext(filename):
     return os.path.splitext(filename)[1] or '.jpg'
@@ -127,10 +129,25 @@ class NewsArticle(models.Model):
         return [p.strip() for p in self.body_am.split('\n\n') if p.strip()]
 
     @property
+    def card_excerpt_en(self):
+        return card_excerpt(self.title_en, self.excerpt_en, filter_paragraphs(self.body_paragraphs_en()))
+
+    @property
+    def card_excerpt_am(self):
+        if self.excerpt_am or self.body_am:
+            return card_excerpt(
+                self.title_am or self.title_en,
+                self.excerpt_am,
+                filter_paragraphs(self.body_paragraphs_am()),
+            )
+        return self.card_excerpt_en
+
+    @property
     def body_pairs(self):
         en_parts = self.body_paragraphs_en()
         am_parts = self.body_paragraphs_am()
-        return [(e, am_parts[i] if i < len(am_parts) else e) for i, e in enumerate(en_parts)]
+        pairs = [(e, am_parts[i] if i < len(am_parts) else e) for i, e in enumerate(en_parts)]
+        return [(e, a) for e, a in pairs if not is_junk_paragraph(e)]
 
 
 class Leader(models.Model):
