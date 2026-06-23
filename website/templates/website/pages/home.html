@@ -306,23 +306,38 @@
           <figure class="development__figure">
             <img src="https://mopd.gov.et/static/images/ab2.jpg" alt="10-Year Development Plan" class="development__image content-img">
           </figure>
-          <div class="timeline">
-            <div class="timeline__item">
-              <span class="timeline__year">2021</span>
-              <span class="timeline__label" data-i18n="timeline.0">Plan Launch</span>
+          <div class="plan-timeline" aria-label="10-Year Development Plan timeline">
+            <div class="plan-timeline__summary">
+              <div class="plan-timeline__ring" style="--progress: 55" aria-hidden="true">
+                <span class="plan-timeline__ring-value">55%</span>
+              </div>
+              <p class="plan-timeline__status" data-i18n="timeline.status">55% of timeline elapsed</p>
             </div>
-            <div class="timeline__item">
-              <span class="timeline__year">2025</span>
-              <span class="timeline__label" data-i18n="timeline.1">Mid-term Review</span>
+
+            <div class="plan-timeline__track" aria-hidden="true">
+              <div class="plan-timeline__track-line">
+                <div class="plan-timeline__track-fill" style="width: 55%"></div>
+              </div>
+              <span class="plan-timeline__dot plan-timeline__dot--done" style="--pos: 0%"></span>
+              <span class="plan-timeline__dot plan-timeline__dot--done" style="--pos: 44.4%"></span>
+              <span class="plan-timeline__dot plan-timeline__dot--upcoming" style="--pos: 100%"></span>
+              <span class="plan-timeline__now" style="--pos: 55%" title="Current progress"></span>
             </div>
-            <div class="timeline__item">
-              <span class="timeline__year">2030</span>
-              <span class="timeline__label" data-i18n="timeline.2">Target Achievement</span>
-            </div>
-            <div class="timeline__progress">
-              <div class="timeline__bar" style="width: 55%"></div>
-            </div>
-            <span class="timeline__status" data-i18n="timeline.status">55% of timeline elapsed</span>
+
+            <ol class="plan-timeline__milestones">
+              <li class="plan-timeline__milestone plan-timeline__milestone--done">
+                <span class="plan-timeline__year">2021</span>
+                <span class="plan-timeline__label" data-i18n="timeline.0">Plan Launch</span>
+              </li>
+              <li class="plan-timeline__milestone plan-timeline__milestone--done">
+                <span class="plan-timeline__year">2025</span>
+                <span class="plan-timeline__label" data-i18n="timeline.1">Mid-term Review</span>
+              </li>
+              <li class="plan-timeline__milestone plan-timeline__milestone--upcoming">
+                <span class="plan-timeline__year">2030</span>
+                <span class="plan-timeline__label" data-i18n="timeline.2">Target Achievement</span>
+              </li>
+            </ol>
           </div>
         </div>
       </div>
