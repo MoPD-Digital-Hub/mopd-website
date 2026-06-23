@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
+from .climate_documents import climate_doc_sections
 from .models import CarouselSlide, Document, GalleryAlbum, Leader, NewsArticle
 
 PAGE_TEMPLATES = {
@@ -37,7 +38,11 @@ def _page_context(page_id):
     elif page_id == 'gallery':
         ctx['albums'] = GalleryAlbum.objects.filter(is_published=True).prefetch_related('images')
     elif page_id == 'climate-documents':
-        ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.CLIMATE)
+        climate_docs = Document.objects.filter(
+            is_published=True,
+            doc_type=Document.DocType.CLIMATE,
+        ).order_by('sort_order', 'id')
+        ctx['climate_doc_sections'] = climate_doc_sections(climate_docs)
     elif page_id == 'statistics-documents':
         ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.STATISTICS)
     return ctx

@@ -116,11 +116,11 @@ class GalleryAlbumAdmin(TabbedTranslationAdmin):
 
 @admin.register(Document)
 class DocumentAdmin(TabbedTranslationAdmin):
-    list_display = ('title_en', 'doc_type', 'sort_order', 'is_published')
+    list_display = ('title_en', 'doc_type', 'climate_category', 'sort_order', 'is_published')
     list_editable = ('sort_order', 'is_published')
-    list_filter = ('doc_type', 'is_published')
+    list_filter = ('doc_type', 'climate_category', 'is_published')
     search_fields = ('title_en', 'title_am', 'description_en')
-    fields = ('doc_type', 'title', 'description', 'file_url', 'sort_order', 'is_published')
+    fields = ('doc_type', 'climate_category', 'title', 'description', 'file_url', 'sort_order', 'is_published')
 
 
 @admin.register(CarouselSlide)

@@ -279,6 +279,11 @@ window.MOPD_I18N = {
 
     'page.climate_docs.title': 'የአየር ንብረት ተዛማጅ ሰነዶች',
     'page.climate_docs.desc': 'ከፕላንና ልማት ሚኒስቴር የታተሙ ኦፊሴላዊ የአየር ንብረት ፖሊሲ መዋቅሮች፣ ስትራቴጂዎች እና ብሔራዊ ሪፖርቶች።',
+    'page.climate_docs.cat.multilateral': 'ብዙ-ወገን ስምምነቶች',
+    'page.climate_docs.cat.strategies': 'ስትራቴጂዎች እና እቅዶች',
+    'page.climate_docs.cat.projects': 'ፕሮጀክቶች እና ፕሮግራሞች',
+    'page.climate_docs.cat.reports': 'ሪፖርቶች እና ማስረከቢያዎች',
+    'page.climate_docs.cat.cop28': 'COP28',
     'page.climate_docs.d0.title': 'በአዲስ አበባ ስለ አየር ንብረት ለውጥ ዋና ዋና መግለጫ እና ወደ እርምጃ ጥሪ',
     'page.climate_docs.d4.title': 'የኢትዮጵያ ካርቦን ገበያ ስትራቴጂ (2025)',
     'page.climate_docs.d4.desc': 'አየር ንብረት መታጠስ፣ አረንጓዴ እድገት እና ዘላቂ ልማትን ለመደገፍ የካርቦን ገበያዎችን ለመጠቀም የሀገሪቱ ካርታ።',

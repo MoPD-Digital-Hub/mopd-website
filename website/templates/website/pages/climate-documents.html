@@ -19,21 +19,65 @@
 
   <section class="page-body">
     <div class="container">
-      <ul class="doc-list">
-        {% for doc in documents %}
-        <li class="doc-list__item reveal">
-          <span class="doc-list__icon">PDF</span>
-          <div>
-            <h3><a href="{{ doc.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=doc.title_en am=doc.title_am %}</a></h3>
-            {% if doc.description_en %}
-            <p>{% include 'website/includes/bilingual.html' with en=doc.description_en am=doc.description_am %}</p>
-            {% endif %}
-          </div>
-        </li>
-        {% empty %}
-        <li>No documents published. Add climate documents in the <a href="/admin/website/document/">admin</a>.</li>
+      {% if climate_doc_sections %}
+      <div class="doc-tabs reveal">
+        {% for section in climate_doc_sections %}
+        <input
+          type="radio"
+          name="climate-doc-tab"
+          id="doc-cat-{{ section.code }}"
+          class="doc-tabs__radio"
+          {% if forloop.first %}checked{% endif %}
+        >
         {% endfor %}
-      </ul>
+
+        <div class="doc-tabs__nav" role="tablist" aria-label="Climate document categories">
+          {% for section in climate_doc_sections %}
+          <label
+            class="doc-tabs__btn"
+            for="doc-cat-{{ section.code }}"
+            id="doc-tab-btn-{{ section.code }}"
+            role="tab"
+          >
+            <span data-i18n="{{ section.i18n_key }}">{{ section.label }}</span>
+            <span class="doc-tabs__count">{{ section.documents|length }}</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        <div class="doc-tabs__panels">
+          {% for section in climate_doc_sections %}
+          <div
+            class="doc-tabs__panel"
+            role="tabpanel"
+            id="doc-tab-panel-{{ section.code }}"
+            aria-labelledby="doc-tab-btn-{{ section.code }}"
+            data-panel="{{ section.code }}"
+          >
+            <ul class="doc-list">
+              {% for doc in section.documents %}
+              <li class="doc-list__item">
+                <span class="doc-list__icon" aria-hidden="true">PDF</span>
+                <div>
+                  <h3>
+                    <a href="{{ doc.file_url }}" target="_blank" rel="noopener">
+                      {% include 'website/includes/bilingual.html' with en=doc.display_title_en am=doc.display_title_am %}
+                    </a>
+                  </h3>
+                  {% if doc.description_en or doc.description %}
+                  <p>{% include 'website/includes/bilingual.html' with en=doc.description_en|default:doc.description am=doc.description_am|default:doc.description_en|default:doc.description %}</p>
+                  {% endif %}
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <p>No documents published. Add climate documents in the <a href="/admin/website/document/">admin</a>.</p>
+      {% endif %}
     </div>
   </section>
 </main>

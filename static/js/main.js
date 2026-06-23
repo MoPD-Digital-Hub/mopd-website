@@ -7,6 +7,7 @@ function initMopdApp() {
   initMobileMenu();
   initCarousel();
   initAboutTabs();
+  initDocTabs();
   initScrollReveal();
   initCounters();
   initBackToTop();
@@ -136,6 +137,33 @@ function initAboutTabs() {
 
       tab.classList.add('active');
       document.getElementById(`panel-${target}`).classList.add('active');
+    });
+  });
+}
+
+/* Climate documents category tabs */
+function initDocTabs() {
+  const root = document.querySelector('[data-doc-tabs]');
+  if (!root) return;
+
+  const tabs = root.querySelectorAll('[data-doc-tab]');
+  const panels = root.querySelectorAll('[data-doc-panel]');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.docTab;
+
+      tabs.forEach((btn) => {
+        const isActive = btn.dataset.docTab === target;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      panels.forEach((panel) => {
+        const isActive = panel.dataset.docPanel === target;
+        panel.classList.toggle('active', isActive);
+        panel.hidden = !isActive;
+      });
     });
   });
 }

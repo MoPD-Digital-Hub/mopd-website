@@ -27,24 +27,25 @@ I18N_PATTERN = re.compile(
 )
 
 CLIMATE_DOCS = [
-    ('The Addis Ababa Declaration on Climate Change & Call to Action', 'https://mopd.gov.et/media/climate-documents/Climate_Change_Declaration.pdf'),
-    ('UNFCCC — United Nations Framework Convention on Climate Change', 'https://mopd.gov.et/media/climate-documents/UNFCCC_United_Nations_Framework_Convention_on_Climate_Change.pdf'),
-    ('Kyoto Protocol', 'https://mopd.gov.et/media/climate-documents/Kyoto_Protocol.pdf'),
-    ('Paris Agreement', 'https://mopd.gov.et/media/climate-documents/Paris_Agreement.pdf'),
-    ('Ethiopia Carbon Market Strategy (2025)', 'https://mopd.gov.et/media/climate-documents/Ethiopia_Carbon-Market-Strategy_2025.pdf'),
-    ('NAP-ETH 2019', 'https://mopd.gov.et/media/climate-documents/NAP-ETH_2019.pdf'),
-    ("Ethiopia's Updated NDC — July 2021 Submission", 'https://mopd.gov.et/media/climate-documents/Ethiopias_updated_NDC_JULY_2021_Submission_.pdf'),
-    ('Ethiopia Long-Term Low Emission and Climate Resilient Development Strategy', 'https://mopd.gov.et/media/climate-documents/ETHIOPIA__LONG_TERM_LOW_EMISSION_AND_CLIMATE_RESILIENT_DEVELOPMENT_STR_RGJXrpV.pdf'),
-    ('CRGE Sector-Region Mainstreaming Guideline — Jan 2019', 'https://mopd.gov.et/media/climate-documents/CRGE_Sector-Region_Mainstreaming_Guideline-Final_Jan_2019.pdf'),
-    ('CRGE Strategy 2011', 'https://mopd.gov.et/media/climate-documents/crge-strategy_2011.pdf'),
-    ('Profiles of GEF and GCF Projects in Ethiopia', 'https://mopd.gov.et/media/climate-documents/25.7.24._GEFGCF_projects_profile_in_Ethiopia_WlleSLV.pdf'),
-    ('List of Implemented Projects — CRGE Progress 2011–2019', 'https://mopd.gov.et/media/climate-documents/List_of_Implemented_Projects_CRGE_Progress_in_Implementing_the_CRGE_ND_UumPJzB.pdf'),
-    ('GEF & GCF Projects Profile in Ethiopia — July 2023', 'https://mopd.gov.et/media/climate-documents/GEFGCF_projects_profile_in_Ethiopia_July_2023.pdf'),
-    ('CRGE Strategy — Progress in Implementing 2011–2019', 'https://mopd.gov.et/media/climate-documents/CRGE_Strategy___Progress_in_Implementing_-_2011-2019__2020.pdf'),
-    ("Ethiopia's 2nd National Communication", 'https://mopd.gov.et/media/climate-documents/Ethiopias_2nd_National_Communication.pdf'),
-    ("Ethiopia's 3rd National Communication (2023)", 'https://mopd.gov.et/media/climate-documents/Ethiopias_3rd_National_Communication_2023.pdf'),
-    ("Ethiopia's Initial National Communication (2001)", 'https://mopd.gov.et/media/climate-documents/Ethiopias_Initial_National_Communication_2001.pdf'),
-    ('Side Events at the Ethiopian Pavilion on COP28', 'https://mopd.gov.et/media/climate-documents/List_of_Side_Events_Ethiopia_9_Nov_2023.pdf'),
+    ('The Addis Ababa Declaration on Climate Change & Call to Action', 'https://mopd.gov.et/media/climate-documents/Climate_Change_Declaration.pdf', 'multilateral'),
+    ('The Addis Ababa Declaration on Climate Change & Call to Action (African Leaders)', 'https://mopd.gov.et/media/climate-documents/45822-pr-African_Leaders_Addis_Ababa_Declaration_on_Climate_Change_and_hU6SHOs.pdf', 'multilateral'),
+    ('UNFCCC — United Nations Framework Convention on Climate Change', 'https://mopd.gov.et/media/climate-documents/UNFCCC_United_Nations_Framework_Convention_on_Climate_Change.pdf', 'multilateral'),
+    ('Kyoto Protocol', 'https://mopd.gov.et/media/climate-documents/Kyoto_Protocol.pdf', 'multilateral'),
+    ('Paris Agreement', 'https://mopd.gov.et/media/climate-documents/Paris_Agreement.pdf', 'multilateral'),
+    ('Ethiopia Carbon Market Strategy (2025)', 'https://mopd.gov.et/media/climate-documents/Ethiopia_Carbon-Market-Strategy_2025.pdf', 'strategies'),
+    ('NAP-ETH 2019', 'https://mopd.gov.et/media/climate-documents/NAP-ETH_2019.pdf', 'strategies'),
+    ("Ethiopia's Updated NDC — July 2021 Submission", 'https://mopd.gov.et/media/climate-documents/Ethiopias_updated_NDC_JULY_2021_Submission_.pdf', 'strategies'),
+    ('Ethiopia Long-Term Low Emission and Climate Resilient Development Strategy', 'https://mopd.gov.et/media/climate-documents/ETHIOPIA__LONG_TERM_LOW_EMISSION_AND_CLIMATE_RESILIENT_DEVELOPMENT_STR_RGJXrpV.pdf', 'strategies'),
+    ('CRGE Sector-Region Mainstreaming Guideline — Jan 2019', 'https://mopd.gov.et/media/climate-documents/CRGE_Sector-Region_Mainstreaming_Guideline-Final_Jan_2019.pdf', 'strategies'),
+    ('CRGE Strategy 2011', 'https://mopd.gov.et/media/climate-documents/crge-strategy_2011.pdf', 'strategies'),
+    ('Profiles of GEF and GCF Projects in Ethiopia', 'https://mopd.gov.et/media/climate-documents/25.7.24._GEFGCF_projects_profile_in_Ethiopia_WlleSLV.pdf', 'projects'),
+    ('List of Implemented Projects — CRGE Progress 2011–2019', 'https://mopd.gov.et/media/climate-documents/List_of_Implemented_Projects_CRGE_Progress_in_Implementing_the_CRGE_ND_UumPJzB.pdf', 'projects'),
+    ('GEF & GCF Projects Profile in Ethiopia — July 2023', 'https://mopd.gov.et/media/climate-documents/GEFGCF_projects_profile_in_Ethiopia_July_2023.pdf', 'projects'),
+    ('CRGE Strategy — Progress in Implementing 2011–2019', 'https://mopd.gov.et/media/climate-documents/CRGE_Strategy___Progress_in_Implementing_-_2011-2019__2020.pdf', 'reports'),
+    ("Ethiopia's 2nd National Communication", 'https://mopd.gov.et/media/climate-documents/Ethiopias_2nd_National_Communication.pdf', 'reports'),
+    ("Ethiopia's 3rd National Communication (2023)", 'https://mopd.gov.et/media/climate-documents/Ethiopias_3rd_National_Communication_2023.pdf', 'reports'),
+    ("Ethiopia's Initial National Communication (2001)", 'https://mopd.gov.et/media/climate-documents/Ethiopias_Initial_National_Communication_2001.pdf', 'reports'),
+    ('Side Events at the Ethiopian Pavilion on COP28', 'https://mopd.gov.et/media/climate-documents/List_of_Side_Events_Ethiopia_9_Nov_2023.pdf', 'cop28'),
 ]
 
 STATS_DOCS = [
@@ -295,12 +296,14 @@ class Command(BaseCommand):
         self.stdout.write('  Gallery album')
 
     def seed_documents(self):
-        for idx, (title, url) in enumerate(CLIMATE_DOCS):
+        for idx, (title, url, category) in enumerate(CLIMATE_DOCS):
             Document.objects.update_or_create(
                 doc_type=Document.DocType.CLIMATE,
                 file_url=url,
                 defaults={
                     'title_en': title,
+                    'title': title,
+                    'climate_category': category,
                     'sort_order': idx,
                     'is_published': True,
                 },

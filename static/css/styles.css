@@ -2722,6 +2722,124 @@ body.lang-am .stat__number {
   margin-top: 6px;
 }
 
+/* Climate document category tabs (CSS-only via radio inputs) */
+.doc-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: relative;
+}
+
+.doc-tabs__radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.doc-tabs__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(10, 61, 36, 0.1);
+  position: sticky;
+  top: calc(var(--header-height) + 8px);
+  z-index: 20;
+  background: var(--cream-50);
+  padding-top: 8px;
+}
+
+.doc-tabs__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 61, 36, 0.12);
+  background: var(--white);
+  color: var(--green-800);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.doc-tabs__btn:hover {
+  border-color: rgba(10, 61, 36, 0.22);
+  background: var(--green-50);
+}
+
+.doc-tabs__count {
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(10, 61, 36, 0.08);
+  color: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doc-tabs__panel {
+  display: none;
+}
+
+.doc-tabs__radio#doc-cat-multilateral:checked ~ .doc-tabs__panels .doc-tabs__panel[data-panel="multilateral"],
+.doc-tabs__radio#doc-cat-strategies:checked ~ .doc-tabs__panels .doc-tabs__panel[data-panel="strategies"],
+.doc-tabs__radio#doc-cat-projects:checked ~ .doc-tabs__panels .doc-tabs__panel[data-panel="projects"],
+.doc-tabs__radio#doc-cat-reports:checked ~ .doc-tabs__panels .doc-tabs__panel[data-panel="reports"],
+.doc-tabs__radio#doc-cat-cop28:checked ~ .doc-tabs__panels .doc-tabs__panel[data-panel="cop28"] {
+  display: block;
+}
+
+.doc-tabs__radio#doc-cat-multilateral:checked ~ .doc-tabs__nav label[for="doc-cat-multilateral"],
+.doc-tabs__radio#doc-cat-strategies:checked ~ .doc-tabs__nav label[for="doc-cat-strategies"],
+.doc-tabs__radio#doc-cat-projects:checked ~ .doc-tabs__nav label[for="doc-cat-projects"],
+.doc-tabs__radio#doc-cat-reports:checked ~ .doc-tabs__nav label[for="doc-cat-reports"],
+.doc-tabs__radio#doc-cat-cop28:checked ~ .doc-tabs__nav label[for="doc-cat-cop28"] {
+  background: var(--green-700);
+  border-color: var(--green-700);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.doc-tabs__radio#doc-cat-multilateral:checked ~ .doc-tabs__nav label[for="doc-cat-multilateral"] .doc-tabs__count,
+.doc-tabs__radio#doc-cat-strategies:checked ~ .doc-tabs__nav label[for="doc-cat-strategies"] .doc-tabs__count,
+.doc-tabs__radio#doc-cat-projects:checked ~ .doc-tabs__nav label[for="doc-cat-projects"] .doc-tabs__count,
+.doc-tabs__radio#doc-cat-reports:checked ~ .doc-tabs__nav label[for="doc-cat-reports"] .doc-tabs__count,
+.doc-tabs__radio#doc-cat-cop28:checked ~ .doc-tabs__nav label[for="doc-cat-cop28"] .doc-tabs__count {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 768px) {
+  .doc-tabs__nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+  }
+
+  .doc-tabs__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .doc-tabs__btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
 /* Coming soon */
 .coming-soon {
   text-align: center;

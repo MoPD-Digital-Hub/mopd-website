@@ -215,7 +215,20 @@ class Document(models.Model):
         CLIMATE = 'climate', 'Climate documents'
         STATISTICS = 'statistics', 'Statistics documents'
 
+    class ClimateCategory(models.TextChoices):
+        MULTILATERAL = 'multilateral', 'Multilateral Agreements'
+        STRATEGIES = 'strategies', 'Strategies & Plans'
+        PROJECTS = 'projects', 'Projects & Programs'
+        REPORTS = 'reports', 'Reports and Submissions'
+        COP28 = 'cop28', 'COP28'
+
     doc_type = models.CharField(max_length=20, choices=DocType.choices)
+    climate_category = models.CharField(
+        max_length=20,
+        choices=ClimateCategory.choices,
+        blank=True,
+        help_text='Used for climate documents only (tab grouping on the climate documents page).',
+    )
     title = models.CharField(max_length=300)
     description = models.TextField(blank=True)
     file_url = models.URLField()
@@ -223,12 +236,20 @@ class Document(models.Model):
     is_published = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ['doc_type', 'sort_order', 'title_en']
+        ordering = ['doc_type', 'sort_order', 'title']
         verbose_name = 'Document'
         verbose_name_plural = 'Documents (climate & statistics)'
 
     def __str__(self):
-        return f'{self.get_doc_type_display()}: {self.title_en}'
+        return f'{self.get_doc_type_display()}: {self.display_title_en}'
+
+    @property
+    def display_title_en(self):
+        return self.title_en or self.__dict__.get('title') or ''
+
+    @property
+    def display_title_am(self):
+        return self.title_am or self.display_title_en
 
 
 class CarouselSlide(models.Model):
