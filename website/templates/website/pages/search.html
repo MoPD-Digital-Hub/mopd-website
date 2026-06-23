@@ -1,0 +1,71 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Search — MoPD{% endblock %}
+{% block page_id %}search{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="page.search.title">Search</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="page.search.title">Search</h1>
+      <p class="page-hero__desc" data-i18n="page.search.desc">Search news, documents, and site content.</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      <form class="site-search reveal" action="{% url 'search' %}" method="get" role="search">
+        <label class="visually-hidden" for="siteSearchInput" data-i18n="page.search.label">Search the site</label>
+        <input type="search" id="siteSearchInput" name="q" class="site-search__input" value="{{ query }}" placeholder="Search news, documents…" data-i18n-placeholder="page.search.placeholder" required minlength="2">
+        <button type="submit" class="btn btn--primary" data-i18n="page.search.btn">Search</button>
+      </form>
+
+      {% if query %}
+      <p class="site-search__summary reveal" data-i18n="page.search.results">Found {{ total }} result{{ total|pluralize }} for “{{ query }}”.</p>
+
+      {% if results.news %}
+      <div class="site-search__section reveal">
+        <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.news">News</h2>
+        <ul class="site-search__list">
+          {% for article in results.news %}
+          <li><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if results.documents %}
+      <div class="site-search__section reveal">
+        <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.documents">Documents</h2>
+        <ul class="site-search__list">
+          {% for doc in results.documents %}
+          <li><a href="{{ doc.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=doc.display_title_en am=doc.display_title_am %}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if results.pages %}
+      <div class="site-search__section reveal">
+        <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.pages">Pages</h2>
+        <ul class="site-search__list">
+          {% for page in results.pages %}
+          <li><span class="site-search__key">{{ page.key }}</span> — {% include 'website/includes/bilingual.html' with en=page.text_en am=page.text_am %}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if not total %}
+      <p class="site-search__empty reveal" data-i18n="page.search.empty">No results found. Try different keywords.</p>
+      {% endif %}
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

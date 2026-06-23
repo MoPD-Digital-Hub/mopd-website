@@ -52,6 +52,17 @@
             </article>
             {% endfor %}
           </div>
+          {% if page_obj.has_other_pages %}
+          <nav class="pagination reveal" aria-label="News pages">
+            {% if page_obj.has_previous %}
+            <a class="pagination__link" href="?page={{ page_obj.previous_page_number }}">← Previous</a>
+            {% endif %}
+            <span class="pagination__status">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a class="pagination__link" href="?page={{ page_obj.next_page_number }}">Next →</a>
+            {% endif %}
+          </nav>
+          {% endif %}
         </div>
 
         <aside class="news-page__sidebar" aria-label="News filters and recent posts">

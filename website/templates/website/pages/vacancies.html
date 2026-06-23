@@ -1,0 +1,54 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Vacancies — MoPD{% endblock %}
+{% block page_id %}vacancies{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="page.vacancies.title">Vacancies</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="page.vacancies.title">Vacancies</h1>
+      <p class="page-hero__desc" data-i18n="page.vacancies.desc">Current job openings at the Ministry of Planning and Development.</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      {% if vacancies %}
+      <ul class="doc-list">
+        {% for vacancy in vacancies %}
+        <li class="doc-list__item reveal">
+          <span class="doc-list__icon" aria-hidden="true">JOB</span>
+          <div>
+            <h3>
+              {% if vacancy.file_url %}
+              <a href="{{ vacancy.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=vacancy.title_en am=vacancy.title_am %}</a>
+              {% else %}
+              {% include 'website/includes/bilingual.html' with en=vacancy.title_en am=vacancy.title_am %}
+              {% endif %}
+            </h3>
+            <p class="doc-list__meta">
+              {% if vacancy.reference %}<span>{{ vacancy.reference }}</span> · {% endif %}
+              {% if vacancy.location_en or vacancy.location_am %}<span>{% include 'website/includes/bilingual.html' with en=vacancy.location_en am=vacancy.location_am %}</span> · {% endif %}
+              <time datetime="{{ vacancy.published_at|date:'Y-m-d' }}">{{ vacancy.published_at|date:"F j, Y" }}</time>
+              {% if vacancy.deadline %} · <span data-i18n="page.vacancies.deadline">Deadline</span>: {{ vacancy.deadline|date:"F j, Y" }}{% endif %}
+            </p>
+            {% if vacancy.description_en or vacancy.description_am %}
+            <p>{% include 'website/includes/bilingual.html' with en=vacancy.description_en am=vacancy.description_am %}</p>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p data-i18n="page.vacancies.empty">No vacancies published at this time.</p>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

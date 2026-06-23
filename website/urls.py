@@ -2,15 +2,24 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 from . import views
+from .feeds import LatestNewsFeed
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('about/', views.page, {'page_id': 'about'}, name='about'),
-    path('contact/', views.page, {'page_id': 'contact'}, name='contact'),
+    path('contact/', views.contact, name='contact'),
+    path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
+    path('search/', views.site_search, name='search'),
+    path('feed/news/', LatestNewsFeed(), name='news_feed'),
+    path('robots.txt', views.robots_txt, name='robots'),
     path('leadership/', views.page, {'page_id': 'leadership'}, name='leadership'),
     path('leadership/<slug:slug>/', views.leader_detail, name='leader_detail'),
     path('gallery/', views.page, {'page_id': 'gallery'}, name='gallery'),
-    path('press-release/', views.page, {'page_id': 'press-release'}, name='press'),
+    path('press-release/', views.press_list, name='press'),
+    path('procurement/', views.page, {'page_id': 'procurement'}, name='procurement'),
+    path('vacancies/', views.page, {'page_id': 'vacancies'}, name='vacancies'),
+    path('privacy/', views.page, {'page_id': 'privacy'}, name='privacy'),
+    path('accessibility/', views.page, {'page_id': 'accessibility'}, name='accessibility'),
     path('climate/', views.page, {'page_id': 'about-climate'}, name='climate'),
     path('climate/documents/', views.page, {'page_id': 'climate-documents'}, name='climate_docs'),
     path('green-technology/', views.page, {'page_id': 'green-technology'}, name='green_tech'),

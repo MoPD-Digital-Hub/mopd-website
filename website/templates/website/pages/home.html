@@ -433,7 +433,7 @@
           </div>
         </article>
         {% empty %}
-        <p>No leadership profiles published yet. Add them in the <a href="/admin/website/leader/">admin</a>.</p>
+        <p>No leadership profiles published yet. Add them in the <a href="{% url 'admin:website_leader_changelist' %}">admin</a>.</p>
         {% endfor %}
       </div>
     </div>
@@ -504,10 +504,20 @@
           <span class="section-tag" data-i18n="contact.tag">Stay Connected</span>
           <h2 class="section-title" data-i18n="contact.title">Subscribe to Our Newsletter</h2>
           <p data-i18n="contact.desc">Get the latest updates on national development initiatives, policy changes, and ministry announcements.</p>
-          <form class="newsletter__form" id="newsletterForm">
-            <input type="email" placeholder="Enter your email address" required aria-label="Email address" data-i18n-placeholder="contact.email_placeholder" data-i18n-aria="aria.email">
+          <form class="newsletter__form" id="newsletterForm" method="post" action="{% url 'newsletter_subscribe' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <input type="hidden" name="source" value="homepage">
+            <input type="email" name="email" placeholder="Enter your email address" required aria-label="Email address" data-i18n-placeholder="contact.email_placeholder" data-i18n-aria="aria.email">
             <button type="submit" class="btn btn--primary" data-i18n="contact.subscribe">Subscribe</button>
           </form>
+          {% if messages %}
+          <div class="newsletter__alerts">
+            {% for message in messages %}
+            <p class="contact-form__alert contact-form__alert--{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+          </div>
+          {% endif %}
           <div class="contact__map">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2288.2357508217674!2d38.76139936421245!3d9.045011320667369!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b8f0ed6252815%3A0x9a386a8ea01f93d3!2sMinistry%20of%20planning%20and%20development(MoPD)!5e0!3m2!1sen!2set!4v1688054937756!5m2!1sen!2set"

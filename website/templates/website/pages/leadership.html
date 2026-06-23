@@ -36,7 +36,7 @@
           </div>
         </article>
         {% empty %}
-        <p>No leadership profiles published yet. Add them in the <a href="/admin/website/leader/">admin</a>.</p>
+        <p>No leadership profiles published yet. Add them in the <a href="{% url 'admin:website_leader_changelist' %}">admin</a>.</p>
         {% endfor %}
       </div>
     </div>

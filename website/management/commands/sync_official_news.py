@@ -190,6 +190,10 @@ class Command(BaseCommand):
                     article.slug = slug
 
             article.title_en = title[:500]
+            if not article.title_am:
+                article.title_am = article.title_en[:500]
+            if not article.excerpt_am and article.excerpt_en:
+                article.excerpt_am = article.excerpt_en[:300]
             article.category = listing.get('category', article.category or 'others')
             article.tag_en = article.get_category_display()
             article.body_en = (detail or {}).get('body_en', article.body_en or title)

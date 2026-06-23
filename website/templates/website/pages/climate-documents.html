@@ -76,7 +76,7 @@
         </div>
       </div>
       {% else %}
-      <p>No documents published. Add climate documents in the <a href="/admin/website/document/">admin</a>.</p>
+      <p>No documents published. Add climate documents in the <a href="{% url 'admin:website_document_changelist' %}">admin</a>.</p>
       {% endif %}
     </div>
   </section>

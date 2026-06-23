@@ -25,6 +25,8 @@
           <a href="{% url 'stats' %}" class="nav__link{% if current_page|nav_active:'data' %} active{% endif %}" data-i18n="nav.data">Data &amp; Links</a>
           <ul class="nav__submenu">
             <li><a href="{% url 'stats' %}" data-i18n="nav.sub.stats">Statistics Documents</a></li>
+            <li><a href="{% url 'procurement' %}" data-i18n="nav.sub.procurement">Procurement</a></li>
+            <li><a href="{% url 'vacancies' %}" data-i18n="nav.sub.vacancies">Vacancies</a></li>
             <li><a href="https://national-parameters.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.national_params">National Parameters</a></li>
             <li><a href="https://sdg.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.sdg">SDG Goal-Tracker</a></li>
           </ul>
@@ -39,6 +41,11 @@
           </ul>
         </li>
         <li><a href="{% url 'devplan' %}" class="nav__link{% if current_page == 'devplan' %} active{% endif %}" data-i18n="nav.devplan">Development Planning</a></li>
+        <li>
+          <a href="{% url 'search' %}" class="nav__link nav__link--search{% if current_page == 'search' %} active{% endif %}" aria-label="Search" data-i18n-aria="page.search.label">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </a>
+        </li>
         <li><a href="{% url 'contact' %}" class="nav__link nav__link--cta{% if current_page == 'contact' %} active{% endif %}" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
     </nav>

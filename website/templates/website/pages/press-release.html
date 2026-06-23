@@ -1,33 +1,63 @@
 {% extends 'website/base.html' %}
-{% load static %}
+
 {% block title %}Press Release — MoPD{% endblock %}
-{% block meta_description %}Official press releases.{% endblock %}
 {% block page_id %}press{% endblock %}
 
 {% block content %}
 <main class="page">
-<section class="page-hero">
-      <div class="container">
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
-          <span>/</span>
-          <span data-i18n="nav.sub.press">Press Release</span>
-        </nav>
-        <h1 class="page-hero__title" data-i18n="nav.sub.press">Press Release</h1>
-      </div>
-    </section>
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="nav.sub.press">Press Release</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="nav.sub.press">Press Release</h1>
+      <p class="page-hero__desc" data-i18n="page.press.desc">Official press releases and media statements from MoPD.</p>
+    </div>
+  </section>
 
-    <section class="page-body">
-      <div class="container">
-        <div class="coming-soon reveal">
-          <div class="coming-soon__icon" aria-hidden="true">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+  <section class="page-body news-page">
+    <div class="container">
+      {% if articles %}
+      <div class="news-page__grid">
+        {% for article in articles %}
+        <article class="news-card reveal">
+          <a href="{% url 'news_detail' article.slug %}" class="news-card__image">
+            {% if article.image %}
+            <img src="{{ article.image.url }}" alt="">
+            {% else %}
+            <div class="news-card__placeholder news-card__placeholder--{% cycle '1' '2' '3' %}" aria-hidden="true"></div>
+            {% endif %}
+            <span class="news-card__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
+          </a>
+          <div class="news-card__body">
+            <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>
+            <h3><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></h3>
+            <p class="news-card__excerpt">{% include 'website/includes/bilingual.html' with en=article.card_excerpt_en am=article.card_excerpt_am %}</p>
+            <a href="{% url 'news_detail' article.slug %}" class="news-card__link" data-i18n="news.link">Read More →</a>
           </div>
-          <h2 class="coming-soon__title" data-i18n="page.coming.title">Coming Soon</h2>
-          <p class="coming-soon__desc" data-i18n="page.press.desc">Official press releases will be published here. In the meantime, browse the latest ministry news and announcements.</p>
-          <a href="{% url 'news' %}" class="btn btn--primary" data-i18n="nav.sub.news">View News</a>
-        </div>
+        </article>
+        {% endfor %}
       </div>
-    </section>
+
+      {% if page_obj.has_other_pages %}
+      <nav class="pagination reveal" aria-label="Press release pages">
+        {% if page_obj.has_previous %}
+        <a class="pagination__link" href="?page={{ page_obj.previous_page_number }}">← Previous</a>
+        {% endif %}
+        <span class="pagination__status">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a class="pagination__link" href="?page={{ page_obj.next_page_number }}">Next →</a>
+        {% endif %}
+      </nav>
+      {% endif %}
+      {% else %}
+      <div class="coming-soon reveal">
+        <p data-i18n="page.press.empty">No press releases published yet. Browse the latest <a href="{% url 'news' %}">news</a> for ministry updates.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
 </main>
 {% endblock %}

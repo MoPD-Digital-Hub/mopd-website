@@ -6,13 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Ministry of Planning and Development — Ethiopia{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}Official website of the Ministry of Planning and Development (MoPD), Ethiopia.{% endblock %}">
+  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <link rel="alternate" hreflang="en" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}?lang=en">
+  <link rel="alternate" hreflang="am" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}?lang=am">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% block og_title %}Ministry of Planning and Development — Ethiopia{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Official website of the Ministry of Planning and Development (MoPD), Ethiopia.{% endblock %}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="MoPD News" href="{% url 'news_feed' %}">
   <link rel="icon" href="{% static 'picture/favicon-32.png' %}" type="image/png" sizes="32x32">
   <link rel="icon" href="{% static 'picture/favicon.png' %}" type="image/png" sizes="any">
   <link rel="apple-touch-icon" href="{% static 'picture/apple-touch-icon.png' %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Noto+Sans+Ethiopic:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=29">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=35">
   {% block extra_head %}{% endblock %}
   <script>window.MOPD_I18N_DB = {{ translations_json|safe }};</script>
   <script>window.MOPD_LANGUAGES = {{ site_languages_json|safe }};</script>

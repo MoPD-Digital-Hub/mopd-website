@@ -3,14 +3,17 @@ from modeltranslation.translator import TranslationOptions, translator
 from .models import (
     AffiliateLink,
     CarouselSlide,
+    Department,
     Document,
     GalleryAlbum,
     GalleryImage,
     Leader,
     LeaderParagraph,
     NewsArticle,
+    ProcurementNotice,
     SiteSettings,
     SiteTranslation,
+    Vacancy,
 )
 
 
@@ -54,6 +57,18 @@ class AffiliateLinkTranslationOptions(TranslationOptions):
     fields = ('name',)
 
 
+class ProcurementNoticeTranslationOptions(TranslationOptions):
+    fields = ('title', 'description')
+
+
+class DepartmentTranslationOptions(TranslationOptions):
+    fields = ('name', 'description')
+
+
+class VacancyTranslationOptions(TranslationOptions):
+    fields = ('title', 'description', 'location')
+
+
 translator.register(SiteSettings, SiteSettingsTranslationOptions)
 translator.register(SiteTranslation, SiteTranslationTranslationOptions)
 translator.register(NewsArticle, NewsArticleTranslationOptions)
@@ -64,3 +79,6 @@ translator.register(GalleryImage, GalleryImageTranslationOptions)
 translator.register(Document, DocumentTranslationOptions)
 translator.register(CarouselSlide, CarouselSlideTranslationOptions)
 translator.register(AffiliateLink, AffiliateLinkTranslationOptions)
+translator.register(ProcurementNotice, ProcurementNoticeTranslationOptions)
+translator.register(Department, DepartmentTranslationOptions)
+translator.register(Vacancy, VacancyTranslationOptions)

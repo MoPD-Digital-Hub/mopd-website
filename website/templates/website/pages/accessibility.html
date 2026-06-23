@@ -1,0 +1,26 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Accessibility — MoPD{% endblock %}
+{% block page_id %}accessibility{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="page.accessibility.title">Accessibility</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="page.accessibility.title">Accessibility Statement</h1>
+    </div>
+  </section>
+  <section class="page-body">
+    <div class="container prose reveal">
+      <p data-i18n="page.accessibility.p1">MoPD is committed to making this website accessible to all users, including people with disabilities.</p>
+      <p data-i18n="page.accessibility.p2">We aim to follow recognized web accessibility guidelines, provide keyboard navigation, readable contrast, and bilingual content in English and Amharic.</p>
+      <p data-i18n="page.accessibility.p3">If you encounter barriers using this site, please contact info@mopd.gov.et so we can improve your experience.</p>
+    </div>
+  </section>
+</main>
+{% endblock %}

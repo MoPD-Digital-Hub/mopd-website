@@ -114,10 +114,36 @@
                 <h4 data-i18n="value.5.title">Excellence</h4>
                 <p data-i18n="value.5.desc">Setting benchmarks for public service</p>
               </div>
-            </div>
           </div>
         </div>
       </div>
-    </section>
+
+      {% if departments %}
+      <section class="organogram reveal" style="margin-top:64px;">
+        <h2 class="section-title" data-i18n="page.about.organogram">Organizational Structure</h2>
+        <p class="organogram__lead" data-i18n="page.about.organogram_desc">Core directorates and units within the Ministry of Planning and Development.</p>
+        <div class="organogram__grid">
+          {% for dept in departments %}
+          <div class="organogram__card">
+            <h3>{% include 'website/includes/bilingual.html' with en=dept.name_en am=dept.name_am %}</h3>
+            {% if dept.description_en or dept.description_am %}
+            <p>{% include 'website/includes/bilingual.html' with en=dept.description_en am=dept.description_am %}</p>
+            {% endif %}
+            {% if dept.children.all %}
+            <ul class="organogram__children">
+              {% for child in dept.children.all %}
+              {% if child.is_published %}
+              <li>{% include 'website/includes/bilingual.html' with en=child.name_en am=child.name_am %}</li>
+              {% endif %}
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+    </div>
+  </section>
 </main>
 {% endblock %}

@@ -11,12 +11,14 @@ from website.media_utils import assign_image_from_url
 from website.models import (
     AffiliateLink,
     CarouselSlide,
+    Department,
     Document,
     GalleryAlbum,
     GalleryImage,
     Leader,
     LeaderParagraph,
     NewsArticle,
+    ProcurementNotice,
     SiteSettings,
     SiteTranslation,
 )
@@ -199,6 +201,8 @@ class Command(BaseCommand):
         self.seed_leaders(en, am)
         self.seed_gallery(en, am)
         self.seed_documents()
+        self.seed_departments()
+        self.seed_procurement()
         self.seed_carousel(en, am)
         self.seed_affiliates(en, am)
 
@@ -319,6 +323,46 @@ class Command(BaseCommand):
                 },
             )
         self.stdout.write(f'  Documents ({len(CLIMATE_DOCS)} climate, {len(STATS_DOCS)} statistics)')
+
+    def seed_departments(self):
+        if Department.objects.exists():
+            self.stdout.write('  Departments (skipped — already exist)')
+            return
+        core, _ = Department.objects.get_or_create(
+            name_en='Office of the Minister',
+            defaults={'name': 'Office of the Minister', 'sort_order': 0, 'is_published': True},
+        )
+        units = [
+            ('Macroeconomic Planning Directorate', 'National macro planning and policy coordination.'),
+            ('Sectoral Planning Directorate', 'Sector development plans and program alignment.'),
+            ('Monitoring & Evaluation Directorate', 'Project and program performance tracking.'),
+            ('Climate Change & Green Economy Directorate', 'Climate policy integration and CRGE implementation.'),
+        ]
+        for idx, (name, desc) in enumerate(units, start=1):
+            Department.objects.create(
+                name=name,
+                name_en=name,
+                description=desc,
+                description_en=desc,
+                parent=core,
+                sort_order=idx,
+                is_published=True,
+            )
+        self.stdout.write(f'  Departments ({1 + len(units)} units)')
+
+    def seed_procurement(self):
+        if ProcurementNotice.objects.exists():
+            self.stdout.write('  Procurement (skipped — already exist)')
+            return
+        ProcurementNotice.objects.create(
+            title='Public Procurement Notice — Planning Systems Upgrade',
+            title_en='Public Procurement Notice — Planning Systems Upgrade',
+            reference='MoPD/PROC/2025/01',
+            description_en='Invitation for qualified suppliers to participate in the national planning information systems upgrade.',
+            published_at=date(2025, 3, 15),
+            is_published=True,
+        )
+        self.stdout.write('  Procurement (1 notice)')
 
     def seed_carousel(self, en, am):
         slides = [

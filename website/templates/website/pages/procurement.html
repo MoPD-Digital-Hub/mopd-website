@@ -1,0 +1,52 @@
+{% extends 'website/base.html' %}
+
+{% block title %}Procurement — MoPD{% endblock %}
+{% block page_id %}procurement{% endblock %}
+
+{% block content %}
+<main class="page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="page.procurement.title">Procurement</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="page.procurement.title">Procurement &amp; Tenders</h1>
+      <p class="page-hero__desc" data-i18n="page.procurement.desc">Public procurement notices and tender documents published by MoPD.</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      {% if notices %}
+      <ul class="doc-list">
+        {% for notice in notices %}
+        <li class="doc-list__item reveal">
+          <span class="doc-list__icon" aria-hidden="true">PDF</span>
+          <div>
+            <h3>
+              {% if notice.file_url %}
+              <a href="{{ notice.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=notice.title_en am=notice.title_am %}</a>
+              {% else %}
+              {% include 'website/includes/bilingual.html' with en=notice.title_en am=notice.title_am %}
+              {% endif %}
+            </h3>
+            <p class="doc-list__meta">
+              {% if notice.reference %}<span>{{ notice.reference }}</span> · {% endif %}
+              <time datetime="{{ notice.published_at|date:'Y-m-d' }}">{{ notice.published_at|date:"F j, Y" }}</time>
+            </p>
+            {% if notice.description_en or notice.description_am %}
+            <p>{% include 'website/includes/bilingual.html' with en=notice.description_en am=notice.description_am %}</p>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p data-i18n="page.procurement.empty">No procurement notices published yet.</p>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

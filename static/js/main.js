@@ -11,8 +11,6 @@ function initMopdApp() {
   initScrollReveal();
   initCounters();
   initBackToTop();
-  initNewsletter();
-  initContactForm();
   initGalleryLightbox();
   initSmoothNav();
   initNewsPage();
@@ -245,37 +243,6 @@ function initBackToTop() {
 }
 
 /* Newsletter form */
-function initNewsletter() {
-  const form = document.getElementById('newsletterForm');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const input = form.querySelector('input');
-    const btn = form.querySelector('button');
-    const isAm = getMopdLanguage() === 'am';
-    const originalText = btn.dataset.i18nDefault || btn.textContent;
-
-    btn.textContent = isAm
-      ? (window.MOPD_I18N?.am?.['contact.subscribed'] || 'ተመዝግበዋል!')
-      : (btn.dataset.i18nDefault || 'Subscribed!');
-    btn.style.background = 'var(--green-500)';
-    input.value = '';
-
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.style.background = '';
-    }, 3000);
-  });
-
-  window.addEventListener('mopd:language', () => {
-    const btn = form.querySelector('button[data-i18n]');
-    if (btn && !btn.dataset.i18nDefault) {
-      btn.dataset.i18nDefault = btn.textContent;
-    }
-  });
-}
-
 /* Active nav link on scroll */
 function initSmoothNav() {
   const sections = document.querySelectorAll('section[id]');
@@ -308,28 +275,6 @@ function initLanguageSwitch() {
     btn.addEventListener('click', () => {
       applyMopdLanguage(btn.dataset.lang);
     });
-  });
-}
-
-/* Contact page form */
-function initContactForm() {
-  const form = document.getElementById('contactForm');
-  if (!form) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    const isAm = getMopdLanguage() === 'am';
-    const original = btn.dataset.i18nDefault || btn.textContent;
-
-    btn.textContent = isAm ? 'ተልኳል!' : 'Message Sent!';
-    btn.disabled = true;
-    form.reset();
-
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.disabled = false;
-    }, 3000);
   });
 }
 

@@ -32,7 +32,7 @@
         </div>
       </section>
       {% empty %}
-      <p>No gallery albums yet. Add them in the <a href="/admin/website/galleryalbum/">admin</a>.</p>
+      <p>No gallery albums yet. Add them in the <a href="{% url 'admin:website_galleryalbum_changelist' %}">admin</a>.</p>
       {% endfor %}
     </div>
   </section>

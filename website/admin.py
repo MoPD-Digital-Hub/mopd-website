@@ -5,14 +5,19 @@ from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInl
 from .models import (
     AffiliateLink,
     CarouselSlide,
+    ContactSubmission,
+    Department,
     Document,
     GalleryAlbum,
     GalleryImage,
     Leader,
     LeaderParagraph,
+    NewsletterSubscriber,
     NewsArticle,
+    ProcurementNotice,
     SiteSettings,
     SiteTranslation,
+    Vacancy,
 )
 
 
@@ -159,14 +164,14 @@ class AffiliateLinkAdmin(TabbedTranslationAdmin):
 
 @admin.register(NewsArticle)
 class NewsArticleAdmin(TabbedTranslationAdmin):
-    list_display = ('title_en', 'category', 'published_at', 'is_published', 'is_featured_home', 'thumb')
+    list_display = ('title_en', 'article_type', 'category', 'published_at', 'is_published', 'is_featured_home', 'thumb')
     list_editable = ('is_published', 'is_featured_home')
-    list_filter = ('category', 'is_published', 'published_at')
+    list_filter = ('article_type', 'category', 'is_published', 'published_at')
     search_fields = ('title_en', 'title_am', 'slug', 'search_keywords')
     prepopulated_fields = {'slug': ('title_en',)}
     date_hierarchy = 'published_at'
     fieldsets = (
-        (None, {'fields': ('slug', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords')}),
+        (None, {'fields': ('slug', 'article_type', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords')}),
         ('Tags', {'fields': ('tag',)}),
         ('Article content', {'fields': ('title', 'excerpt', 'body')}),
         ('Homepage', {
@@ -183,6 +188,57 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
     @admin.display(description='Image')
     def thumb(self, obj):
         return _image_thumb(obj.image, 36)
+
+
+@admin.register(ContactSubmission)
+class ContactSubmissionAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'name', 'email', 'created_at', 'is_read')
+    list_filter = ('is_read', 'created_at')
+    search_fields = ('name', 'email', 'subject', 'details', 'phone')
+    readonly_fields = ('name', 'email', 'phone', 'subject', 'details', 'created_at')
+    list_editable = ('is_read',)
+    ordering = ('-created_at',)
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(NewsletterSubscriber)
+class NewsletterSubscriberAdmin(admin.ModelAdmin):
+    list_display = ('email', 'source', 'subscribed_at', 'is_active')
+    list_filter = ('is_active', 'source', 'subscribed_at')
+    search_fields = ('email',)
+    ordering = ('-subscribed_at',)
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(ProcurementNotice)
+class ProcurementNoticeAdmin(TabbedTranslationAdmin):
+    list_display = ('title_en', 'reference', 'published_at', 'sort_order', 'is_published')
+    list_editable = ('sort_order', 'is_published')
+    list_filter = ('is_published', 'published_at')
+    search_fields = ('title_en', 'reference', 'description_en')
+    fields = ('title', 'reference', 'description', 'file_url', 'published_at', 'sort_order', 'is_published')
+
+
+@admin.register(Department)
+class DepartmentAdmin(TabbedTranslationAdmin):
+    list_display = ('name_en', 'parent', 'sort_order', 'is_published')
+    list_editable = ('sort_order', 'is_published')
+    list_filter = ('is_published',)
+    search_fields = ('name_en', 'name_am')
+    fields = ('name', 'description', 'parent', 'sort_order', 'is_published')
+
+
+@admin.register(Vacancy)
+class VacancyAdmin(TabbedTranslationAdmin):
+    list_display = ('title_en', 'reference', 'deadline', 'published_at', 'is_published')
+    list_editable = ('is_published',)
+    list_filter = ('is_published', 'published_at')
+    search_fields = ('title_en', 'reference', 'location_en')
+    fields = ('title', 'reference', 'location', 'description', 'file_url', 'deadline', 'published_at', 'sort_order', 'is_published')
 
 
 admin.site.site_header = 'MoPD Site Administration'

@@ -106,6 +106,11 @@ class NewsArticle(models.Model):
     search_keywords = models.TextField(blank=True)
     is_published = models.BooleanField(default=True)
     is_featured_home = models.BooleanField(default=False, help_text='Show on homepage news section')
+    article_type = models.CharField(
+        max_length=20,
+        choices=[('news', 'News'), ('press_release', 'Press release')],
+        default='news',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -250,6 +255,99 @@ class Document(models.Model):
     @property
     def display_title_am(self):
         return self.title_am or self.display_title_en
+
+
+class ContactSubmission(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone = models.CharField(max_length=40, blank=True)
+    subject = models.CharField(max_length=200)
+    details = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Contact message'
+        verbose_name_plural = 'Contact messages'
+
+    def __str__(self):
+        return f'{self.subject} — {self.name}'
+
+
+class NewsletterSubscriber(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    source = models.CharField(max_length=40, default='homepage', blank=True)
+
+    class Meta:
+        ordering = ['-subscribed_at']
+        verbose_name = 'Newsletter subscriber'
+        verbose_name_plural = 'Newsletter subscribers'
+
+    def __str__(self):
+        return self.email
+
+
+class ProcurementNotice(models.Model):
+    title = models.CharField(max_length=300)
+    reference = models.CharField(max_length=120, blank=True)
+    description = models.TextField(blank=True)
+    file_url = models.URLField(blank=True)
+    published_at = models.DateField()
+    sort_order = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-published_at', 'sort_order']
+        verbose_name = 'Procurement notice'
+        verbose_name_plural = 'Procurement notices'
+
+    def __str__(self):
+        return self.title_en or self.title
+
+
+class Department(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='children',
+        on_delete=models.CASCADE,
+    )
+    sort_order = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['sort_order', 'name']
+        verbose_name = 'Department'
+        verbose_name_plural = 'Departments (organogram)'
+
+    def __str__(self):
+        return self.name_en or self.name
+
+
+class Vacancy(models.Model):
+    title = models.CharField(max_length=300)
+    reference = models.CharField(max_length=120, blank=True)
+    location = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
+    file_url = models.URLField(blank=True)
+    deadline = models.DateField(null=True, blank=True)
+    published_at = models.DateField()
+    sort_order = models.PositiveIntegerField(default=0)
+    is_published = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-published_at', 'sort_order']
+        verbose_name = 'Vacancy'
+        verbose_name_plural = 'Vacancies'
+
+    def __str__(self):
+        return self.title_en or self.title
 
 
 class CarouselSlide(models.Model):

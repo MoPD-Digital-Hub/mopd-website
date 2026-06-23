@@ -31,7 +31,7 @@
           </div>
         </li>
         {% empty %}
-        <li>No documents published. Add statistics documents in the <a href="/admin/website/document/">admin</a>.</li>
+        <li>No documents published. Add statistics documents in the <a href="{% url 'admin:website_document_changelist' %}">admin</a>.</li>
         {% endfor %}
       </ul>
     </div>

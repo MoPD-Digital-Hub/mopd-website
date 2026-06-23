@@ -18,7 +18,7 @@ Open http://127.0.0.1:8000/
 
 ## Admin
 
-Manage all site content at **http://127.0.0.1:8000/admin/** after creating a superuser:
+Manage all site content at **http://127.0.0.1:8000/mopdadmin/** after creating a superuser:
 
 ```bash
 python manage.py createsuperuser
@@ -34,6 +34,11 @@ python manage.py createsuperuser
 | Documents | Climate & statistics PDF links |
 | Homepage carousel slides | Hero carousel tags, titles, images, links |
 | Affiliate links | Footer partner organizations |
+| Contact messages | Inbox for contact form submissions |
+| Newsletter subscribers | Email list from homepage subscribe form |
+| Procurement notices | Tenders and public procurement documents |
+| Vacancies | Job openings |
+| Departments | Organizational structure (shown on About page) |
 
 Re-seed default content:
 
@@ -67,8 +72,33 @@ MOPD/
 | News article | `/news/<slug>/` |
 | About | `/about/` |
 | Contact | `/contact/` |
+| Search | `/search/` |
+| Press releases | `/press-release/` |
+| Procurement | `/procurement/` |
+| Vacancies | `/vacancies/` |
+| Privacy | `/privacy/` |
+| Accessibility | `/accessibility/` |
+| News RSS | `/feed/news/` |
+| Sitemap | `/sitemap.xml` |
 
 Old `.html` paths redirect automatically (e.g. `/news.html` → `/news/`).
+
+## Production
+
+Copy `.env.example` to `.env` and set `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, and email/DB values.
+
+```bash
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py collectstatic --noinput
+gunicorn config.wsgi:application -c gunicorn.conf.py
+```
+
+Schedule news sync (cron example — daily at 6:00):
+
+```bash
+0 6 * * * cd /path/to/MOPD && .venv/bin/python manage.py sync_official_news
+```
 
 ## Language
 
