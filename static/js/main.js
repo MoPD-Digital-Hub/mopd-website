@@ -14,6 +14,8 @@ function initMopdApp() {
   initGalleryLightbox();
   initSmoothNav();
   initNewsPage();
+  if (window.initMopdMotion) window.initMopdMotion();
+  document.body.classList.add('is-loaded');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,10 +27,20 @@ function initHeader() {
   const header = document.getElementById('header');
   if (!header) return;
 
+  let ticking = false;
+  const update = () => {
+    header.classList.toggle('scrolled', window.scrollY > 48);
+    ticking = false;
+  };
+
   window.addEventListener('scroll', () => {
-    const currentScroll = window.scrollY;
-    header.classList.toggle('scrolled', currentScroll > 50);
-  });
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  update();
 }
 
 /* Mobile menu toggle */
@@ -98,7 +110,13 @@ function initCarousel() {
 
     const bgImages = document.querySelectorAll('.hero__bg-image');
     bgImages.forEach((img, i) => {
-      img.classList.toggle('active', i === current);
+      const isActive = i === current;
+      img.classList.toggle('active', isActive);
+      if (isActive) {
+        img.style.animation = 'none';
+        void img.offsetWidth;
+        img.style.animation = '';
+      }
     });
   }
 
@@ -168,23 +186,25 @@ function initDocTabs() {
 
 /* Scroll reveal animations */
 function initScrollReveal() {
-  const reveals = document.querySelectorAll('.reveal');
+  const reveals = document.querySelectorAll('.reveal, [data-reveal]');
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, index) => {
       if (entry.isIntersecting) {
         setTimeout(() => {
           entry.target.classList.add('visible');
-        }, index * 80);
+        }, Math.min(index * 60, 240));
         observer.unobserve(entry.target);
       }
     });
   }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -40px 0px'
+    threshold: 0.1,
+    rootMargin: '0px 0px -28px 0px'
   });
 
-  reveals.forEach(el => observer.observe(el));
+  reveals.forEach((el) => {
+    if (!el.closest('[data-reveal-group]')) observer.observe(el);
+  });
 }
 
 /* Animated counters */

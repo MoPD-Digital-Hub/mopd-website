@@ -6,6 +6,37 @@ from django.utils.text import slugify
 from website.news_content import card_excerpt, filter_paragraphs, is_junk_paragraph
 
 
+def _fill_missing_amharic(instance, fields, *, max_lengths=None, defaults=None):
+    """Ensure *_en / *_am / base columns are non-null before insert."""
+    max_lengths = max_lengths or {}
+    defaults = defaults or {}
+    for field in fields:
+        base = getattr(instance, field, None)
+        en = getattr(instance, f'{field}_en', None)
+        am = getattr(instance, f'{field}_am', None)
+
+        primary = en if en not in (None, '') else base
+        if primary in (None, '') or (isinstance(primary, str) and not primary.strip()):
+            primary = defaults.get(field, '')
+
+        if en in (None, '') or (isinstance(en, str) and not en.strip()):
+            en = primary
+        if base in (None, '') or (isinstance(base, str) and not base.strip()):
+            base = en or primary
+        if am in (None, '') or (isinstance(am, str) and not am.strip()):
+            am = en or base or defaults.get(field, '')
+
+        limit = max_lengths.get(field)
+        if limit:
+            base = (base or '')[:limit]
+            en = (en or '')[:limit]
+            am = (am or '')[:limit]
+
+        setattr(instance, field, base or '')
+        setattr(instance, f'{field}_en', en or '')
+        setattr(instance, f'{field}_am', am or '')
+
+
 def _ext(filename):
     return os.path.splitext(filename)[1] or '.jpg'
 
@@ -48,6 +79,11 @@ class SiteSettings(models.Model):
         default='https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf',
         help_text='10-Year Development Plan PDF download link',
     )
+    development_plan_cover_url = models.URLField(
+        blank=True,
+        default='',
+        help_text='Cover image URL for the 10-Year Development Plan. Leave empty for the default bundled cover.',
+    )
 
     class Meta:
         verbose_name = 'Site settings'
@@ -60,6 +96,12 @@ class SiteSettings(models.Model):
     def load(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+    @property
+    def development_plan_cover(self):
+        if self.development_plan_cover_url:
+            return self.development_plan_cover_url
+        return '/media/10-year-plan-cover.jpg'
 
 
 class SiteTranslation(models.Model):
@@ -113,6 +155,11 @@ class NewsArticle(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    telegram_notified_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text='When this article was posted to Telegram',
+    )
 
     class Meta:
         ordering = ['-published_at', '-created_at']
@@ -120,7 +167,23 @@ class NewsArticle(models.Model):
         verbose_name_plural = 'News articles'
 
     def __str__(self):
-        return self.title_en
+        title = (self.title_en or self.title or self.title_am or '').strip()
+        if not title:
+            if self.slug:
+                return self.slug.replace('-', ' ').title()
+            return f'Article #{self.pk}' if self.pk else 'New article'
+        if len(title) > 80:
+            return f'{title[:77]}…'
+        return title
+
+    def save(self, *args, **kwargs):
+        _fill_missing_amharic(
+            self,
+            ('tag', 'title', 'excerpt', 'body'),
+            max_lengths={'tag': 80, 'title': 500},
+            defaults={'tag': 'News'},
+        )
+        super().save(*args, **kwargs)
 
     def body_paragraphs_en(self):
         return [p.strip() for p in self.body_en.split('\n\n') if p.strip()]

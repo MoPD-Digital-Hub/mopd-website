@@ -6,9 +6,9 @@ register = template.Library()
 @register.filter
 def nav_active(current, page_id):
     about_pages = {'about', 'leadership', 'leader', 'leader_detail'}
-    news_pages = {'news', 'news_detail', 'gallery', 'press'}
-    climate_pages = {'climate', 'climate_docs', 'green_tech'}
-    data_pages = {'stats'}
+    news_pages = {'news', 'news_detail', 'gallery', 'press', 'press-release'}
+    climate_pages = {'climate', 'climate_docs', 'green_tech', 'about-climate'}
+    data_pages = {'stats', 'procurement', 'vacancies'}
 
     if page_id == 'about':
         return current in about_pages

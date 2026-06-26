@@ -1,56 +1,119 @@
 {% load static website_extras %}
-<header class="header {% if current_page != 'home' %}header--inner scrolled{% endif %}" id="header">
-  <div class="container header__inner">
-    <a href="{% url 'home' %}" class="logo" aria-label="Ministry of Planning and Development">
-      <img class="logo__img" src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}" alt="Ministry of Planning and Development">
+<header class="mp-header" id="sxHeader">
+  <div class="mp-header__inner">
+    <a href="{% url 'home' %}" class="mp-header__brand">
+      <img src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}" alt="Ministry of Planning and Development">
     </a>
-    <nav class="nav" id="nav">
-      <ul class="nav__list">
-        <li class="nav__dropdown">
-          <a href="{% url 'about' %}" class="nav__link{% if current_page|nav_active:'about' %} active{% endif %}" data-i18n="nav.about">About</a>
-          <ul class="nav__submenu">
+
+    <nav class="mp-nav" aria-label="Primary">
+      <ul class="mp-nav__list">
+        <li class="mp-nav__item">
+          <a href="{% url 'about' %}" class="mp-nav__link{% if current_page|nav_active:'about' %} is-active{% endif %}" data-i18n="nav.about">About</a>
+          <ul class="mp-nav__sub">
             <li><a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a></li>
             <li><a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a></li>
           </ul>
         </li>
-        <li class="nav__dropdown">
-          <a href="{% url 'news' %}" class="nav__link{% if current_page|nav_active:'news' %} active{% endif %}" data-i18n="nav.news">News &amp; Media</a>
-          <ul class="nav__submenu">
+        <li class="mp-nav__item">
+          <a href="{% url 'news' %}" class="mp-nav__link{% if current_page|nav_active:'news' %} is-active{% endif %}" data-i18n="nav.news">News &amp; Media</a>
+          <ul class="mp-nav__sub">
             <li><a href="{% url 'news' %}" data-i18n="nav.sub.news">News</a></li>
             <li><a href="{% url 'press' %}" data-i18n="nav.sub.press">Press Release</a></li>
             <li><a href="{% url 'gallery' %}" data-i18n="nav.sub.gallery">Gallery</a></li>
           </ul>
         </li>
-        <li class="nav__dropdown">
-          <a href="{% url 'stats' %}" class="nav__link{% if current_page|nav_active:'data' %} active{% endif %}" data-i18n="nav.data">Data &amp; Links</a>
-          <ul class="nav__submenu">
+        <li class="mp-nav__item">
+          <a href="{% url 'stats' %}" class="mp-nav__link{% if current_page|nav_active:'data' %} is-active{% endif %}" data-i18n="nav.data">Data &amp; Links</a>
+          <ul class="mp-nav__sub">
             <li><a href="{% url 'stats' %}" data-i18n="nav.sub.stats">Statistics Documents</a></li>
             <li><a href="{% url 'procurement' %}" data-i18n="nav.sub.procurement">Procurement</a></li>
             <li><a href="{% url 'vacancies' %}" data-i18n="nav.sub.vacancies">Vacancies</a></li>
-            <li><a href="https://national-parameters.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.national_params">National Parameters</a></li>
             <li><a href="https://sdg.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.sdg">SDG Goal-Tracker</a></li>
           </ul>
         </li>
-        <li class="nav__dropdown">
-          <a href="{% url 'climate' %}" class="nav__link{% if current_page|nav_active:'climate' %} active{% endif %}" data-i18n="nav.climate">Climate</a>
-          <ul class="nav__submenu">
+        <li class="mp-nav__item">
+          <a href="{% url 'climate' %}" class="mp-nav__link{% if current_page|nav_active:'climate' %} is-active{% endif %}" data-i18n="nav.climate">Climate</a>
+          <ul class="mp-nav__sub">
             <li><a href="{% url 'climate' %}" data-i18n="nav.sub.about_climate">About Climate</a></li>
             <li><a href="{% url 'climate_docs' %}" data-i18n="nav.sub.climate_docs">Documents</a></li>
             <li><a href="{% url 'green_tech' %}" data-i18n="nav.sub.green_tech">Green Technology</a></li>
-            <li><a href="https://climate.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.climate_portal">Climate Knowledge Portal</a></li>
           </ul>
         </li>
-        <li><a href="{% url 'devplan' %}" class="nav__link{% if current_page == 'devplan' %} active{% endif %}" data-i18n="nav.devplan">Development Planning</a></li>
-        <li>
-          <a href="{% url 'search' %}" class="nav__link nav__link--search{% if current_page == 'search' %} active{% endif %}" aria-label="Search" data-i18n-aria="page.search.label">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          </a>
+        <li class="mp-nav__item">
+          <a href="{% url 'devplan' %}" class="mp-nav__link{% if current_page == 'devplan' %} is-active{% endif %}" data-i18n="nav.devplan">Development Plan</a>
         </li>
-        <li><a href="{% url 'contact' %}" class="nav__link nav__link--cta{% if current_page == 'contact' %} active{% endif %}" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
     </nav>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" data-i18n-aria="aria.menu">
-      <span></span><span></span><span></span>
-    </button>
+
+    <div class="mp-header__actions">
+      <div class="mp-lang">
+        {% for lang in site_languages %}
+        <button type="button" class="mp-lang__btn sx-lang__btn{% if forloop.first %} is-active{% endif %}" data-lang="{{ lang.code }}">{{ lang.label }}</button>
+        {% endfor %}
+      </div>
+      <a href="{% url 'search' %}" class="mp-nav__link" aria-label="Search" data-i18n-aria="page.search.label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4-4"/></svg>
+      </a>
+      <a href="{% url 'contact' %}" class="mp-btn mp-btn--fill" data-i18n="nav.contact">Contact</a>
+      <button type="button" class="mp-menu-btn" id="sxMenuBtn" aria-expanded="false" aria-controls="sxMenuPanel">
+        <span></span><span></span>
+      </button>
+    </div>
   </div>
 </header>
+
+<div class="sx-menu" id="sxMenuPanel" aria-hidden="true">
+  <div class="sx-menu__backdrop" id="sxMenuBackdrop"></div>
+  <div class="sx-menu__panel">
+    <button type="button" class="sx-menu__close" id="sxMenuClose" aria-label="Close menu">&times;</button>
+    <nav class="sx-menu__nav" aria-label="Mobile">
+      <div class="sx-menu__group is-open">
+        <button type="button" class="sx-menu__group-toggle" aria-expanded="true">
+          <span data-i18n="nav.about">About</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="sx-menu__group-links">
+          <a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a>
+          <a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a>
+        </div>
+      </div>
+      <div class="sx-menu__group">
+        <button type="button" class="sx-menu__group-toggle" aria-expanded="false">
+          <span data-i18n="nav.news">News &amp; Media</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="sx-menu__group-links">
+          <a href="{% url 'news' %}" data-i18n="nav.sub.news">News</a>
+          <a href="{% url 'press' %}" data-i18n="nav.sub.press">Press Release</a>
+          <a href="{% url 'gallery' %}" data-i18n="nav.sub.gallery">Gallery</a>
+        </div>
+      </div>
+      <div class="sx-menu__group">
+        <button type="button" class="sx-menu__group-toggle" aria-expanded="false">
+          <span data-i18n="nav.data">Data &amp; Links</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="sx-menu__group-links">
+          <a href="{% url 'stats' %}" data-i18n="nav.sub.stats">Statistics Documents</a>
+          <a href="{% url 'procurement' %}" data-i18n="nav.sub.procurement">Procurement</a>
+          <a href="{% url 'vacancies' %}" data-i18n="nav.sub.vacancies">Vacancies</a>
+          <a href="https://sdg.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.sdg">SDG Goal-Tracker</a>
+        </div>
+      </div>
+      <div class="sx-menu__group">
+        <button type="button" class="sx-menu__group-toggle" aria-expanded="false">
+          <span data-i18n="nav.climate">Climate</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="sx-menu__group-links">
+          <a href="{% url 'climate' %}" data-i18n="nav.sub.about_climate">About Climate</a>
+          <a href="{% url 'climate_docs' %}" data-i18n="nav.sub.climate_docs">Documents</a>
+          <a href="{% url 'green_tech' %}" data-i18n="nav.sub.green_tech">Green Technology</a>
+        </div>
+      </div>
+      <a href="{% url 'devplan' %}" class="sx-menu__top-link" data-i18n="nav.devplan">Development Plan</a>
+      <a href="{% url 'search' %}" class="sx-menu__top-link" data-i18n="page.search.title">Search</a>
+      <a href="{% url 'contact' %}" class="sx-menu__top-link sx-menu__top-link--accent" data-i18n="nav.contact">Contact Us</a>
+    </nav>
+  </div>
+</div>

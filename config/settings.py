@@ -43,6 +43,11 @@ ALLOWED_HOSTS = [
 
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
 
+# Telegram — news notifications (group only; bots cannot message users without /start)
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+TELEGRAM_GROUP_ID = os.environ.get('TELEGRAM_GROUP_ID', '-5320625965')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID', '')
+
 # Application definition
 
 INSTALLED_APPS = [

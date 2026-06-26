@@ -5,7 +5,7 @@
 {% block page_id %}devplan{% endblock %}
 
 {% block content %}
-<main class="page">
+<main class="page sx-page cv-page">
 <section class="page-hero">
       <div class="container">
         <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -29,9 +29,15 @@
             <a href="{{ site_settings.development_plan_pdf_url }}" class="btn btn--outline" target="_blank" rel="noopener" data-i18n="dev.cta">Download Full Plan</a>
           </div>
           <div class="about__visual">
-            <figure class="about__image-wrap">
-              <img src="https://mopd.gov.et/static/images/ab2.jpg" alt="10-Year Development Plan" class="about__image content-img">
-            </figure>
+            <div class="mp-devplan__document mp-devplan__document--page">
+              <a href="{{ site_settings.development_plan_pdf_url }}" target="_blank" rel="noopener" class="mp-devplan__doc-cover">
+                <img src="{{ site_settings.development_plan_cover }}" alt="10-Year Development Plan — official document cover">
+              </a>
+              <span class="mp-devplan__doc-label" style="position:relative;top:0;right:0;display:inline-flex;margin-top:12px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+                Download PDF
+              </span>
+            </div>
           </div>
         </div>
 

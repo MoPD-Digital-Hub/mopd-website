@@ -4,15 +4,15 @@
 {% block page_id %}news{% endblock %}
 
 {% block content %}
-<main class="page">
+<main class="page sx-page cv-page">
   <section class="page-hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
         <span>/</span>
-        <span data-i18n="nav.sub.news">News</span>
+        <span data-i18n="nav.news">News &amp; Media</span>
       </nav>
-      <h1 class="page-hero__title" data-i18n="news.title">Latest Updates</h1>
+      <h1 class="page-hero__title" data-i18n="nav.news">News &amp; Media</h1>
       <p class="page-hero__desc" data-i18n="page.news.desc">Official announcements, press coverage, and ministry updates.</p>
     </div>
   </section>
@@ -53,7 +53,7 @@
             {% endfor %}
           </div>
           {% if page_obj.has_other_pages %}
-          <nav class="pagination reveal" aria-label="News pages">
+          <nav class="pagination" aria-label="News pages">
             {% if page_obj.has_previous %}
             <a class="pagination__link" href="?page={{ page_obj.previous_page_number }}">← Previous</a>
             {% endif %}

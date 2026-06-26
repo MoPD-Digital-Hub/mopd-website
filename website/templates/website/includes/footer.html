@@ -1,80 +1,50 @@
 {% load static %}
-<footer class="footer">
-  <div class="container">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <a href="{% url 'home' %}" class="logo logo--footer" aria-label="Ministry of Planning and Development">
-          <img class="logo__img" src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}" alt="Ministry of Planning and Development">
+<footer class="mp-footer">
+  <div class="mp-wrap">
+    <div class="mp-footer__top">
+      <div>
+        <a href="{% url 'home' %}">
+          <img src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}" alt="MoPD" class="mp-footer__logo">
         </a>
-        <p class="bilingual" data-en="{{ site_settings.footer_desc_en }}" data-am="{{ site_settings.footer_desc_am|default:site_settings.footer_desc_en }}">{{ site_settings.footer_desc_en }}</p>
+        <p class="bilingual mp-footer__desc" data-en="{{ site_settings.footer_desc_en }}" data-am="{{ site_settings.footer_desc_am|default:site_settings.footer_desc_en }}">{{ site_settings.footer_desc_en }}</p>
+        <p style="margin-top:16px;font-size:0.875rem;">
+          <a href="tel:{{ site_settings.phone|cut:' ' }}" style="color:var(--mp-mint);">{{ site_settings.phone }}</a>
+          · <a href="mailto:{{ site_settings.email }}" style="color:rgba(255,255,255,0.65);">{{ site_settings.email }}</a>
+        </p>
       </div>
-      <div class="footer__links">
-        <h4 data-i18n="footer.about">About</h4>
-        <ul>
-          <li><a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a></li>
-          <li><a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a></li>
-          <li><a href="{% url 'about' %}" data-i18n="footer.link.about_page">About Page</a></li>
-          <li><a href="{% url 'contact' %}" data-i18n="nav.contact">Contact Us</a></li>
-        </ul>
-      </div>
-      <div class="footer__links">
-        <h4 data-i18n="footer.news">News &amp; Media</h4>
-        <ul>
-          <li><a href="{% url 'news' %}" data-i18n="nav.sub.news">News</a></li>
-          <li><a href="{% url 'press' %}" data-i18n="nav.sub.press">Press Release</a></li>
-          <li><a href="{% url 'gallery' %}" data-i18n="nav.sub.gallery">Gallery</a></li>
-        </ul>
-      </div>
-      <div class="footer__links">
-        <h4 data-i18n="footer.data">Data &amp; Climate</h4>
-        <ul>
-          <li><a href="{% url 'stats' %}" data-i18n="nav.sub.stats">Statistics Documents</a></li>
-          <li><a href="https://national-parameters.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.national_params">National Parameters</a></li>
-          <li><a href="https://sdg.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.sdg">SDG Goal-Tracker</a></li>
-          <li><a href="{% url 'climate' %}" data-i18n="nav.sub.about_climate">About Climate</a></li>
-          <li><a href="{% url 'climate_docs' %}" data-i18n="nav.sub.climate_docs">Climate Documents</a></li>
-          <li><a href="{% url 'green_tech' %}" data-i18n="nav.sub.green_tech">Green Technology</a></li>
-          <li><a href="https://climate.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.climate_portal">Climate Knowledge Portal</a></li>
-          <li><a href="{% url 'devplan' %}" data-i18n="nav.devplan">Development Planning</a></li>
-        </ul>
-      </div>
-      <div class="footer__links">
-        <h4 data-i18n="footer.affiliates">MoPD Affiliates</h4>
-        <ul>
-          {% for affiliate in affiliates %}
-          <li><a href="{{ affiliate.url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=affiliate.name_en am=affiliate.name_am %}</a></li>
-          {% empty %}
-          <li><a href="https://www.epa.gov.et/" target="_blank" rel="noopener" data-i18n="affiliate.epa">Environmental Protection Authority</a></li>
-          <li><a href="http://www.csa.gov.et/" target="_blank" rel="noopener" data-i18n="affiliate.csa">Central Statistics Service</a></li>
-          <li><a href="https://psi.org.et" target="_blank" rel="noopener" data-i18n="affiliate.psi">Policy Study Institute</a></li>
-          {% endfor %}
-          <li><a href="https://national-parameters.mopd.gov.et/" target="_blank" rel="noopener" data-i18n="nav.sub.national_params">National Parameters</a></li>
-        </ul>
+      <div class="mp-footer__links">
+        <div>
+          <h4 data-i18n="footer.about">About</h4>
+          <a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a>
+          <a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a>
+          <a href="{% url 'contact' %}" data-i18n="nav.contact">Contact</a>
+        </div>
+        <div>
+          <h4 data-i18n="footer.news">News &amp; Media</h4>
+          <a href="{% url 'news' %}" data-i18n="nav.sub.news">News</a>
+          <a href="{% url 'press' %}" data-i18n="nav.sub.press">Press Release</a>
+          <a href="{% url 'gallery' %}" data-i18n="nav.sub.gallery">Gallery</a>
+        </div>
+        <div>
+          <h4 data-i18n="footer.data">Data &amp; Climate</h4>
+          <a href="{% url 'stats' %}" data-i18n="nav.sub.stats">Statistics</a>
+          <a href="{% url 'climate' %}" data-i18n="nav.sub.about_climate">Climate</a>
+          <a href="{% url 'devplan' %}" data-i18n="nav.devplan">Development Plan</a>
+        </div>
       </div>
     </div>
-    <div class="footer__bottom">
+    <div class="mp-footer__bottom">
       <p class="bilingual" data-en="{{ site_settings.copyright_text_en }}" data-am="{{ site_settings.copyright_text_am|default:site_settings.copyright_text_en }}">{{ site_settings.copyright_text_en }}</p>
-      <div class="footer__legal">
+      <div class="mp-footer__legal">
         <a href="{% url 'privacy' %}" data-i18n="footer.privacy">Privacy</a>
         <a href="{% url 'accessibility' %}" data-i18n="footer.accessibility">Accessibility</a>
         <a href="{% url 'search' %}" data-i18n="page.search.title">Search</a>
         <a href="{% url 'news_feed' %}">RSS</a>
       </div>
-      <div class="footer__social">
-        {% if site_settings.facebook_url %}
-        <a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
-        {% endif %}
-        {% if site_settings.twitter_url %}
-        <a href="{{ site_settings.twitter_url }}" target="_blank" rel="noopener" aria-label="Twitter"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg></a>
-        {% endif %}
-        {% if site_settings.linkedin_url %}
-        <a href="{{ site_settings.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
-        {% endif %}
-      </div>
     </div>
   </div>
 </footer>
 
-<button class="back-to-top" id="backToTop" aria-label="Back to top" data-i18n-aria="aria.back_top">
+<button type="button" class="sx-top" id="backToTop" aria-label="Back to top">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
 </button>

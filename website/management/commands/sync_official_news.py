@@ -10,6 +10,7 @@ from django.utils.text import slugify
 from website.media_utils import assign_image_from_url
 from website.models import NewsArticle
 from website.news_content import card_excerpt, filter_paragraphs, is_junk_paragraph
+from website.remote_assets import localize_article_fields
 
 BASE_URL = 'https://mopd.gov.et'
 
@@ -205,6 +206,7 @@ class Command(BaseCommand):
             image_src = (detail or {}).get('image_src') or listing.get('image_src', '')
             if image_src:
                 assign_image_from_url(article, 'image', image_src)
+            localize_article_fields(article)
             article.save()
 
             if is_new:

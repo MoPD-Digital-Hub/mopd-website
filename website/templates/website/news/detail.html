@@ -4,12 +4,12 @@
 {% block page_id %}news{% endblock %}
 
 {% block content %}
-<main class="page">
+<main class="page sx-page cv-page">
   <section class="page-hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a><span>/</span>
-        <a href="{% url 'news' %}" data-i18n="nav.sub.news">News</a><span>/</span>
+        <a href="{% url 'news' %}" data-i18n="nav.news">News &amp; Media</a><span>/</span>
         <span>{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
       </nav>
       <span class="article-page__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>

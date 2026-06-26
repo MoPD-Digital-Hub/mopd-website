@@ -1,540 +1,415 @@
 {% extends 'website/base.html' %}
 {% load static %}
 {% block title %}Ministry of Planning and Development — Ethiopia{% endblock %}
-{% block meta_description %}Official website of the Ministry of Planning and Development (MoPD), Ethiopia.{% endblock %}
 {% block page_id %}home{% endblock %}
 
+{% block extra_head %}
+  <link rel="preload" as="image" href="https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg">
+  <link rel="preconnect" href="https://www.youtube-nocookie.com">
+  <link rel="preconnect" href="https://img.youtube.com">
+{% endblock %}
+
 {% block content %}
-<!-- Hero -->
-  <section class="hero" id="hero">
-    <div class="hero__bg">
-      {% for slide in carousel_slides %}
-      {% if slide.image %}
-      <img class="hero__bg-image{% if forloop.first %} active{% endif %}" src="{{ slide.image.url }}" alt="" data-index="{{ forloop.counter0 }}">
-      {% endif %}
-      {% endfor %}
-      <div class="hero__gradient"></div>
-      <div class="hero__pattern"></div>
+<main class="mp-main">
+
+  {# ─── HERO — cinematic opening frame ─── #}
+  <section class="mp-hero mp-hero--art" id="hero">
+    <div class="mp-hero__grain" aria-hidden="true"></div>
+    <div class="mp-hero__media">
+      <div
+        class="sx-hero__video-poster"
+        aria-hidden="true"
+        style="background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg'), url('https://img.youtube.com/vi/d7YfFd1gYAE/hqdefault.jpg');"
+      ></div>
+      <div id="heroVideoMount" class="sx-hero__video-player" data-video-id="d7YfFd1gYAE" data-video-end="30">
+        <div class="sx-hero__video-cover" aria-hidden="true"></div>
+        <div class="sx-hero__video-mask" aria-hidden="true"></div>
+        <div class="sx-hero__video-shield" aria-hidden="true"></div>
+      </div>
+      <div class="sx-hero__overlay"></div>
     </div>
 
-    <div class="container hero__content">
-      <div class="hero__badge reveal">
-        <span class="hero__badge-dot"></span>
-        <span data-i18n="hero.badge">Beacon of African Prosperity</span>
-      </div>
-      <h1 class="hero__title reveal" data-i18n-html="hero.title">
-        Shaping Ethiopia's<br>
-        <em>Sustainable Future</em>
-      </h1>
-      <p class="hero__desc reveal" data-i18n="hero.desc">
-        The Ministry of Planning and Development drives national policy, coordinates
-        development programs, and monitors progress toward Ethiopia's 10-Year Development Plan.
-      </p>
-      <div class="hero__actions reveal">
-        <a href="#development" class="btn btn--primary">
-          <span data-i18n="hero.cta1">Explore Development Plan</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="#about" class="btn btn--ghost"><span data-i18n="hero.cta2">Learn About MoPD</span></a>
+    <div class="mp-hero__accent-line" aria-hidden="true"></div>
+
+    <div class="mp-hero__content mp-hero__content--enter">
+      <h1 class="mp-hero__title" data-i18n-html="hero.title">Shaping Ethiopia's<br><span class="mp-hero__accent">Sustainable Future</span></h1>
+      <p class="mp-hero__desc" data-i18n="hero.desc">The Ministry of Planning and Development drives national policy, coordinates development programs, and monitors progress toward Ethiopia's 10-Year Development Plan.</p>
+      <div class="mp-hero__actions">
+        <a href="{% url 'devplan' %}" class="mp-btn mp-btn--fill" data-i18n="hero.cta1">Explore Development Plan</a>
+        <a href="{% url 'about' %}" class="mp-btn mp-btn--ghost" data-i18n="hero.cta2">Learn About MoPD</a>
       </div>
     </div>
 
-    <!-- Hero carousel -->
-    <div class="hero__carousel">
-      <div class="container">
-        <div class="carousel" id="heroCarousel">
-          <div class="carousel__track">
-            {% for slide in carousel_slides %}
-            <article class="carousel__slide{% if forloop.first %} active{% endif %}" data-index="{{ forloop.counter0 }}">
-              <span class="carousel__tag">{% include 'website/includes/bilingual.html' with en=slide.tag_en am=slide.tag_am %}</span>
-              <h3 class="carousel__title">{% include 'website/includes/bilingual.html' with en=slide.title_en am=slide.title_am %}</h3>
-              {% if slide.link_url %}
-              <a href="{{ slide.link_url }}" class="carousel__link" data-i18n="carousel.link">Read story →</a>
-              {% endif %}
-            </article>
-            {% endfor %}
-          </div>
-          <div class="carousel__controls">
-            <button class="carousel__btn" id="carouselPrev" aria-label="Previous">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <div class="carousel__dots" id="carouselDots"></div>
-            <button class="carousel__btn" id="carouselNext" aria-label="Next">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <a href="#metrics" class="mp-hero__scroll" aria-label="Scroll to content">
+      <span>Scroll</span>
+      <span class="mp-hero__scroll-line" aria-hidden="true"></span>
+    </a>
 
-  <!-- Stats -->
-  <section class="stats">
-    <div class="container">
-      <div class="stats__grid">
-        <div class="stat reveal">
-          <span class="stat__number" data-target="10">0</span>
-          <span class="stat__suffix" data-i18n="stat.0.suffix">Year</span>
-          <span class="stat__label" data-i18n="stat.0.label">National Development Plan</span>
+    <div class="mp-hero__ticker" aria-label="Featured stories">
+      <div class="mp-hero__ticker-inner">
+        <div class="mp-hero__ticker-meta">
+          <span class="mp-hero__ticker-pulse" aria-hidden="true"></span>
+          <span class="mp-hero__ticker-label" data-i18n="news.featured">Featured</span>
         </div>
-        <div class="stat reveal">
-          <span class="stat__number" data-target="17">0</span>
-          <span class="stat__suffix" data-i18n="stat.1.suffix">SDGs</span>
-          <span class="stat__label" data-i18n="stat.1.label">Sustainable Development Goals</span>
+        <div class="mp-ticker__track" id="heroFeedTrack">
+          {% for slide in carousel_slides %}
+          <article class="mp-ticker__slide sx-hero__feed-card{% if forloop.first %} is-active{% endif %}" data-hero-slide="{{ forloop.counter0 }}">
+            <span class="mp-ticker__tag">{% include 'website/includes/bilingual.html' with en=slide.tag_en am=slide.tag_am %}</span>
+            <h2>{% include 'website/includes/bilingual.html' with en=slide.title_en am=slide.title_am %}</h2>
+            {% if slide.link_url %}<a href="{{ slide.link_url }}" class="mp-ticker__link sx-hero__feed-link">Read story →</a>{% endif %}
+          </article>
+          {% endfor %}
         </div>
-        <div class="stat reveal">
-          <span class="stat__number" data-target="6">0</span>
-          <span class="stat__suffix" data-i18n="stat.2.suffix">+</span>
-          <span class="stat__label" data-i18n="stat.2.label">Core Areas of Work</span>
-        </div>
-        <div class="stat reveal">
-          <span class="stat__number" data-target="120">0</span>
-          <span class="stat__suffix" data-i18n="stat.3.suffix">M+</span>
-          <span class="stat__label" data-i18n="stat.3.label">Citizens Served</span>
+        <div class="mp-ticker__nav">
+          <button type="button" class="mp-ticker__btn sx-hero__feed-btn" id="heroFeedPrev" aria-label="Previous">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button type="button" class="mp-ticker__btn sx-hero__feed-btn" id="heroFeedNext" aria-label="Next">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- About -->
-  <section class="about" id="about">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="section-tag" data-i18n="about.tag">About MoPD</span>
-        <h2 class="section-title" data-i18n-html="about.title">Driving Ethiopia's<br>Transformation</h2>
+  {# ─── METRICS — data as sculpture ─── #}
+  <section class="mp-metrics mp-metrics--art mp-reveal" id="metrics">
+    <div class="mp-metrics__band" aria-hidden="true"></div>
+    <div class="mp-wrap mp-metrics__grid mp-stagger">
+      <div class="mp-metric mp-metric--1">
+        <span class="mp-metric__glyph" aria-hidden="true">10</span>
+        <strong data-count="10">0</strong>
+        <span data-i18n="stat.0.suffix">Year National Plan</span>
       </div>
-
-      <div class="about__tabs reveal">
-        <button class="about__tab active" data-tab="about" data-i18n="about.tab.about">About</button>
-        <button class="about__tab" data-tab="mission" data-i18n="about.tab.mission">Mission</button>
-        <button class="about__tab" data-tab="vision" data-i18n="about.tab.vision">Vision</button>
-        <button class="about__tab" data-tab="values" data-i18n="about.tab.values">Values</button>
+      <div class="mp-metric mp-metric--2">
+        <span class="mp-metric__glyph" aria-hidden="true">◎</span>
+        <strong data-count="17">0</strong>
+        <span data-i18n="stat.1.suffix">SDG Targets</span>
       </div>
-
-      <div class="about__panels">
-        <div class="about__panel active" id="panel-about">
-          <div class="about__grid">
-            <div class="about__text">
-              <p class="lead" data-i18n="about.lead">Welcome to the official website of the Ministry of Planning and Development (MoPD) in Ethiopia.</p>
-              <p data-i18n="about.p1">As the primary government institution responsible for national planning and development, the MoPD plays a vital role in shaping Ethiopia's sustainable growth and socio-economic transformation.</p>
-              <p data-i18n="about.p2">Through this website, we provide comprehensive information about the MoPD's initiatives, projects, and services — including valuable resources, reports, and data related to our national development agenda.</p>
-              <a href="#contact" class="btn btn--outline" data-i18n="about.cta">Get in Touch</a>
-              <div class="about__card about__card--accent about__card--inline">
-                <div class="about__card-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                </div>
-                <h4 data-i18n="about.me.title">Monitoring &amp; Evaluation</h4>
-                <p data-i18n="about.me.desc">Data-driven assessment of development outcomes</p>
-              </div>
-            </div>
-            <div class="about__visual">
-              <figure class="about__image-wrap">
-                <img src="https://mopd.gov.et/media/photos/2025/07/03/G92A3209.jpg" alt="Ministry of Planning and Development" class="about__image content-img">
-              </figure>
-            </div>
-          </div>
-        </div>
-
-        <div class="about__panel" id="panel-mission">
-          <div class="about__grid">
-            <div class="about__text">
-              <p class="lead" data-i18n="mission.lead">Our mission is to provide comprehensive policy analysis, guidance, and support to drive the multidimensional development endeavors of our country.</p>
-              <p data-i18n="mission.p1">We aim to play a pivotal role in shaping Ethiopia's future through robust public investment administration, efficient appraisal and prioritization of development projects, and rigorous monitoring and evaluation practices.</p>
-              <p data-i18n="mission.p2">Our mission is grounded in transparency, accountability, and good governance — contributing to sustainable and inclusive growth that enables Ethiopia to thrive globally.</p>
-            </div>
-            <div class="about__visual about__visual--mission">
-              <blockquote class="mission-quote">
-                <p data-i18n="mission.quote">"Through strategic direction and effective policy guidance, we enable Ethiopia to thrive in an ever-changing global landscape."</p>
-                <cite data-i18n="mission.cite">— Ministry of Planning and Development</cite>
-              </blockquote>
-            </div>
-          </div>
-        </div>
-
-        <div class="about__panel" id="panel-vision">
-          <div class="about__grid">
-            <div class="about__text">
-              <p class="lead" data-i18n="vision.lead">Our vision is to make Ethiopia an African beacon of prosperity, where the aspirations and dreams of its people are realized.</p>
-              <p data-i18n="vision.p1">We envision a future Ethiopia that stands as a shining example of sustainable economic growth, social harmony, and environmental stewardship — where poverty and inequality are significantly reduced.</p>
-              <p data-i18n="vision.p2">Together, we will transform Ethiopia into an African beacon of prosperity, where progress, innovation, and the well-being of its people are at the forefront.</p>
-            </div>
-            <div class="about__visual about__visual--vision">
-              <figure class="about__image-wrap about__image-wrap--vision">
-                <img src="https://mopd.gov.et/media/photos/2023/06/29/ethiopia-an-african__1_-removebg-preview.png" alt="Ethiopia — An African Beacon of Prosperity" class="about__image about__image--vision content-img">
-              </figure>
-            </div>
-          </div>
-        </div>
-
-        <div class="about__panel" id="panel-values">
-          <div class="values-grid">
-            <div class="value-card reveal">
-              <div class="value-card__icon" aria-hidden="true">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><path d="M8 10h8M8 14h5"/></svg>
-              </div>
-              <h4 data-i18n="value.0.title">Communication</h4>
-              <p data-i18n="value.0.desc">Open dialogue with all stakeholders</p>
-            </div>
-            <div class="value-card reveal">
-              <div class="value-card__icon" aria-hidden="true">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><path d="M12 12v2"/></svg>
-              </div>
-              <h4 data-i18n="value.1.title">Professionalism</h4>
-              <p data-i18n="value.1.desc">Excellence in every undertaking</p>
-            </div>
-            <div class="value-card reveal">
-              <div class="value-card__icon" aria-hidden="true">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-              </div>
-              <h4 data-i18n="value.2.title">Integrity</h4>
-              <p data-i18n="value.2.desc">Upholding the highest ethical standards</p>
-            </div>
-            <div class="value-card reveal">
-              <div class="value-card__icon" aria-hidden="true">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              </div>
-              <h4 data-i18n="value.3.title">Drive</h4>
-              <p data-i18n="value.3.desc">Relentless pursuit of national goals</p>
-            </div>
-            <div class="value-card reveal">
-              <div class="value-card__icon" aria-hidden="true">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/><path d="M8.5 14h7"/></svg>
-              </div>
-              <h4 data-i18n="value.4.title">Innovation</h4>
-              <p data-i18n="value.4.desc">Creative solutions, not imitation</p>
-            </div>
-            <div class="value-card reveal">
-              <div class="value-card__icon" aria-hidden="true">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21l2.3-7-6-4.6h7.6z"/></svg>
-              </div>
-              <h4 data-i18n="value.5.title">Excellence</h4>
-              <p data-i18n="value.5.desc">Setting benchmarks for public service</p>
-            </div>
-          </div>
-        </div>
+      <div class="mp-metric mp-metric--3">
+        <div class="mp-metric__ring" aria-hidden="true"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="55 100" transform="rotate(-90 18 18)"/></svg></div>
+        <strong>55%</strong>
+        <span data-i18n="dev.tag">Plan Progress</span>
+      </div>
+      <div class="mp-metric mp-metric--4">
+        <span class="mp-metric__glyph" aria-hidden="true">♣</span>
+        <strong><span data-count="30">0</span>B+</strong>
+        <span>Trees Initiative</span>
       </div>
     </div>
   </section>
 
-  <!-- Services -->
-  <section class="services" id="services">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="section-tag" data-i18n="services.tag">What We Do</span>
-        <h2 class="section-title" data-i18n="services.title">Our Areas of Work</h2>
-        <p class="section-desc" data-i18n="services.desc">Six pillars driving Ethiopia's coordinated development agenda</p>
-      </div>
-
-      <div class="services__grid">
-        <article class="service-card reveal">
-          <div class="service-card__number">01</div>
-          <div class="service-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-          </div>
-          <h3 data-i18n="service.0.title">Stakeholder Engagement</h3>
-          <p data-i18n="service.0.desc">Coordinating with government agencies, international organizations, civil society, and the private sector.</p>
-        </article>
-        <article class="service-card reveal">
-          <div class="service-card__number">02</div>
-          <div class="service-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-          </div>
-          <h3 data-i18n="service.1.title">Knowledge Sharing</h3>
-          <p data-i18n="service.1.desc">Facilitating best practices across sectors to encourage effective development project implementation.</p>
-        </article>
-        <article class="service-card reveal">
-          <div class="service-card__number">03</div>
-          <div class="service-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          </div>
-          <h3 data-i18n="service.2.title">Policy Analysis</h3>
-          <p data-i18n="service.2.desc">Comprehensive guidance on economic, social, demographic, and environmental development policies.</p>
-        </article>
-        <article class="service-card reveal">
-          <div class="service-card__number">04</div>
-          <div class="service-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          </div>
-          <h3 data-i18n="service.3.title">Evaluation &amp; Monitoring</h3>
-          <p data-i18n="service.3.desc">Periodic assessments of development plans to identify areas of improvement and ensure effectiveness.</p>
-        </article>
-        <article class="service-card reveal">
-          <div class="service-card__number">05</div>
-          <div class="service-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          </div>
-          <h3 data-i18n="service.4.title">Project Appraisal</h3>
-          <p data-i18n="service.4.desc">Reviewing, selecting, and prioritizing public development projects aligned with national goals.</p>
-        </article>
-        <article class="service-card reveal">
-          <div class="service-card__number">06</div>
-          <div class="service-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <h3 data-i18n="service.5.title">Project M&amp;E</h3>
-          <p data-i18n="service.5.desc">Monitoring and evaluation of public development projects to ensure successful implementation.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Development Plan -->
-  <section class="development" id="development">
-    <div class="development__bg"></div>
-    <div class="container">
-      <div class="development__grid">
-        <div class="development__content reveal">
-          <span class="section-tag section-tag--light" data-i18n="dev.tag">In Focus</span>
-          <h2 class="section-title section-title--light" data-i18n="dev.title">10-Year Development Plan</h2>
-          <p class="development__period" data-i18n="dev.period">2021 — 2030</p>
-          <p data-i18n="dev.p1">The 10-Year Development Plan outlines Ethiopia's vision, objectives, and strategic pillars for sustainable development — addressing economic growth, poverty reduction, sectoral development, energy, innovation, and human resources.</p>
-          <p data-i18n="dev.p2">Its goals: improve living standards, access to services, gender inclusion, and transform the economy through human capital development and private sector involvement.</p>
-          <div class="development__pillars">
-            <span class="pillar" data-i18n="dev.pillar.0">Economic Growth</span>
-            <span class="pillar" data-i18n="dev.pillar.1">Poverty Reduction</span>
-            <span class="pillar" data-i18n="dev.pillar.2">Human Capital</span>
-            <span class="pillar" data-i18n="dev.pillar.3">Innovation</span>
-            <span class="pillar" data-i18n="dev.pillar.4">Energy</span>
-            <span class="pillar" data-i18n="dev.pillar.5">Competitiveness</span>
-          </div>
-          <a href="{{ site_settings.development_plan_pdf_url }}" class="btn btn--primary btn--light" target="_blank" rel="noopener">
-            <span data-i18n="dev.cta">Download Full Plan</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          </a>
-        </div>
-        <div class="development__visual reveal">
-          <figure class="development__figure">
-            <img src="https://mopd.gov.et/static/images/ab2.jpg" alt="10-Year Development Plan" class="development__image content-img">
-          </figure>
-          <div class="plan-timeline" aria-label="10-Year Development Plan timeline">
-            <div class="plan-timeline__summary">
-              <div class="plan-timeline__ring" style="--progress: 55" aria-hidden="true">
-                <span class="plan-timeline__ring-value">55%</span>
-              </div>
-              <p class="plan-timeline__status" data-i18n="timeline.status">55% of timeline elapsed</p>
-            </div>
-
-            <div class="plan-timeline__track" aria-hidden="true">
-              <div class="plan-timeline__track-line">
-                <div class="plan-timeline__track-fill" style="width: 55%"></div>
-              </div>
-              <span class="plan-timeline__dot plan-timeline__dot--done" style="--pos: 0%"></span>
-              <span class="plan-timeline__dot plan-timeline__dot--done" style="--pos: 44.4%"></span>
-              <span class="plan-timeline__dot plan-timeline__dot--upcoming" style="--pos: 100%"></span>
-              <span class="plan-timeline__now" style="--pos: 55%" title="Current progress"></span>
-            </div>
-
-            <ol class="plan-timeline__milestones">
-              <li class="plan-timeline__milestone plan-timeline__milestone--done">
-                <span class="plan-timeline__year">2021</span>
-                <span class="plan-timeline__label" data-i18n="timeline.0">Plan Launch</span>
-              </li>
-              <li class="plan-timeline__milestone plan-timeline__milestone--done">
-                <span class="plan-timeline__year">2025</span>
-                <span class="plan-timeline__label" data-i18n="timeline.1">Mid-term Review</span>
-              </li>
-              <li class="plan-timeline__milestone plan-timeline__milestone--upcoming">
-                <span class="plan-timeline__year">2030</span>
-                <span class="plan-timeline__label" data-i18n="timeline.2">Target Achievement</span>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- News -->
-  <section class="news" id="news">
-    <div class="container">
-      <div class="section-header section-header--row reveal">
+  {# ─── ABOUT — editorial bento composition ─── #}
+  <section class="mp-section mp-bento mp-bento--art mp-reveal" id="about">
+    <div class="mp-wrap">
+      <header class="mp-section-head mp-section-head--split">
         <div>
-          <span class="section-tag" data-i18n="news.tag">News &amp; Media</span>
-          <h2 class="section-title" data-i18n="news.title">Latest Updates</h2>
+          <span class="mp-section-num" aria-hidden="true">01</span>
+          <span class="mp-eyebrow" data-i18n="about.tag">About MoPD</span>
+          <h2 class="mp-heading" data-i18n="about.lead">Trusted leaders shaping Ethiopia's national development agenda</h2>
         </div>
-        <a href="{% url 'news' %}" class="btn btn--outline" data-i18n="news.cta">View All News</a>
-      </div>
+        <p class="mp-section-head__aside" data-i18n="about.p1">As the primary government institution responsible for national planning and development, MoPD plays a vital role in shaping Ethiopia's sustainable growth.</p>
+      </header>
 
-      <div class="news__grid">
-        {% for article in featured_articles %}
-        <article class="news-card{% if forloop.first %} news-card--featured{% endif %} reveal">
-          <div class="news-card__image">
-            {% if article.image %}
-            <img src="{{ article.image.url }}" alt="" class="content-img">
-            {% endif %}
-            <span class="news-card__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
+      <div class="mp-bento__grid mp-stagger">
+        <figure class="mp-bento__visual">
+          <div class="mp-bento__frame" aria-hidden="true"></div>
+          <img src="/media/Awards.jpg" alt="Ministry of Planning and Development">
+          <figcaption class="mp-bento__caption">
+            <strong data-i18n="dev.period">2021 — 2030</strong>
+            <span data-i18n="stat.0.label">National Development Plan</span>
+          </figcaption>
+        </figure>
+
+        <div class="mp-bento__tiles">
+          <article class="mp-tile mp-tile--1">
+            <span class="mp-tile__num" aria-hidden="true">I</span>
+            <div class="mp-tile__icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <h3 data-i18n="service.0.title">Stakeholder Engagement</h3>
+            <p data-i18n="service.0.desc">Coordinating with government agencies, international organizations, and civil society.</p>
+            <a href="{% url 'about' %}" class="mp-tile__link">Explore <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="mp-tile mp-tile--2">
+            <span class="mp-tile__num" aria-hidden="true">II</span>
+            <div class="mp-tile__icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <h3 data-i18n="service.2.title">Policy Analysis</h3>
+            <p data-i18n="service.2.desc">Guidance on economic, social, demographic, and environmental development policies.</p>
+            <a href="{% url 'stats' %}" class="mp-tile__link">Explore <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="mp-tile mp-tile--3">
+            <span class="mp-tile__num" aria-hidden="true">III</span>
+            <div class="mp-tile__icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <h3 data-i18n="service.3.title">Evaluation &amp; Monitoring</h3>
+            <p data-i18n="service.3.desc">Periodic assessments to ensure development plans deliver measurable outcomes.</p>
+            <a href="{% url 'devplan' %}" class="mp-tile__link">Explore <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+
+        <aside class="mp-bento__aside">
+          {% with leader=leaders|first %}
+          {% if leader %}
+          <blockquote class="mp-quote">
+            <p class="bilingual" data-en="Through strategic direction and effective policy guidance, we enable Ethiopia to thrive." data-am="በስትራቴጂክ አቅጣጫ እና ውጤታማ የፖሊሲ መመሪያ ኢትዮጵያ እንድትበለጽስ እናስችላለን።">Through strategic direction and effective policy guidance, we enable Ethiopia to thrive.</p>
+            <footer>
+              {% if leader.photo %}<img src="{{ leader.photo.url }}" alt="" class="mp-quote__avatar">{% endif %}
+              <div>
+                <cite>{% include 'website/includes/bilingual.html' with en=leader.name_en am=leader.name_am %}</cite>
+                <span>{% include 'website/includes/bilingual.html' with en=leader.role_en am=leader.role_am %}</span>
+              </div>
+            </footer>
+          </blockquote>
+          {% endif %}
+          {% endwith %}
+          <a href="{% url 'about' %}" class="mp-btn mp-btn--dark mp-btn--wide" data-i18n="hero.cta2">More About Us</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  {# ─── DEV PLAN — typographic monument ─── #}
+  <section class="mp-section mp-devplan mp-devplan--art mp-reveal" id="development">
+    <div class="mp-devplan__mesh" aria-hidden="true"></div>
+    <div class="mp-devplan__watermark" aria-hidden="true">2030</div>
+    <div class="mp-wrap mp-devplan__grid">
+      <div class="mp-devplan__content">
+        <span class="mp-section-num mp-section-num--light" aria-hidden="true">02</span>
+        <span class="mp-eyebrow" data-i18n="dev.tag">In Focus</span>
+        <h2 class="mp-heading mp-heading--light mp-heading--display" data-i18n="dev.title">10-Year<br>Development Plan</h2>
+        <p data-i18n="dev.p1">The 10-Year Development Plan outlines Ethiopia's vision, objectives, and strategic pillars for sustainable development through 2030.</p>
+        <ol class="mp-devplan__timeline">
+          <li data-i18n="timeline.0">Plan Launch — 2021</li>
+          <li data-i18n="timeline.1">Mid-term Review — 2025</li>
+          <li data-i18n="timeline.2">Target Achievement — 2030</li>
+        </ol>
+        <div class="mp-devplan__actions">
+          <a href="{% url 'devplan' %}" class="mp-btn mp-btn--fill" data-i18n="hero.cta1">Explore Development Plan</a>
+          <a href="{{ site_settings.development_plan_pdf_url }}" class="mp-btn mp-btn--ghost" target="_blank" rel="noopener" data-i18n="dev.cta">Download Full Plan</a>
+        </div>
+      </div>
+      <div class="mp-devplan__visual">
+        <a href="{{ site_settings.development_plan_pdf_url }}" class="mp-devplan__document" target="_blank" rel="noopener" aria-label="Open 10-Year Development Plan PDF">
+          <div class="mp-devplan__doc-shadow" aria-hidden="true"></div>
+          <div class="mp-devplan__doc-stack" aria-hidden="true"></div>
+          <figure class="mp-devplan__doc-cover">
+            <img src="{{ site_settings.development_plan_cover }}" alt="10-Year Development Plan — official document cover" width="716" height="1000" loading="lazy">
+          </figure>
+          <span class="mp-devplan__doc-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            PDF
+          </span>
+          <span class="mp-devplan__doc-hint">Open document</span>
+        </a>
+        <div class="mp-devplan__stat-float">
+          <span data-count="10">0</span>
+          <small data-i18n="stat.0.suffix">Year Plan</small>
+        </div>
+        <p class="mp-devplan__period" data-i18n="dev.period">2021 — 2030</p>
+      </div>
+    </div>
+  </section>
+
+  {# ─── PORTALS — command bento gallery ─── #}
+  <section class="mp-section mp-command mp-command--art mp-reveal">
+    <div class="mp-wrap">
+      <header class="mp-section-head mp-section-head--center">
+        <span class="mp-section-num" aria-hidden="true">03</span>
+        <span class="mp-eyebrow" data-i18n="portal.tag">Quick Access</span>
+        <h2 class="mp-heading" data-i18n="portal.title">Government Services &amp; Portals</h2>
+      </header>
+      <div class="mp-command__grid">
+        <a href="{% url 'devplan' %}" class="mp-cmd mp-cmd--lg">
+          <span class="mp-cmd__deco" aria-hidden="true"></span>
+          <div class="mp-cmd__cover-thumb" aria-hidden="true">
+            <img src="{{ site_settings.development_plan_cover }}" alt="">
           </div>
-          <div class="news-card__body">
+          <h3 data-i18n="portal.devplan">Development Plan</h3>
+          <p data-i18n="portal.devplan_desc">10-year national strategy &amp; policy framework</p>
+          <span class="mp-cmd__arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="https://sdg.mopd.gov.et/" target="_blank" rel="noopener" class="mp-cmd mp-cmd--md">
+          <h3 data-i18n="portal.sdg">SDG Tracker</h3>
+          <p data-i18n="portal.sdg_desc">Goal progress dashboard</p>
+          <span class="mp-cmd__arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="{% url 'climate' %}" class="mp-cmd mp-cmd--md">
+          <h3 data-i18n="portal.climate">Climate Action</h3>
+          <p data-i18n="portal.climate_desc">Green policy &amp; documents</p>
+          <span class="mp-cmd__arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="{% url 'procurement' %}" class="mp-cmd mp-cmd--sm">
+          <h3 data-i18n="portal.procurement">Procurement</h3>
+          <p data-i18n="portal.procurement_desc">Tenders &amp; notices</p>
+          <span class="mp-cmd__arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="{% url 'stats' %}" class="mp-cmd mp-cmd--sm">
+          <h3 data-i18n="nav.sub.stats">Statistics</h3>
+          <p data-i18n="portal.params_desc">Key indicators &amp; data</p>
+          <span class="mp-cmd__arrow" aria-hidden="true">→</span>
+        </a>
+        <a href="{% url 'contact' %}" class="mp-cmd mp-cmd--sm">
+          <h3 data-i18n="portal.contact">Contact MoPD</h3>
+          <p data-i18n="portal.contact_desc">Reach our team directly</p>
+          <span class="mp-cmd__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {# ─── NEWS — magazine spread ─── #}
+  <section class="mp-section mp-news mp-news--art mp-reveal" id="news">
+    <div class="mp-wrap">
+      <header class="mp-section-head mp-section-head--split">
+        <div>
+          <span class="mp-section-num" aria-hidden="true">04</span>
+          <span class="mp-eyebrow" data-i18n="news.tag">News &amp; Media</span>
+          <h2 class="mp-heading" data-i18n="news.title">Latest Updates</h2>
+        </div>
+        <a href="{% url 'news' %}" class="mp-btn mp-btn--outline" data-i18n="news.cta">View All News</a>
+      </header>
+
+      <div class="mp-news__layout mp-stagger">
+        {% with article=featured_articles|first %}
+        {% if article %}
+        <article class="mp-news__featured">
+          <span class="mp-news__edition" aria-hidden="true">Featured</span>
+          <a href="{% url 'news_detail' article.slug %}" class="mp-news__featured-img">
+            {% if article.image %}<img src="{{ article.image.url }}" alt="">{% endif %}
+          </a>
+          <div class="mp-news__featured-body">
             <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"F j, Y" }}</time>
             <h3><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></h3>
-            <p>{% include 'website/includes/bilingual.html' with en=article.card_excerpt_en am=article.card_excerpt_am %}</p>
-            <a href="{% url 'news_detail' article.slug %}" class="news-card__link" data-i18n="news.link">Read More →</a>
+            <a href="{% url 'news_detail' article.slug %}" class="mp-btn mp-btn--fill">Read story</a>
           </div>
         </article>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-
-  <!-- Climate -->
-  <section class="climate" id="climate">
-    <div class="container">
-      <div class="climate__banner reveal">
-        <div class="climate__photo">
-          <img src="{% static 'picture/logo1.png' %}" alt="MoPD climate and green development" class="content-img climate__logo">
-        </div>
-        <div class="climate__content">
-          <span class="section-tag section-tag--light" data-i18n="climate.tag">Climate Action</span>
-          <h2 data-i18n-html="climate.title">Green Technology &amp;<br>Environmental Stewardship</h2>
-          <p data-i18n="climate.desc">MoPD leads Ethiopia's climate policy integration, green technology adoption, and alignment of development goals with environmental sustainability.</p>
-          <div class="climate__links">
-            <a href="{% url 'climate' %}" class="climate__link" data-i18n="climate.link.0">About Climate →</a>
-            <a href="{% url 'climate_docs' %}" class="climate__link" data-i18n="climate.link.1">Documents →</a>
-            <a href="{% url 'green_tech' %}" class="climate__link" data-i18n="climate.link.2">Green Technology →</a>
-            <a href="https://climate.mopd.gov.et/" target="_blank" rel="noopener" class="climate__link" data-i18n="climate.link.3">Climate Portal →</a>
-          </div>
-        </div>
-        <div class="climate__stats">
-          <div class="climate__stat">
-            <span class="climate__stat-num" data-i18n="climate.stat.0.num">30B+</span>
-            <span class="climate__stat-label" data-i18n="climate.stat.0.label">Trees Planted Initiative</span>
-          </div>
-          <div class="climate__stat">
-            <span class="climate__stat-num" data-i18n="climate.stat.1.num">Net Zero</span>
-            <span class="climate__stat-label" data-i18n="climate.stat.1.label">2050 Target</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Leadership -->
-  <section class="leadership" id="leadership">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="section-tag" data-i18n="leadership.tag">Leadership</span>
-        <h2 class="section-title" data-i18n="leadership.title">Ministry Management</h2>
-      </div>
-
-      <div class="leadership__grid">
-        {% for leader in leaders %}
-        <article class="leader-card reveal">
-          <a href="{% url 'leader_detail' leader.slug %}" class="leader-card__photo">
-            {% if leader.photo %}
-            <img src="{{ leader.photo.url }}" alt="{{ leader.name_en }}"{% if leader.wide_photo %} class="leader-card__img--wide"{% endif %}>
-            {% endif %}
-          </a>
-          <div class="leader-card__info">
-            <h3><a href="{% url 'leader_detail' leader.slug %}">{% include 'website/includes/bilingual.html' with en=leader.name_en am=leader.name_am %}</a></h3>
-            <span class="leader-card__role">{% include 'website/includes/bilingual.html' with en=leader.role_en am=leader.role_am %}</span>
-            {% if leader.short_bio_en %}
-            <p>{% include 'website/includes/bilingual.html' with en=leader.short_bio_en am=leader.short_bio_am %}</p>
-            {% endif %}
-          </div>
-        </article>
-        {% empty %}
-        <p>No leadership profiles published yet. Add them in the <a href="{% url 'admin:website_leader_changelist' %}">admin</a>.</p>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-
-  <!-- Digital M&E -->
-  <section class="digital" id="data">
-    <div class="container">
-      <div class="digital__grid">
-        <div class="digital__visual reveal">
-          <figure class="digital__figure">
-            <img src="https://mopd.gov.et/media/removal.ai_tmp-649e97fe36a6e_8VAILI.png" alt="Digital Monitoring and Evaluation System" class="digital__image content-img">
-          </figure>
-        </div>
-        <div class="digital__content reveal">
-          <span class="section-tag" data-i18n="digital.tag">Data &amp; Links</span>
-          <h2 class="section-title" data-i18n-html="digital.title">Digital Monitoring<br>&amp; Evaluation</h2>
-          <p data-i18n="digital.desc">The advent of digital technologies has opened new possibilities for efficient monitoring and reporting. MoPD's digital M&amp;E system enhances our ability to track and evaluate the progress and impact of the National Development Plan.</p>
-          <ul class="digital__features">
-            <li data-i18n="digital.f0">Real-time project performance tracking</li>
-            <li data-i18n="digital.f1">SDG Goal-Tracker integration</li>
-            <li data-i18n="digital.f2">National parameters &amp; statistics portal</li>
-            <li data-i18n="digital.f3">Automated reporting &amp; analytics</li>
-          </ul>
-          <a href="https://sdg.mopd.gov.et/" target="_blank" rel="noopener" class="btn btn--primary" data-i18n="digital.cta">Access SDG Tracker</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Affiliates -->
-  <section class="affiliates" id="partners">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="section-tag" data-i18n="affiliates.tag">Partners</span>
-        <h2 class="section-title" data-i18n="affiliates.title">Affiliate Organizations</h2>
-        <p class="section-desc" data-i18n="affiliates.desc">Government institutions and partners working with MoPD on national planning and development.</p>
-      </div>
-      <div class="affiliates__grid">
-        {% for affiliate in affiliates %}
-        <a href="{{ affiliate.url }}" target="_blank" rel="noopener" class="affiliate-card reveal">
-          <div class="affiliate-card__logo">
-            {% if affiliate.logo %}
-            <img src="{{ affiliate.logo.url }}" alt="{{ affiliate.name_en }}" loading="lazy">
-            {% else %}
-            <span class="affiliate-card__initial" aria-hidden="true">{{ affiliate.name_en|slice:":1" }}</span>
-            {% endif %}
-          </div>
-          <h3 class="affiliate-card__name">{% include 'website/includes/bilingual.html' with en=affiliate.name_en am=affiliate.name_am %}</h3>
-          <span class="affiliate-card__cta" data-i18n="affiliates.visit">Visit website →</span>
-        </a>
-        {% empty %}
-        <a href="https://www.epa.gov.et/" target="_blank" rel="noopener" class="affiliate-card reveal">
-          <div class="affiliate-card__logo affiliate-card__logo--fallback"><span class="affiliate-card__initial">E</span></div>
-          <h3 class="affiliate-card__name" data-i18n="affiliate.epa">Environmental Protection Authority</h3>
-          <span class="affiliate-card__cta" data-i18n="affiliates.visit">Visit website →</span>
-        </a>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-
-  <!-- Newsletter & Contact -->
-  <section class="contact" id="contact">
-    <div class="container">
-      <div class="contact__grid">
-        <div class="newsletter reveal">
-          <span class="section-tag" data-i18n="contact.tag">Stay Connected</span>
-          <h2 class="section-title" data-i18n="contact.title">Subscribe to Our Newsletter</h2>
-          <p data-i18n="contact.desc">Get the latest updates on national development initiatives, policy changes, and ministry announcements.</p>
-          <form class="newsletter__form" id="newsletterForm" method="post" action="{% url 'newsletter_subscribe' %}">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}">
-            <input type="hidden" name="source" value="homepage">
-            <input type="email" name="email" placeholder="Enter your email address" required aria-label="Email address" data-i18n-placeholder="contact.email_placeholder" data-i18n-aria="aria.email">
-            <button type="submit" class="btn btn--primary" data-i18n="contact.subscribe">Subscribe</button>
-          </form>
-          {% if messages %}
-          <div class="newsletter__alerts">
-            {% for message in messages %}
-            <p class="contact-form__alert contact-form__alert--{{ message.tags }}">{{ message }}</p>
-            {% endfor %}
-          </div>
+        {% endif %}
+        {% endwith %}
+        <div class="mp-news__list">
+          {% for article in featured_articles %}
+          {% if not forloop.first %}
+          <article class="mp-news__item">
+            <span class="mp-news__index" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
+            <a href="{% url 'news_detail' article.slug %}" class="mp-news__item-thumb">
+              {% if article.image %}<img src="{{ article.image.url }}" alt="">{% endif %}
+            </a>
+            <div class="mp-news__item-body">
+              <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"M j, Y" }}</time>
+              <h3><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></h3>
+            </div>
+          </article>
           {% endif %}
-          <div class="contact__map">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2288.2357508217674!2d38.76139936421245!3d9.045011320667369!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b8f0ed6252815%3A0x9a386a8ea01f93d3!2sMinistry%20of%20planning%20and%20development(MoPD)!5e0!3m2!1sen!2set!4v1688054937756!5m2!1sen!2set"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              title="Ministry of Planning and Development — 6 Kilo, Addis Ababa"
-              data-i18n-title="contact.map_title">
-            </iframe>
-          </div>
-        </div>
-        <div class="contact__info reveal">
-          <span class="section-tag" data-i18n="contact.reach">Reach Us</span>
-          <h2 class="section-title contact__info-title" data-i18n="contact.touch">Get in Touch</h2>
-          {% include 'website/includes/contact_info.html' %}
+          {% endfor %}
         </div>
       </div>
     </div>
   </section>
+
+  {# ─── CLIMATE — atmospheric band ─── #}
+  <section class="mp-section mp-climate mp-climate--art mp-reveal">
+    <div class="mp-climate__atmosphere" aria-hidden="true"></div>
+    <div class="mp-climate__orb mp-climate__orb--1" aria-hidden="true"></div>
+    <div class="mp-climate__orb mp-climate__orb--2" aria-hidden="true"></div>
+    <div class="mp-wrap mp-climate__grid">
+      <div class="mp-climate__content">
+        <span class="mp-section-num mp-section-num--light" aria-hidden="true">05</span>
+        <span class="mp-eyebrow mp-eyebrow--mint" data-i18n="climate.tag">Climate Action</span>
+        <h2 class="mp-heading mp-heading--light" data-i18n-html="climate.title">Green Technology &amp;<br>Environmental Stewardship</h2>
+        <p data-i18n="climate.desc">MoPD leads Ethiopia's climate policy integration, green technology adoption, and alignment of development goals with environmental sustainability.</p>
+        <div class="mp-climate__actions">
+          <a href="{% url 'climate' %}" class="mp-btn mp-btn--fill" data-i18n="climate.link.0">About Climate</a>
+          <a href="{% url 'climate_docs' %}" class="mp-btn mp-btn--ghost" data-i18n="climate.link.1">Documents</a>
+        </div>
+      </div>
+      <div class="mp-climate__stats">
+        <div class="mp-climate__stat">
+          <strong data-i18n="climate.stat.0.num">30B+</strong>
+          <span data-i18n="climate.stat.0.label">Trees Planted Initiative</span>
+        </div>
+        <div class="mp-climate__stat">
+          <strong data-i18n="climate.stat.1.num">Net Zero</strong>
+          <span data-i18n="climate.stat.1.label">2050 Target</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ─── LEADERSHIP — portrait gallery ─── #}
+  <section class="mp-section mp-leaders mp-leaders--art mp-reveal" id="leadership">
+    <div class="mp-wrap">
+      <header class="mp-section-head mp-section-head--split">
+        <div>
+          <span class="mp-section-num" aria-hidden="true">06</span>
+          <span class="mp-eyebrow" data-i18n="leadership.tag">Leadership</span>
+          <h2 class="mp-heading" data-i18n="leadership.title">Ministry Management</h2>
+        </div>
+        <a href="{% url 'leadership' %}" class="mp-btn mp-btn--outline" data-i18n="nav.sub.management">View All</a>
+      </header>
+      <div class="mp-leaders__track">
+        <div class="mp-leaders__scroll mp-stagger">
+          {% for leader in leaders %}
+          <article class="mp-leader">
+            <a href="{% url 'leader_detail' leader.slug %}" class="mp-leader__photo">
+              {% if leader.photo %}<img src="{{ leader.photo.url }}" alt="{{ leader.name_en }}">{% endif %}
+              <div class="mp-leader__overlay">
+                <span>View profile</span>
+              </div>
+            </a>
+            <div class="mp-leader__body">
+              <h3><a href="{% url 'leader_detail' leader.slug %}">{% include 'website/includes/bilingual.html' with en=leader.name_en am=leader.name_am %}</a></h3>
+              <p>{% include 'website/includes/bilingual.html' with en=leader.role_en am=leader.role_am %}</p>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="mp-leaders__fade mp-leaders__fade--right" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  {# ─── PARTNERS — logo constellation ─── #}
+  <section class="mp-partners mp-partners--art mp-reveal">
+    <div class="mp-wrap">
+      <header class="mp-section-head mp-section-head--center">
+        <span class="mp-section-num" aria-hidden="true">07</span>
+        <span class="mp-eyebrow" data-i18n="affiliates.tag">Partners</span>
+        <h2 class="mp-heading" data-i18n="affiliates.title">Affiliate Organizations</h2>
+      </header>
+      <div class="mp-partners__constellation mp-stagger">
+        {% for affiliate in affiliates %}
+        <a href="{{ affiliate.url }}" target="_blank" rel="noopener" class="mp-partner">
+          <div class="mp-partner__glow" aria-hidden="true"></div>
+          {% if affiliate.logo %}<img src="{{ affiliate.logo.url }}" alt="{{ affiliate.name_en }}">{% endif %}
+          <span>{% include 'website/includes/bilingual.html' with en=affiliate.name_en am=affiliate.name_am %}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# ─── CONNECT — closing invitation ─── #}
+  <section class="mp-section mp-connect mp-connect--art mp-reveal">
+    <div class="mp-connect__curve" aria-hidden="true"></div>
+    <div class="mp-wrap mp-connect__grid">
+      <div class="mp-connect__panel">
+        <span class="mp-section-num mp-section-num--light" aria-hidden="true">08</span>
+        <span class="mp-eyebrow mp-eyebrow--mint" data-i18n="contact.tag">Stay Connected</span>
+        <h2 class="mp-heading mp-heading--light" data-i18n="contact.title">Subscribe to Our Newsletter</h2>
+        <p class="mp-connect__lead" data-i18n="contact.desc">Get the latest updates on national development initiatives and ministry announcements.</p>
+        <form method="post" action="{% url 'newsletter_subscribe' %}" class="mp-connect__form">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <input type="hidden" name="source" value="homepage">
+          <input type="email" name="email" placeholder="Enter your email" required data-i18n-placeholder="contact.email_placeholder">
+          <button type="submit" class="mp-btn mp-btn--fill" data-i18n="contact.subscribe">Subscribe</button>
+        </form>
+      </div>
+      <div class="mp-connect__panel mp-connect__panel--info">
+        <span class="mp-eyebrow mp-eyebrow--mint" data-i18n="contact.reach">Reach Us</span>
+        <h2 class="mp-heading mp-heading--light" data-i18n="contact.touch">Get in Touch</h2>
+        {% include 'website/includes/contact_info.html' %}
+        <a href="{% url 'contact' %}" class="mp-btn mp-btn--ghost" data-i18n="page.contact.form_title">Send Us a Message</a>
+      </div>
+    </div>
+  </section>
+
+</main>
 {% endblock %}

@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.html import format_html
 from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 
@@ -19,6 +21,7 @@ from .models import (
     SiteTranslation,
     Vacancy,
 )
+from .models import _fill_missing_amharic
 
 
 def _image_thumb(image_field, height=40):
@@ -43,7 +46,7 @@ class SiteSettingsAdmin(TabbedTranslationAdmin):
         ('Contact', {'fields': ('phone', 'email', 'address')}),
         ('Social media', {'fields': ('facebook_url', 'twitter_url', 'linkedin_url')}),
         ('Footer', {'fields': ('footer_desc', 'copyright_text')}),
-        ('Downloads', {'fields': ('development_plan_pdf_url',)}),
+        ('Downloads', {'fields': ('development_plan_pdf_url', 'development_plan_cover_url')}),
     )
 
     def has_add_permission(self, request):
@@ -164,6 +167,23 @@ class AffiliateLinkAdmin(TabbedTranslationAdmin):
 
 @admin.register(NewsArticle)
 class NewsArticleAdmin(TabbedTranslationAdmin):
+    class NewsArticleAdminForm(forms.ModelForm):
+        class Meta:
+            model = NewsArticle
+            fields = '__all__'
+
+        def clean(self):
+            cleaned = super().clean()
+            title = (
+                (cleaned.get('title') or '')
+                or (cleaned.get('title_en') or '')
+                or (cleaned.get('title_am') or '')
+            ).strip()
+            if not title:
+                raise ValidationError('Please enter a title on the English or Amharic tab.')
+            return cleaned
+
+    form = NewsArticleAdminForm
     list_display = ('title_en', 'article_type', 'category', 'published_at', 'is_published', 'is_featured_home', 'thumb')
     list_editable = ('is_published', 'is_featured_home')
     list_filter = ('article_type', 'category', 'is_published', 'published_at')
@@ -172,14 +192,23 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
     date_hierarchy = 'published_at'
     fieldsets = (
         (None, {'fields': ('slug', 'article_type', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords')}),
-        ('Tags', {'fields': ('tag',)}),
         ('Article content', {'fields': ('title', 'excerpt', 'body')}),
+        ('Tags', {'fields': ('tag',)}),
         ('Homepage', {
             'fields': ('is_featured_home',),
             'classes': ('collapse',),
         }),
     )
     readonly_fields = ('image_preview',)
+
+    def save_model(self, request, obj, form, change):
+        _fill_missing_amharic(
+            obj,
+            ('tag', 'title', 'excerpt', 'body'),
+            max_lengths={'tag': 80, 'title': 500},
+            defaults={'tag': 'News'},
+        )
+        super().save_model(request, obj, form, change)
 
     @admin.display(description='Current image')
     def image_preview(self, obj):

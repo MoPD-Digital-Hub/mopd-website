@@ -4,11 +4,13 @@
 {% block page_id %}press{% endblock %}
 
 {% block content %}
-<main class="page">
+<main class="page sx-page cv-page">
   <section class="page-hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <a href="{% url 'news' %}" data-i18n="nav.news">News &amp; Media</a>
         <span>/</span>
         <span data-i18n="nav.sub.press">Press Release</span>
       </nav>
@@ -42,7 +44,7 @@
       </div>
 
       {% if page_obj.has_other_pages %}
-      <nav class="pagination reveal" aria-label="Press release pages">
+      <nav class="pagination" aria-label="Press release pages">
         {% if page_obj.has_previous %}
         <a class="pagination__link" href="?page={{ page_obj.previous_page_number }}">← Previous</a>
         {% endif %}

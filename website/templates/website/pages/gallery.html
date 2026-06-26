@@ -3,11 +3,13 @@
 {% block page_id %}gallery{% endblock %}
 
 {% block content %}
-<main class="page">
+<main class="page sx-page cv-page">
   <section class="page-hero">
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <a href="{% url 'news' %}" data-i18n="nav.news">News &amp; Media</a>
         <span>/</span>
         <span data-i18n="nav.sub.gallery">Gallery</span>
       </nav>

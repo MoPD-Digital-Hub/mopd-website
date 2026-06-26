@@ -7,4 +7,5 @@ class WebsiteConfig(AppConfig):
     verbose_name = 'Website content'
 
     def ready(self):
+        from . import signals  # noqa: F401
         from . import translation  # noqa: F401
