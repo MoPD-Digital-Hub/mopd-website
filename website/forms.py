@@ -31,7 +31,7 @@ class ContactForm(forms.ModelForm):
         self.fields['captcha'].widget.attrs.update({
             'class': 'contact-form__captcha-input',
             'autocomplete': 'off',
-            'inputmode': 'numeric',
+            'inputmode': 'text',
         })
 
     def clean_website_url(self):

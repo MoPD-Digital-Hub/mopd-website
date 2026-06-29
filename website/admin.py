@@ -221,15 +221,47 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
 
 @admin.register(ContactSubmission)
 class ContactSubmissionAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'name', 'email', 'created_at', 'is_read')
-    list_filter = ('is_read', 'created_at')
-    search_fields = ('name', 'email', 'subject', 'details', 'phone')
-    readonly_fields = ('name', 'email', 'phone', 'subject', 'details', 'created_at')
-    list_editable = ('is_read',)
+    list_display = ('subject', 'name', 'email', 'status', 'assigned_to', 'created_at', 'is_read')
+    list_filter = ('status', 'is_read', 'created_at', 'updated_at')
+    search_fields = ('name', 'email', 'subject', 'details', 'phone', 'assigned_to', 'internal_notes')
+    readonly_fields = ('name', 'email', 'phone', 'subject', 'details', 'created_at', 'updated_at')
+    list_editable = ('status', 'assigned_to', 'is_read')
     ordering = ('-created_at',)
+    date_hierarchy = 'created_at'
+    actions = ('mark_new', 'mark_in_progress', 'mark_resolved', 'mark_read', 'mark_unread')
+    fieldsets = (
+        ('Message', {'fields': ('name', 'email', 'phone', 'subject', 'details')}),
+        ('Workflow', {'fields': ('status', 'assigned_to', 'internal_notes', 'is_read')}),
+        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
+    )
 
     def has_add_permission(self, request):
         return False
+
+    @admin.action(description='Mark selected messages as new')
+    def mark_new(self, request, queryset):
+        updated = queryset.update(status=ContactSubmission.Status.NEW, is_read=False)
+        self.message_user(request, f'{updated} message(s) marked as new.')
+
+    @admin.action(description='Mark selected messages as in progress')
+    def mark_in_progress(self, request, queryset):
+        updated = queryset.update(status=ContactSubmission.Status.IN_PROGRESS, is_read=True)
+        self.message_user(request, f'{updated} message(s) marked as in progress.')
+
+    @admin.action(description='Mark selected messages as resolved')
+    def mark_resolved(self, request, queryset):
+        updated = queryset.update(status=ContactSubmission.Status.RESOLVED, is_read=True)
+        self.message_user(request, f'{updated} message(s) marked as resolved.')
+
+    @admin.action(description='Mark selected messages as read')
+    def mark_read(self, request, queryset):
+        updated = queryset.update(is_read=True)
+        self.message_user(request, f'{updated} message(s) marked as read.')
+
+    @admin.action(description='Mark selected messages as unread')
+    def mark_unread(self, request, queryset):
+        updated = queryset.update(is_read=False)
+        self.message_user(request, f'{updated} message(s) marked as unread.')
 
 
 @admin.register(NewsletterSubscriber)

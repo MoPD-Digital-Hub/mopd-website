@@ -180,9 +180,8 @@ EMAIL_BACKEND = os.environ.get(
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@mopd.gov.et')
 CONTACT_FORM_NOTIFY_EMAIL = os.environ.get('CONTACT_FORM_NOTIFY_EMAIL', '')
 
-# Contact form CAPTCHA (math question — no external API keys required)
-CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
-CAPTCHA_LENGTH = 1
+# Contact form CAPTCHA (word challenge — no external API keys required)
+CAPTCHA_CHALLENGE_FUNCT = 'website.captcha_challenges.word_challenge'
 CAPTCHA_TIMEOUT = 5
 CAPTCHA_FONT_SIZE = 28
 

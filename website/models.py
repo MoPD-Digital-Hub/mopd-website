@@ -321,12 +321,21 @@ class Document(models.Model):
 
 
 class ContactSubmission(models.Model):
+    class Status(models.TextChoices):
+        NEW = 'new', 'New'
+        IN_PROGRESS = 'in_progress', 'In progress'
+        RESOLVED = 'resolved', 'Resolved'
+
     name = models.CharField(max_length=200)
     email = models.EmailField()
     phone = models.CharField(max_length=40, blank=True)
     subject = models.CharField(max_length=200)
     details = models.TextField()
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
+    assigned_to = models.CharField(max_length=120, blank=True)
+    internal_notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_read = models.BooleanField(default=False)
 
     class Meta:
