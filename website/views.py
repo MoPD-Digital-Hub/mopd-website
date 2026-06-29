@@ -270,8 +270,10 @@ def news_detail(request, slug):
 
 def site_search(request):
     query = request.GET.get('q', '')
-    results = run_site_search(query)
-    total = len(results['news']) + len(results['documents']) + len(results['pages'])
+    result_type = request.GET.get('type', 'all')
+    results = run_site_search(query, result_type=result_type)
+    result_keys = ['news', 'documents', 'pages', 'procurement', 'vacancies', 'departments']
+    total = sum(len(results[key]) for key in result_keys)
     return render(
         request,
         'website/pages/search.html',

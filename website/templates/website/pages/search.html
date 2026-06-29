@@ -26,14 +26,22 @@
       </form>
 
       {% if query %}
-      <p class="site-search__summary reveal" data-i18n="page.search.results">Found {{ total }} result{{ total|pluralize }} for “{{ query }}”.</p>
+      <nav class="site-search__filters reveal" aria-label="Search filters">
+        {% for value, label in results.filters %}
+        <a class="site-search__filter{% if results.active_type == value %} is-active{% endif %}" href="{% url 'search' %}?q={{ query|urlencode }}&type={{ value }}" {% if results.active_type == value %}aria-current="true"{% endif %}>{{ label }}</a>
+        {% endfor %}
+      </nav>
+      <p class="site-search__summary reveal">Found {{ total }} result{{ total|pluralize }} for “{{ query }}”.</p>
 
       {% if results.news %}
       <div class="site-search__section reveal">
         <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.news">News</h2>
         <ul class="site-search__list">
           {% for article in results.news %}
-          <li><a href="{% url 'news_detail' article.slug %}">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a></li>
+          <li>
+            <a href="{% url 'news_detail' article.slug %}" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a>
+            <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=article.card_excerpt_en am=article.card_excerpt_am %}</p>
+          </li>
           {% endfor %}
         </ul>
       </div>
@@ -44,7 +52,12 @@
         <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.documents">Documents</h2>
         <ul class="site-search__list">
           {% for doc in results.documents %}
-          <li><a href="{{ doc.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=doc.display_title_en am=doc.display_title_am %}</a></li>
+          <li>
+            <a href="{{ doc.file_url }}" target="_blank" rel="noopener" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=doc.display_title_en am=doc.display_title_am %}</a>
+            {% if doc.description_en or doc.description_am %}
+            <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=doc.description_en am=doc.description_am %}</p>
+            {% endif %}
+          </li>
           {% endfor %}
         </ul>
       </div>
@@ -55,7 +68,57 @@
         <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.pages">Pages</h2>
         <ul class="site-search__list">
           {% for page in results.pages %}
-          <li><span class="site-search__key">{{ page.key }}</span> — {% include 'website/includes/bilingual.html' with en=page.text_en am=page.text_am %}</li>
+          <li><span class="site-search__key site-search__match">{{ page.key }}</span> — <span class="site-search__match">{% include 'website/includes/bilingual.html' with en=page.text_en am=page.text_am %}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if results.procurement %}
+      <div class="site-search__section reveal">
+        <h2 class="section-title" style="font-size:1.35rem;">Procurement</h2>
+        <ul class="site-search__list">
+          {% for notice in results.procurement %}
+          <li>
+            <a href="{% url 'procurement' %}" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=notice.title_en am=notice.title_am %}</a>
+            <p class="site-search__meta site-search__match">{{ notice.reference }}{% if notice.published_at %} · {{ notice.published_at|date:"M j, Y" }}{% endif %}</p>
+            {% if notice.description_en or notice.description_am %}
+            <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=notice.description_en am=notice.description_am %}</p>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if results.vacancies %}
+      <div class="site-search__section reveal">
+        <h2 class="section-title" style="font-size:1.35rem;">Vacancies</h2>
+        <ul class="site-search__list">
+          {% for vacancy in results.vacancies %}
+          <li>
+            <a href="{% url 'vacancies' %}" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=vacancy.title_en am=vacancy.title_am %}</a>
+            <p class="site-search__meta site-search__match">{{ vacancy.reference }}{% if vacancy.location_en %} · {{ vacancy.location_en }}{% endif %}{% if vacancy.deadline %} · Deadline {{ vacancy.deadline|date:"M j, Y" }}{% endif %}</p>
+            {% if vacancy.description_en or vacancy.description_am %}
+            <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=vacancy.description_en am=vacancy.description_am %}</p>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if results.departments %}
+      <div class="site-search__section reveal">
+        <h2 class="section-title" style="font-size:1.35rem;">Departments</h2>
+        <ul class="site-search__list">
+          {% for department in results.departments %}
+          <li>
+            <a href="{% url 'about' %}#departments" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=department.name_en am=department.name_am %}</a>
+            {% if department.description_en or department.description_am %}
+            <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=department.description_en am=department.description_am %}</p>
+            {% endif %}
+          </li>
           {% endfor %}
         </ul>
       </div>
@@ -68,4 +131,39 @@
     </div>
   </section>
 </main>
+{{ query|json_script:"siteSearchQuery" }}
+<script>
+  (() => {
+    const queryNode = document.getElementById('siteSearchQuery');
+    if (!queryNode) return;
+    const query = JSON.parse(queryNode.textContent || '""').trim();
+    if (query.length < 2) return;
+    const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+
+    document.querySelectorAll('.site-search__match').forEach((node) => {
+      const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+      textNodes.forEach((textNode) => {
+        pattern.lastIndex = 0;
+        if (!pattern.test(textNode.nodeValue)) return;
+        pattern.lastIndex = 0;
+        const fragment = document.createDocumentFragment();
+        textNode.nodeValue.split(pattern).forEach((part) => {
+          if (!part) return;
+          if (part.toLowerCase() === query.toLowerCase()) {
+            const mark = document.createElement('mark');
+            mark.className = 'site-search__highlight';
+            mark.textContent = part;
+            fragment.appendChild(mark);
+          } else {
+            fragment.appendChild(document.createTextNode(part));
+          }
+        });
+        textNode.parentNode.replaceChild(fragment, textNode);
+      });
+    });
+  })();
+</script>
 {% endblock %}
