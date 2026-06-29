@@ -1381,7 +1381,7 @@ body:not([data-page="home"]) .mp-header {
 }
 
 .mp-hero .sx-hero__video-cover {
-  background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg');
+  background-image: url('/static/img/hero/hero-video-poster.jpg');
   background-size: cover;
   background-position: center;
 }

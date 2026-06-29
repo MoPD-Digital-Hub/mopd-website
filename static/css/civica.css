@@ -312,7 +312,7 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   position: absolute;
   inset: 0;
   background-color: var(--cv-primary);
-  background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg');
+  background-image: url('/static/img/hero/hero-video-poster.jpg');
   background-size: cover;
   background-position: center;
   z-index: 0;
@@ -340,7 +340,7 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   inset: 0;
   z-index: 8;
   background-color: var(--cv-primary);
-  background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg');
+  background-image: url('/static/img/hero/hero-video-poster.jpg');
   background-size: cover;
   background-position: center;
   opacity: 1;

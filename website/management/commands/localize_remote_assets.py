@@ -29,6 +29,7 @@ class Command(BaseCommand):
             self._localize_site_settings(cache)
             self._localize_procurement(cache)
             self._localize_vacancies(cache)
+            self._verify_uploaded_images()
 
         if do_news:
             self._localize_news(cache)
@@ -58,6 +59,12 @@ class Command(BaseCommand):
                 setattr(settings_obj, field, new_value)
                 changed_fields.append(field)
                 self.stdout.write(f'  settings.{field} → {new_value}')
+        # Point external PDF default at local path when still on mopd.gov.et
+        if settings_obj.development_plan_pdf_url and 'mopd.gov.et' in settings_obj.development_plan_pdf_url:
+            settings_obj.development_plan_pdf_url = '/media/ten-year-document/ten_year_development_plan.pdf'
+            if 'development_plan_pdf_url' not in changed_fields:
+                changed_fields.append('development_plan_pdf_url')
+                self.stdout.write('  settings.development_plan_pdf_url → /media/ten-year-document/ten_year_development_plan.pdf')
         if changed_fields:
             settings_obj.save(update_fields=changed_fields)
 
@@ -90,3 +97,34 @@ class Command(BaseCommand):
                 article.save()
                 updated += 1
         self.stdout.write(f'News articles updated: {updated}/{NewsArticle.objects.count()}')
+
+    def _verify_uploaded_images(self):
+        from pathlib import Path
+
+        from django.conf import settings
+
+        from website.models import AffiliateLink, CarouselSlide, GalleryImage, Leader, NewsArticle
+
+        missing = []
+        checks = (
+            ('news', NewsArticle.objects.exclude(image='')),
+            ('leaders', Leader.objects.exclude(photo='')),
+            ('affiliates', AffiliateLink.objects.exclude(logo='')),
+            ('carousel', CarouselSlide.objects.exclude(image='')),
+            ('gallery', GalleryImage.objects.exclude(image='')),
+        )
+        for label, qs in checks:
+            for obj in qs:
+                field = 'image' if hasattr(obj, 'image') else 'photo' if hasattr(obj, 'photo') else 'logo'
+                file_field = getattr(obj, field)
+                if not file_field or not file_field.name:
+                    continue
+                path = Path(settings.MEDIA_ROOT) / file_field.name
+                if not path.is_file():
+                    missing.append(f'{label}:{obj.pk}:{file_field.name}')
+        if missing:
+            self.stdout.write(self.style.WARNING(f'Missing image files on disk: {len(missing)}'))
+            for item in missing[:10]:
+                self.stdout.write(f'  {item}')
+        else:
+            self.stdout.write('All uploaded images present on disk.')
