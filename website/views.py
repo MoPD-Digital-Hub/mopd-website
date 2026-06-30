@@ -40,6 +40,7 @@ PAGE_TEMPLATES = {
     'vacancies': 'website/pages/vacancies.html',
     'privacy': 'website/pages/privacy.html',
     'accessibility': 'website/pages/accessibility.html',
+    'faq': 'website/pages/faq.html',
 }
 
 PAGE_NAV_IDS = {
@@ -57,6 +58,7 @@ PAGE_NAV_IDS = {
     'vacancies': 'vacancies',
     'privacy': 'privacy',
     'accessibility': 'accessibility',
+    'faq': 'faq',
 }
 
 NEWS_PER_PAGE = 12

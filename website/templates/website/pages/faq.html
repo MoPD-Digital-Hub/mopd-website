@@ -1,0 +1,145 @@
+{% extends 'website/base.html' %}
+
+{% block title %}FAQ — Ministry of Planning and Development{% endblock %}
+{% block meta_description %}Frequently asked questions about MoPD services, documents, procurement, vacancies, statistics, and contact channels.{% endblock %}
+{% block page_id %}faq{% endblock %}
+
+{% block content %}
+<main class="page sx-page cv-page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="page.faq.title">Frequently Asked Questions</span>
+      </nav>
+      <h1 class="page-hero__title" data-i18n="page.faq.title">Frequently Asked Questions</h1>
+      <p class="page-hero__desc" data-i18n="page.faq.desc">Find quick answers about ministry updates, publications, procurement, vacancies, statistics, and contacting MoPD.</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      <div class="faq-shell reveal" data-faq>
+        <aside class="faq-panel" aria-label="FAQ search and topics">
+          <label for="faqSearch" data-i18n="page.faq.search_label">Search questions</label>
+          <div class="faq-search">
+            <input id="faqSearch" type="search" placeholder="Search FAQ..." autocomplete="off" data-faq-search data-i18n-placeholder="page.faq.search_placeholder">
+          </div>
+          <div class="faq-topics" aria-label="FAQ topics">
+            <button type="button" class="faq-topic is-active" data-faq-filter="all" data-i18n="page.faq.topic_all">All</button>
+            <button type="button" class="faq-topic" data-faq-filter="documents" data-i18n="page.faq.topic_documents">Documents</button>
+            <button type="button" class="faq-topic" data-faq-filter="procurement" data-i18n="page.faq.topic_procurement">Procurement</button>
+            <button type="button" class="faq-topic" data-faq-filter="vacancies" data-i18n="page.faq.topic_vacancies">Vacancies</button>
+            <button type="button" class="faq-topic" data-faq-filter="contact" data-i18n="page.faq.topic_contact">Contact</button>
+            <button type="button" class="faq-topic" data-faq-filter="accessibility" data-i18n="page.faq.topic_accessibility">Accessibility</button>
+          </div>
+        </aside>
+
+        <div class="faq-list" aria-live="polite">
+          <details class="faq-item" data-faq-item data-category="documents" open>
+            <summary>
+              <span data-i18n="page.faq.q_documents">Where can I find official MoPD documents?</span>
+            </summary>
+            <p data-i18n-html="page.faq.a_documents">Use the <a href="{% url 'climate_docs' %}">Climate Documents</a> and <a href="{% url 'stats' %}">Statistics Documents</a> pages to browse, preview, and download published PDF documents.</p>
+          </details>
+
+          <details class="faq-item" data-faq-item data-category="documents">
+            <summary>
+              <span data-i18n="page.faq.q_download">Can I download documents from the website?</span>
+            </summary>
+            <p data-i18n="page.faq.a_download">Yes. Document library items include preview and download actions where the source file is available.</p>
+          </details>
+
+          <details class="faq-item" data-faq-item data-category="procurement">
+            <summary>
+              <span data-i18n="page.faq.q_procurement">Where are procurement notices published?</span>
+            </summary>
+            <p data-i18n-html="page.faq.a_procurement">Active tender notices are listed on the <a href="{% url 'procurement' %}">Procurement</a> page. Expired notices are hidden from the public list.</p>
+          </details>
+
+          <details class="faq-item" data-faq-item data-category="vacancies">
+            <summary>
+              <span data-i18n="page.faq.q_vacancies">How can I check current job openings?</span>
+            </summary>
+            <p data-i18n-html="page.faq.a_vacancies">Visit the <a href="{% url 'vacancies' %}">Vacancies</a> page for current openings, deadlines, locations, and downloadable vacancy files.</p>
+          </details>
+
+          <details class="faq-item" data-faq-item data-category="contact">
+            <summary>
+              <span data-i18n="page.faq.q_contact">How do I contact the Ministry?</span>
+            </summary>
+            <p data-i18n-html="page.faq.a_contact">Use the <a href="{% url 'contact' %}">Contact</a> page to send a message or find the ministry phone, email, address, and map location.</p>
+          </details>
+
+          <details class="faq-item" data-faq-item data-category="contact">
+            <summary>
+              <span data-i18n="page.faq.q_response">How soon will I receive a response?</span>
+            </summary>
+            <p data-i18n="page.faq.a_response">Response times depend on the inquiry type and office workload. Please include clear contact details and enough context for the team to route your message.</p>
+          </details>
+
+          <details class="faq-item" data-faq-item data-category="accessibility">
+            <summary>
+              <span data-i18n="page.faq.q_language">Does the website support Amharic and English?</span>
+            </summary>
+            <p data-i18n="page.faq.a_language">Yes. Use the language buttons in the header to switch between available site languages.</p>
+          </details>
+
+          <details class="faq-item" data-faq-item data-category="accessibility">
+            <summary>
+              <span data-i18n="page.faq.q_accessibility">What should I do if I find an accessibility issue?</span>
+            </summary>
+            <p data-i18n-html="page.faq.a_accessibility">Please report accessibility barriers through the <a href="{% url 'contact' %}">Contact</a> page so the website team can review and improve the experience.</p>
+          </details>
+
+          <p class="faq-empty" data-faq-empty data-i18n="page.faq.empty">No FAQ items match your search.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (() => {
+    document.querySelectorAll('[data-faq]').forEach((faq) => {
+      const search = faq.querySelector('[data-faq-search]');
+      const filters = faq.querySelectorAll('[data-faq-filter]');
+      const items = faq.querySelectorAll('[data-faq-item]');
+      const empty = faq.querySelector('[data-faq-empty]');
+      let activeFilter = 'all';
+
+      const normalize = (value) => value.toLowerCase().trim();
+
+      const applyFilters = () => {
+        const query = normalize(search?.value || '');
+        let visibleCount = 0;
+
+        items.forEach((item) => {
+          const matchesTopic = activeFilter === 'all' || item.dataset.category === activeFilter;
+          const matchesQuery = !query || normalize(item.textContent).includes(query);
+          const isVisible = matchesTopic && matchesQuery;
+          item.hidden = !isVisible;
+          if (isVisible) visibleCount += 1;
+        });
+
+        if (empty) empty.hidden = visibleCount > 0;
+      };
+
+      search?.addEventListener('input', applyFilters);
+
+      filters.forEach((button) => {
+        button.addEventListener('click', () => {
+          activeFilter = button.dataset.faqFilter || 'all';
+          filters.forEach((filter) => filter.classList.toggle('is-active', filter === button));
+          applyFilters();
+        });
+      });
+
+      applyFilters();
+    });
+  })();
+</script>
+{% endblock %}
