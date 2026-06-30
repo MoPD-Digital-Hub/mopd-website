@@ -31,13 +31,19 @@ def run_site_search(query, result_type='all', limit=20):
     if len(q) < 2:
         return results
 
+    # The site switches language client-side, so Django's active language may
+    # not match the visitor's selected language. Search both translation
+    # columns explicitly so English and Amharic content are both discoverable.
     if active_type in ('all', 'news'):
         results['news'] = (
             NewsArticle.objects.filter(is_published=True)
             .filter(
-                Q(title__icontains=q)
-                | Q(excerpt__icontains=q)
-                | Q(body__icontains=q)
+                Q(title_en__icontains=q)
+                | Q(title_am__icontains=q)
+                | Q(excerpt_en__icontains=q)
+                | Q(excerpt_am__icontains=q)
+                | Q(body_en__icontains=q)
+                | Q(body_am__icontains=q)
                 | Q(search_keywords__icontains=q)
             )
             .distinct()[:limit]
@@ -47,8 +53,10 @@ def run_site_search(query, result_type='all', limit=20):
         results['documents'] = (
             Document.objects.filter(is_published=True)
             .filter(
-                Q(title__icontains=q)
-                | Q(description__icontains=q)
+                Q(title_en__icontains=q)
+                | Q(title_am__icontains=q)
+                | Q(description_en__icontains=q)
+                | Q(description_am__icontains=q)
                 | Q(file_url__icontains=q)
             )
             .distinct()[:limit]
@@ -57,9 +65,11 @@ def run_site_search(query, result_type='all', limit=20):
     if active_type in ('all', 'pages'):
         results['pages'] = (
             SiteTranslation.objects.filter(
-                Q(key__icontains=q) | Q(text__icontains=q)
+                Q(key__icontains=q)
+                | Q(text_en__icontains=q)
+                | Q(text_am__icontains=q)
             )
-            .exclude(text='')
+            .exclude(text_en='', text_am='')
             .distinct()[:limit]
         )
 
@@ -67,9 +77,11 @@ def run_site_search(query, result_type='all', limit=20):
         results['procurement'] = (
             ProcurementNotice.objects.filter(is_published=True)
             .filter(
-                Q(title__icontains=q)
+                Q(title_en__icontains=q)
+                | Q(title_am__icontains=q)
                 | Q(reference__icontains=q)
-                | Q(description__icontains=q)
+                | Q(description_en__icontains=q)
+                | Q(description_am__icontains=q)
                 | Q(file_url__icontains=q)
             )
             .distinct()[:limit]
@@ -79,10 +91,13 @@ def run_site_search(query, result_type='all', limit=20):
         results['vacancies'] = (
             Vacancy.objects.filter(is_published=True)
             .filter(
-                Q(title__icontains=q)
+                Q(title_en__icontains=q)
+                | Q(title_am__icontains=q)
                 | Q(reference__icontains=q)
-                | Q(location__icontains=q)
-                | Q(description__icontains=q)
+                | Q(location_en__icontains=q)
+                | Q(location_am__icontains=q)
+                | Q(description_en__icontains=q)
+                | Q(description_am__icontains=q)
                 | Q(file_url__icontains=q)
             )
             .distinct()[:limit]
@@ -92,8 +107,10 @@ def run_site_search(query, result_type='all', limit=20):
         results['departments'] = (
             Department.objects.filter(is_published=True)
             .filter(
-                Q(name__icontains=q)
-                | Q(description__icontains=q)
+                Q(name_en__icontains=q)
+                | Q(name_am__icontains=q)
+                | Q(description_en__icontains=q)
+                | Q(description_am__icontains=q)
             )
             .distinct()[:limit]
         )
