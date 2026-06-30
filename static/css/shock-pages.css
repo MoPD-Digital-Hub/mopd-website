@@ -1044,6 +1044,133 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   border-color: rgba(0, 230, 118, 0.45);
 }
 
+.pdf-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.pdf-preview.is-open {
+  display: flex;
+}
+
+.pdf-preview__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 15, 10, 0.76);
+  backdrop-filter: blur(6px);
+}
+
+.pdf-preview__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 96vw);
+  height: min(820px, 90vh);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  border: 1px solid var(--sx-line-dark);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.32);
+}
+
+.pdf-preview__header,
+.pdf-preview__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.pdf-preview__footer {
+  border-top: 1px solid rgba(15, 23, 42, 0.1);
+  border-bottom: 0;
+}
+
+.pdf-preview__eyebrow {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--sx-accent-dim);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pdf-preview__header h2 {
+  color: var(--sx-ink);
+  font-family: var(--sx-display);
+  font-size: 1.02rem;
+  line-height: 1.35;
+}
+
+.pdf-preview__close {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--sx-ink);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pdf-preview__frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.pdf-preview__footer p {
+  margin: 0;
+  color: var(--sx-ink-muted);
+  font-size: 0.88rem;
+}
+
+.pdf-preview__open {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 7px 13px;
+  border-radius: 8px;
+  background: var(--sx-accent-dim);
+  color: #06240f;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .pdf-preview {
+    padding: 10px;
+  }
+
+  .pdf-preview__dialog {
+    width: 100%;
+    height: 94vh;
+    border-radius: 10px;
+  }
+
+  .pdf-preview__header,
+  .pdf-preview__footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pdf-preview__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+}
+
 /* Doc tabs — JS-driven (initClimateDocTabs in shock.js) */
 .sx-page .doc-tabs {
   display: flex;

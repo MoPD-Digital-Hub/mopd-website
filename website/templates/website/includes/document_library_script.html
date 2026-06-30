@@ -1,5 +1,53 @@
 <script>
   (() => {
+    const modal = document.getElementById('pdfPreviewModal');
+    const frame = modal?.querySelector('.pdf-preview__frame');
+    const title = modal?.querySelector('#pdfPreviewTitle');
+    const openLink = modal?.querySelector('.pdf-preview__open');
+    let lastTrigger = null;
+
+    const closePreview = () => {
+      if (!modal) return;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (frame) frame.removeAttribute('src');
+      lastTrigger?.focus();
+    };
+
+    const openPreview = (trigger) => {
+      if (!modal || !frame || !openLink) return;
+      const url = trigger.getAttribute('href');
+      if (!url) return;
+      lastTrigger = trigger;
+      const label = trigger.dataset.pdfTitle || 'Document preview';
+      if (title) title.textContent = label;
+      frame.src = url;
+      openLink.href = url;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      modal.querySelector('.pdf-preview__close')?.focus();
+    };
+
+    document.querySelectorAll('[data-pdf-preview]').forEach((trigger) => {
+      trigger.addEventListener('click', (event) => {
+        if (!modal) return;
+        event.preventDefault();
+        openPreview(trigger);
+      });
+    });
+
+    modal?.querySelectorAll('[data-pdf-preview-close]').forEach((control) => {
+      control.addEventListener('click', closePreview);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modal?.classList.contains('is-open')) {
+        closePreview();
+      }
+    });
+
     document.querySelectorAll('[data-doc-library]').forEach((library) => {
       const scope = library.closest('.container') || document;
       const input = library.querySelector('[data-doc-search]');

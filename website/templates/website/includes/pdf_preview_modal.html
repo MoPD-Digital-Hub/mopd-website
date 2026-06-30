@@ -1,0 +1,17 @@
+<div class="pdf-preview" id="pdfPreviewModal" aria-hidden="true">
+  <div class="pdf-preview__backdrop" data-pdf-preview-close></div>
+  <div class="pdf-preview__dialog" role="dialog" aria-modal="true" aria-labelledby="pdfPreviewTitle">
+    <div class="pdf-preview__header">
+      <div>
+        <span class="pdf-preview__eyebrow">PDF Preview</span>
+        <h2 id="pdfPreviewTitle">Document preview</h2>
+      </div>
+      <button type="button" class="pdf-preview__close" data-pdf-preview-close aria-label="Close preview">&times;</button>
+    </div>
+    <iframe class="pdf-preview__frame" title="PDF preview" loading="lazy"></iframe>
+    <div class="pdf-preview__footer">
+      <p>Preview not loading? Open the document in a new tab.</p>
+      <a href="#" target="_blank" rel="noopener" class="pdf-preview__open">Open PDF</a>
+    </div>
+  </div>
+</div>
