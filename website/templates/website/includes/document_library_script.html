@@ -1,0 +1,44 @@
+<script>
+  (() => {
+    document.querySelectorAll('[data-doc-library]').forEach((library) => {
+      const scope = library.closest('.container') || document;
+      const input = library.querySelector('[data-doc-search]');
+      const filters = Array.from(library.querySelectorAll('[data-doc-filter]'));
+      const empty = library.querySelector('[data-doc-empty]');
+      const items = Array.from(scope.querySelectorAll('[data-doc-item]'));
+      let activeFilter = 'all';
+
+      const applyFilters = () => {
+        const query = (input?.value || '').trim().toLowerCase();
+        let visible = 0;
+
+        items.forEach((item) => {
+          const haystack = (item.dataset.search || item.textContent || '').toLowerCase();
+          const category = item.dataset.category || '';
+          const matchesQuery = !query || haystack.includes(query);
+          const matchesFilter = activeFilter === 'all' || category === activeFilter;
+          const shouldShow = matchesQuery && matchesFilter;
+          item.hidden = !shouldShow;
+          if (shouldShow) visible += 1;
+        });
+
+        if (empty) empty.hidden = visible !== 0;
+      };
+
+      filters.forEach((button) => {
+        button.addEventListener('click', () => {
+          activeFilter = button.dataset.docFilter || 'all';
+          filters.forEach((candidate) => {
+            const isActive = candidate === button;
+            candidate.classList.toggle('is-active', isActive);
+            candidate.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          });
+          applyFilters();
+        });
+      });
+
+      input?.addEventListener('input', applyFilters);
+      applyFilters();
+    });
+  })();
+</script>

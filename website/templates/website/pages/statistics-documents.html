@@ -19,15 +19,23 @@
 
   <section class="page-body">
     <div class="container">
+      {% include 'website/includes/document_library_controls.html' with search_id='statisticsDocumentSearch' filters=document_filters total_count=document_count %}
       <ul class="doc-list">
         {% for doc in documents %}
-        <li class="doc-list__item reveal">
+        <li class="doc-list__item reveal" data-doc-item data-category="statistics" data-search="{{ doc.display_title_en }} {{ doc.display_title_am }} {{ doc.description_en }} {{ doc.description_am }} {{ doc.file_url }}">
           <span class="doc-list__icon">PDF</span>
           <div>
-            <h3><a href="{{ doc.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=doc.title_en am=doc.title_am %}</a></h3>
+            <h3><a href="{{ doc.file_url }}" target="_blank" rel="noopener">{% include 'website/includes/bilingual.html' with en=doc.display_title_en am=doc.display_title_am %}</a></h3>
+            <p class="doc-list__meta">
+              <span>Statistics</span> · <span>PDF</span>
+            </p>
             {% if doc.description_en %}
             <p>{% include 'website/includes/bilingual.html' with en=doc.description_en am=doc.description_am %}</p>
             {% endif %}
+            <div class="doc-list__actions">
+              <a href="{{ doc.file_url }}" target="_blank" rel="noopener">Preview</a>
+              <a href="{{ doc.file_url }}" download>Download</a>
+            </div>
           </div>
         </li>
         {% empty %}
@@ -37,4 +45,5 @@
     </div>
   </section>
 </main>
+{% include 'website/includes/document_library_script.html' %}
 {% endblock %}

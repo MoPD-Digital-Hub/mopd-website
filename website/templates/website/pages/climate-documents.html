@@ -20,6 +20,7 @@
   <section class="page-body">
     <div class="container">
       {% if climate_doc_sections %}
+      {% include 'website/includes/document_library_controls.html' with search_id='climateDocumentSearch' filters=document_filters total_count=document_count %}
       <div class="doc-tabs reveal">
         {% for section in climate_doc_sections %}
         <input
@@ -31,6 +32,7 @@
         >
         {% endfor %}
 
+        {% if climate_doc_sections|length > 1 %}
         <div class="doc-tabs__nav" role="tablist" aria-label="Climate document categories">
           {% for section in climate_doc_sections %}
           <label
@@ -44,6 +46,7 @@
           </label>
           {% endfor %}
         </div>
+        {% endif %}
 
         <div class="doc-tabs__panels">
           {% for section in climate_doc_sections %}
@@ -56,7 +59,7 @@
           >
             <ul class="doc-list">
               {% for doc in section.documents %}
-              <li class="doc-list__item">
+              <li class="doc-list__item" data-doc-item data-category="{{ section.code }}" data-search="{{ doc.display_title_en }} {{ doc.display_title_am }} {{ doc.description_en }} {{ doc.description_am }} {{ section.label }} {{ doc.file_url }}">
                 <span class="doc-list__icon" aria-hidden="true">PDF</span>
                 <div>
                   <h3>
@@ -64,9 +67,16 @@
                       {% include 'website/includes/bilingual.html' with en=doc.display_title_en am=doc.display_title_am %}
                     </a>
                   </h3>
+                  <p class="doc-list__meta">
+                    <span>Climate document</span> · <span>PDF</span>
+                  </p>
                   {% if doc.description_en or doc.description %}
                   <p>{% include 'website/includes/bilingual.html' with en=doc.description_en|default:doc.description am=doc.description_am|default:doc.description_en|default:doc.description %}</p>
                   {% endif %}
+                  <div class="doc-list__actions">
+                    <a href="{{ doc.file_url }}" target="_blank" rel="noopener">Preview</a>
+                    <a href="{{ doc.file_url }}" download>Download</a>
+                  </div>
                 </div>
               </li>
               {% endfor %}
@@ -81,4 +91,5 @@
     </div>
   </section>
 </main>
+{% include 'website/includes/document_library_script.html' %}
 {% endblock %}

@@ -2877,6 +2877,120 @@ body.lang-am .stat__number {
 }
 
 /* Document lists */
+.doc-library {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.doc-library__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--gray-800);
+}
+
+.doc-library__header strong {
+  font-size: 1rem;
+}
+
+.doc-library__header span {
+  color: var(--gray-500);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.doc-library__search {
+  display: flex;
+  position: relative;
+  max-width: 720px;
+}
+
+.doc-library__search::before {
+  content: "";
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--gray-500);
+  border-radius: 50%;
+  transform: translateY(-55%);
+  pointer-events: none;
+}
+
+.doc-library__search::after {
+  content: "";
+  position: absolute;
+  left: 30px;
+  top: 31px;
+  width: 8px;
+  height: 2px;
+  background: var(--gray-500);
+  transform: rotate(45deg);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.doc-library__input {
+  width: 100%;
+  min-height: 52px;
+  padding: 13px 18px 13px 46px;
+  border: 1px solid var(--gray-300);
+  border-radius: 12px;
+  background: var(--white);
+  font: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.doc-library__input:focus {
+  outline: none;
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 4px rgba(31, 122, 74, 0.14), var(--shadow-sm);
+  background: #fff;
+}
+
+.doc-library__input::placeholder {
+  color: var(--gray-500);
+}
+
+.doc-library__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.doc-library__filter {
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 1px solid var(--gray-300);
+  border-radius: 999px;
+  color: var(--gray-700);
+  background: var(--white);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.doc-library__filter span {
+  margin-left: 6px;
+  color: var(--gray-500);
+}
+
+.doc-library__filter:hover,
+.doc-library__filter.is-active {
+  border-color: var(--green-700);
+  color: var(--green-900);
+  background: rgba(20, 83, 45, 0.08);
+}
+
+.doc-library__empty {
+  color: var(--gray-600);
+}
+
 .doc-list {
   display: flex;
   flex-direction: column;
@@ -2939,6 +3053,31 @@ body.lang-am .stat__number {
   font-size: 0.8rem;
   color: var(--gray-500);
   margin-top: 6px;
+}
+
+.doc-list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.doc-list__actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(10, 61, 36, 0.14);
+  color: var(--green-800);
+  background: rgba(20, 83, 45, 0.06);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.doc-list__actions a:hover {
+  border-color: var(--green-700);
+  color: var(--green-900);
 }
 
 /* Climate document category tabs (CSS-only via radio inputs) */

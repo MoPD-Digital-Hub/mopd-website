@@ -1,0 +1,19 @@
+<div class="doc-library reveal" data-doc-library>
+  <div class="doc-library__header">
+    <strong>Find documents</strong>
+    <span>{{ total_count }} document{{ total_count|pluralize }}</span>
+  </div>
+  <div class="doc-library__search">
+    <label class="visually-hidden" for="{{ search_id }}">Search documents</label>
+    <input type="search" id="{{ search_id }}" class="doc-library__input" placeholder="Search by title, topic, or file name" data-doc-search autocomplete="off">
+  </div>
+  {% if filters|length > 1 %}
+  <div class="doc-library__filters" aria-label="Document filters">
+    <button type="button" class="doc-library__filter is-active" data-doc-filter="all">All documents <span data-doc-count="all">{{ total_count }}</span></button>
+    {% for filter in filters %}
+    <button type="button" class="doc-library__filter" data-doc-filter="{{ filter.code }}">{{ filter.label }} <span data-doc-count="{{ filter.code }}">{{ filter.count }}</span></button>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <p class="doc-library__empty" data-doc-empty hidden>No documents match your filters.</p>
+</div>

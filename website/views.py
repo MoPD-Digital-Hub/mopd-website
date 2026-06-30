@@ -80,8 +80,18 @@ def _page_context(page_id):
             doc_type=Document.DocType.CLIMATE,
         ).order_by('sort_order', 'id')
         ctx['climate_doc_sections'] = climate_doc_sections(climate_docs)
+        ctx['document_filters'] = [
+            {'code': section['code'], 'label': section['label'], 'count': len(section['documents'])}
+            for section in ctx['climate_doc_sections']
+        ]
+        ctx['document_count'] = sum(filter_item['count'] for filter_item in ctx['document_filters'])
     elif page_id == 'statistics-documents':
-        ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.STATISTICS)
+        documents = Document.objects.filter(is_published=True, doc_type=Document.DocType.STATISTICS)
+        ctx['documents'] = documents
+        ctx['document_filters'] = [
+            {'code': 'statistics', 'label': 'Statistics', 'count': documents.count()},
+        ]
+        ctx['document_count'] = documents.count()
     elif page_id == 'procurement':
         today = timezone.localdate()
         ctx['notices'] = ProcurementNotice.objects.filter(is_published=True).filter(
