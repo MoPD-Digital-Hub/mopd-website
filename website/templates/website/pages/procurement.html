@@ -35,6 +35,7 @@
             <p class="doc-list__meta">
               {% if notice.reference %}<span>{{ notice.reference }}</span> · {% endif %}
               <time datetime="{{ notice.published_at|date:'Y-m-d' }}">{{ notice.published_at|date:"F j, Y" }}</time>
+              {% if notice.closing_date %} · Closing: {{ notice.closing_date|date:"F j, Y" }}{% endif %}
             </p>
             {% if notice.description_en or notice.description_am %}
             <p>{% include 'website/includes/bilingual.html' with en=notice.description_en am=notice.description_am %}</p>

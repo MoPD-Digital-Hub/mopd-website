@@ -81,7 +81,7 @@
           {% for notice in results.procurement %}
           <li>
             <a href="{% url 'procurement' %}" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=notice.title_en am=notice.title_am %}</a>
-            <p class="site-search__meta site-search__match">{{ notice.reference }}{% if notice.published_at %} · {{ notice.published_at|date:"M j, Y" }}{% endif %}</p>
+            <p class="site-search__meta site-search__match">{{ notice.reference }}{% if notice.published_at %} · {{ notice.published_at|date:"M j, Y" }}{% endif %}{% if notice.closing_date %} · Closing {{ notice.closing_date|date:"M j, Y" }}{% endif %}</p>
             {% if notice.description_en or notice.description_am %}
             <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=notice.description_en am=notice.description_am %}</p>
             {% endif %}

@@ -2,8 +2,10 @@ from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .climate_documents import climate_doc_sections
@@ -81,9 +83,15 @@ def _page_context(page_id):
     elif page_id == 'statistics-documents':
         ctx['documents'] = Document.objects.filter(is_published=True, doc_type=Document.DocType.STATISTICS)
     elif page_id == 'procurement':
-        ctx['notices'] = ProcurementNotice.objects.filter(is_published=True)
+        today = timezone.localdate()
+        ctx['notices'] = ProcurementNotice.objects.filter(is_published=True).filter(
+            Q(closing_date__isnull=True) | Q(closing_date__gte=today)
+        )
     elif page_id == 'vacancies':
-        ctx['vacancies'] = Vacancy.objects.filter(is_published=True)
+        today = timezone.localdate()
+        ctx['vacancies'] = Vacancy.objects.filter(is_published=True).filter(
+            Q(deadline__isnull=True) | Q(deadline__gte=today)
+        )
     return ctx
 
 

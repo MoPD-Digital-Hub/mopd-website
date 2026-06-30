@@ -277,11 +277,11 @@ class NewsletterSubscriberAdmin(admin.ModelAdmin):
 
 @admin.register(ProcurementNotice)
 class ProcurementNoticeAdmin(TabbedTranslationAdmin):
-    list_display = ('title_en', 'reference', 'published_at', 'sort_order', 'is_published')
+    list_display = ('title_en', 'reference', 'published_at', 'closing_date', 'sort_order', 'is_published')
     list_editable = ('sort_order', 'is_published')
-    list_filter = ('is_published', 'published_at')
+    list_filter = ('is_published', 'published_at', 'closing_date')
     search_fields = ('title_en', 'reference', 'description_en')
-    fields = ('title', 'reference', 'description', 'file_url', 'published_at', 'sort_order', 'is_published')
+    fields = ('title', 'reference', 'description', 'file_url', 'published_at', 'closing_date', 'sort_order', 'is_published')
 
 
 @admin.register(Department)

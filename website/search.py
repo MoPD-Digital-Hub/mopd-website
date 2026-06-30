@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.utils import timezone
 
 from .models import Department, Document, NewsArticle, ProcurementNotice, SiteTranslation, Vacancy
 
@@ -74,8 +75,10 @@ def run_site_search(query, result_type='all', limit=20):
         )
 
     if active_type in ('all', 'procurement'):
+        today = timezone.localdate()
         results['procurement'] = (
             ProcurementNotice.objects.filter(is_published=True)
+            .filter(Q(closing_date__isnull=True) | Q(closing_date__gte=today))
             .filter(
                 Q(title_en__icontains=q)
                 | Q(title_am__icontains=q)
@@ -88,8 +91,10 @@ def run_site_search(query, result_type='all', limit=20):
         )
 
     if active_type in ('all', 'vacancies'):
+        today = timezone.localdate()
         results['vacancies'] = (
             Vacancy.objects.filter(is_published=True)
+            .filter(Q(deadline__isnull=True) | Q(deadline__gte=today))
             .filter(
                 Q(title_en__icontains=q)
                 | Q(title_am__icontains=q)

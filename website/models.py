@@ -368,6 +368,11 @@ class ProcurementNotice(models.Model):
     description = models.TextField(blank=True)
     file_url = models.URLField(blank=True)
     published_at = models.DateField()
+    closing_date = models.DateField(
+        null=True,
+        blank=True,
+        help_text='Bid submission deadline. Leave blank for notices with no fixed closing date.',
+    )
     sort_order = models.PositiveIntegerField(default=0)
     is_published = models.BooleanField(default=True)
 
