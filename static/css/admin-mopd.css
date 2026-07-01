@@ -268,6 +268,43 @@ body.dashboard br.clear {
   align-items: start;
 }
 
+.mopd-admin-layout--home {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "hero"
+    "shortcuts"
+    "system";
+}
+
+.mopd-admin-recent-page {
+  max-width: 720px;
+}
+
+.mopd-admin-recent-page__header {
+  margin-bottom: 20px;
+}
+
+.mopd-admin-recent-page__header h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--body-loud-color);
+  margin: 0 0 8px;
+}
+
+.mopd-admin-recent-page__header p {
+  margin: 0;
+  color: var(--body-quiet-color);
+  font-size: 0.92rem;
+}
+
+.mopd-admin-recent--page {
+  border: 1px solid var(--hairline-color);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+
 .mopd-admin-hero {
   grid-area: hero;
   background: linear-gradient(135deg, #0a3d24 0%, #0f7a45 100%);

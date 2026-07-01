@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html
+import io
 import json
 import logging
 import mimetypes
@@ -22,6 +23,7 @@ logger = logging.getLogger(__name__)
 TELEGRAM_API = 'https://api.telegram.org/bot{token}/{method}'
 CAPTION_MAX = 1024
 MESSAGE_MAX = 4096
+TELEGRAM_PHOTO_MAX_SIDE = 1280
 
 
 def telegram_configured() -> bool:
@@ -50,6 +52,56 @@ def _truncate(text: str, limit: int) -> str:
     if len(text) <= limit:
         return text
     return text[: limit - 1].rsplit(' ', 1)[0] + '…'
+
+
+def _article_image_path(article) -> Path | None:
+    image_field = getattr(article, 'image', None)
+    if not image_field or not getattr(image_field, 'name', ''):
+        return None
+    try:
+        if image_field.storage.exists(image_field.name):
+            return Path(image_field.path)
+    except (ValueError, OSError):
+        pass
+    path = Path(settings.MEDIA_ROOT) / image_field.name
+    return path if path.is_file() else None
+
+
+def _prepare_telegram_photo(image_path: Path) -> tuple[bytes, str] | None:
+    """Resize/convert images so Telegram accepts them (RGBA PNGs, huge files, etc.)."""
+    try:
+        from PIL import Image
+
+        with Image.open(image_path) as im:
+            if im.mode in ('RGBA', 'LA', 'P'):
+                background = Image.new('RGB', im.size, (255, 255, 255))
+                if im.mode == 'P':
+                    im = im.convert('RGBA')
+                alpha = im.split()[-1] if im.mode in ('RGBA', 'LA') else None
+                rgb = im.convert('RGB')
+                if alpha is not None:
+                    background.paste(rgb, mask=alpha)
+                    im = background
+                else:
+                    im = rgb
+            elif im.mode != 'RGB':
+                im = im.convert('RGB')
+
+            im.thumbnail((TELEGRAM_PHOTO_MAX_SIDE, TELEGRAM_PHOTO_MAX_SIDE), Image.Resampling.LANCZOS)
+            buffer = io.BytesIO()
+            im.save(buffer, format='JPEG', quality=88, optimize=True)
+            return buffer.getvalue(), 'photo.jpg'
+    except Exception as exc:
+        logger.warning('Failed to prepare Telegram photo from %s: %s', image_path, exc)
+        return None
+
+
+def _file_upload_payload(file_data: bytes | Path) -> tuple[bytes, str, str]:
+    if isinstance(file_data, Path):
+        path = file_data
+        mime_type = mimetypes.guess_type(path.name)[0] or 'application/octet-stream'
+        return path.read_bytes(), path.name, mime_type
+    return file_data, 'photo.jpg', 'image/jpeg'
 
 
 def article_public_url(article) -> str:
@@ -105,15 +157,14 @@ def _api_request(method: str, payload: dict | None = None, files: dict | None = 
             body_parts.append(f'Content-Disposition: form-data; name="{key}"\r\n\r\n'.encode())
             body_parts.append(f'{value}\r\n'.encode())
 
-        for field_name, file_path in files.items():
-            path = Path(file_path)
-            mime_type = mimetypes.guess_type(path.name)[0] or 'application/octet-stream'
+        for field_name, file_data in files.items():
+            file_bytes, filename, mime_type = _file_upload_payload(file_data)
             body_parts.append(f'--{boundary}\r\n'.encode())
             body_parts.append(
-                f'Content-Disposition: form-data; name="{field_name}"; filename="{path.name}"\r\n'.encode()
+                f'Content-Disposition: form-data; name="{field_name}"; filename="{filename}"\r\n'.encode()
             )
             body_parts.append(f'Content-Type: {mime_type}\r\n\r\n'.encode())
-            body_parts.append(path.read_bytes())
+            body_parts.append(file_bytes)
             body_parts.append(b'\r\n')
 
         body_parts.append(f'--{boundary}--\r\n'.encode())
@@ -127,7 +178,15 @@ def _api_request(method: str, payload: dict | None = None, files: dict | None = 
     try:
         with urlopen(request, timeout=30) as response:
             result = json.loads(response.read().decode('utf-8'))
-    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
+    except HTTPError as exc:
+        detail = ''
+        try:
+            detail = exc.read().decode('utf-8', errors='ignore')
+        except Exception:
+            pass
+        logger.warning('Telegram API %s failed: %s %s', method, exc, detail)
+        return None
+    except (URLError, TimeoutError, json.JSONDecodeError) as exc:
         logger.warning('Telegram API %s failed: %s', method, exc)
         return None
 
@@ -138,10 +197,11 @@ def _api_request(method: str, payload: dict | None = None, files: dict | None = 
 
 
 def _send_to_chat(chat_id: int | str, article, caption: str) -> bool:
-    image_field = getattr(article, 'image', None)
-    if image_field and getattr(image_field, 'name', ''):
-        image_path = Path(settings.MEDIA_ROOT) / image_field.name
-        if image_path.is_file():
+    image_path = _article_image_path(article)
+    if image_path:
+        photo_payload = _prepare_telegram_photo(image_path)
+        if photo_payload:
+            photo_bytes, photo_name = photo_payload
             result = _api_request(
                 'sendPhoto',
                 {
@@ -149,9 +209,28 @@ def _send_to_chat(chat_id: int | str, article, caption: str) -> bool:
                     'caption': caption,
                     'parse_mode': 'HTML',
                 },
-                files={'photo': image_path},
+                files={'photo': photo_bytes},
             )
             if result:
+                return True
+
+            # Caption HTML or length can break sendPhoto — retry photo only, then text.
+            result = _api_request(
+                'sendPhoto',
+                {'chat_id': chat_id},
+                files={'photo': photo_bytes},
+            )
+            if result:
+                text = format_article_message(article, for_caption=False)
+                _api_request(
+                    'sendMessage',
+                    {
+                        'chat_id': chat_id,
+                        'text': text,
+                        'parse_mode': 'HTML',
+                        'disable_web_page_preview': True,
+                    },
+                )
                 return True
 
     text = format_article_message(article, for_caption=False)

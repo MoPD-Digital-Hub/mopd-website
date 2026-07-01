@@ -56,16 +56,23 @@ function initSxMenu() {
     panel.classList.add('is-open');
     panel.setAttribute('aria-hidden', 'false');
     btn.setAttribute('aria-expanded', 'true');
+    btn.setAttribute('aria-label', 'Close menu');
+    document.body.classList.add('mp-menu-open');
     document.body.style.overflow = 'hidden';
   };
   const shut = () => {
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
     btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', 'Open menu');
+    document.body.classList.remove('mp-menu-open');
     document.body.style.overflow = '';
   };
 
-  btn.addEventListener('click', open);
+  btn.addEventListener('click', () => {
+    if (panel.classList.contains('is-open')) shut();
+    else open();
+  });
   close?.addEventListener('click', shut);
   backdrop?.addEventListener('click', shut);
   panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));

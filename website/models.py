@@ -76,8 +76,8 @@ class SiteSettings(models.Model):
     footer_desc = models.TextField(blank=True)
     development_plan_pdf_url = models.URLField(
         blank=True,
-        default='/media/ten-year-document/ten_year_development_plan.pdf',
-        help_text='10-Year Development Plan PDF (local /media/ path preferred)',
+        default='https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf',
+        help_text='10-Year Development Plan PDF download link',
     )
     development_plan_cover_url = models.URLField(
         blank=True,

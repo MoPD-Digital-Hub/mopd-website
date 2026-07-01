@@ -4,8 +4,9 @@
 {% block page_id %}home{% endblock %}
 
 {% block extra_head %}
-  <link rel="preload" as="image" href="{% static 'img/hero/hero-video-poster.jpg' %}">
+  <link rel="preload" as="image" href="https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg">
   <link rel="preconnect" href="https://www.youtube-nocookie.com">
+  <link rel="preconnect" href="https://img.youtube.com">
 {% endblock %}
 
 {% block content %}
@@ -18,7 +19,7 @@
       <div
         class="sx-hero__video-poster"
         aria-hidden="true"
-        style="background-image: url('{% static 'img/hero/hero-video-poster.jpg' %}'), url('{% static 'img/hero/hero-video-poster-fallback.jpg' %}');"
+        style="background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg'), url('https://img.youtube.com/vi/d7YfFd1gYAE/hqdefault.jpg');"
       ></div>
       <div id="heroVideoMount" class="sx-hero__video-player" data-video-id="d7YfFd1gYAE" data-video-end="30">
         <div class="sx-hero__video-cover" aria-hidden="true"></div>
@@ -84,11 +85,6 @@
         <span class="mp-metric__glyph" aria-hidden="true">◎</span>
         <strong data-count="17">0</strong>
         <span data-i18n="stat.1.suffix">SDG Targets</span>
-      </div>
-      <div class="mp-metric mp-metric--3">
-        <div class="mp-metric__ring" aria-hidden="true"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="55 100" transform="rotate(-90 18 18)"/></svg></div>
-        <strong>55%</strong>
-        <span data-i18n="dev.tag">Plan Progress</span>
       </div>
       <div class="mp-metric mp-metric--4">
         <span class="mp-metric__glyph" aria-hidden="true">♣</span>
