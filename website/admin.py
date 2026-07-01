@@ -305,3 +305,32 @@ class VacancyAdmin(TabbedTranslationAdmin):
 admin.site.site_header = 'MoPD Site Administration'
 admin.site.site_title = 'MoPD Admin'
 admin.site.index_title = 'Manage website content'
+
+
+def _recent_actions_view(request):
+    from django.template.response import TemplateResponse
+
+    context = {
+        **admin.site.each_context(request),
+        'title': 'Recent actions',
+    }
+    return TemplateResponse(request, 'admin/recent_actions.html', context)
+
+
+_original_get_urls = admin.site.get_urls
+
+
+def _get_urls_with_recent_actions():
+    from django.urls import path
+
+    custom_urls = [
+        path(
+            'recent-actions/',
+            admin.site.admin_view(_recent_actions_view),
+            name='recent_actions',
+        ),
+    ]
+    return custom_urls + _original_get_urls()
+
+
+admin.site.get_urls = _get_urls_with_recent_actions

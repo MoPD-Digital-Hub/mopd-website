@@ -41,8 +41,7 @@ def is_mopd_url(url: str) -> bool:
 def is_local_url(url: str) -> bool:
     parsed = urlparse(url)
     if not parsed.netloc:
-        normalized = url.lstrip('/')
-        return normalized.startswith('media/') or url.startswith('/media/')
+        return url.startswith('/media/') or url.startswith('media/')
     return parsed.netloc.lower() in _site_hosts()
 
 
@@ -61,7 +60,7 @@ def _subdir_for_url(url: str) -> str:
         return 'documents/statistics'
     if '/ten-year-document/' in path:
         return 'ten-year-document'
-    if '/static/' in path or '/media/photos/' in path or path.endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
+    if '/media/photos/' in path or path.endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
         return 'imports/images'
     if path.endswith('.pdf'):
         return 'documents/misc'
@@ -168,32 +167,11 @@ def localize_article_fields(article, cache: dict[str, str] | None = None) -> boo
     return changed
 
 
-def _mopd_local_fallback(url: str) -> str | None:
-    """Map mopd.gov.et URLs to expected local paths without downloading."""
-    if not is_mopd_url(url):
-        return None
-    path = urlparse(url).path
-    if '/ten-year-document/' in path:
-        return '/media/ten-year-document/ten_year_development_plan.pdf'
-    if '/climate-documents/' in path:
-        return _media_web_path(f'documents/climate/{_safe_filename(url)}')
-    if '/data-documents/' in path:
-        return _media_web_path(f'documents/statistics/{_safe_filename(url)}')
-    if path.endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg')):
-        return _media_web_path(f'imports/images/{_safe_filename(url)}')
-    if path.endswith('.pdf'):
-        return _media_web_path(f'documents/misc/{_safe_filename(url)}')
-    return None
-
-
 def localize_file_url_field(url: str, cache: dict[str, str] | None = None) -> str:
     """Localize a single file URL field (documents, PDFs, etc.)."""
     if not url:
         return url
     if is_local_url(url):
         return url
-    fallback = _mopd_local_fallback(url)
-    if fallback:
-        return fallback
     local = localize_url(url, cache)
     return local or url

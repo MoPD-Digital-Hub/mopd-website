@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static log %}
+{% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}{% endblock %}
 
@@ -15,43 +15,19 @@
 
 {% block content %}
 <div class="mopd-admin-page">
-  <div class="mopd-admin-layout">
+  <div class="mopd-admin-layout mopd-admin-layout--home">
     <div class="mopd-admin-hero">
       <h1>{% translate 'Manage website content' %}</h1>
       <p>{% translate 'Edit news, leadership profiles, translations, documents, and all public-facing content for the Ministry of Planning and Development.' %}</p>
     </div>
 
-    <aside class="mopd-admin-aside">
-      <div class="module mopd-admin-recent">
-        <h2>{% translate 'Recent actions' %}</h2>
-        {% get_admin_log 10 as admin_log for_user user %}
-        {% if not admin_log %}
-        <p class="mopd-admin-recent__empty">{% translate 'None available' %}</p>
-        {% else %}
-        <ul class="actionlist">
-        {% for entry in admin_log %}
-        <li class="mopd-admin-recent__item{% if entry.is_addition %} addlink{% endif %}{% if entry.is_change %} changelink{% endif %}{% if entry.is_deletion %} deletelink{% endif %}">
-          <span class="visually-hidden">{% if entry.is_addition %}{% translate 'Added:' %}{% elif entry.is_change %}{% translate 'Changed:' %}{% elif entry.is_deletion %}{% translate 'Deleted:' %}{% endif %}</span>
-          {% if entry.content_type %}
-          <span class="mopd-admin-recent__type">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
-          {% endif %}
-          {% if entry.is_deletion or not entry.get_admin_url %}
-            <span class="mopd-admin-recent__title">{{ entry.object_repr }}</span>
-          {% else %}
-            <a href="{{ entry.get_admin_url }}" class="mopd-admin-recent__title">{{ entry.object_repr }}</a>
-          {% endif %}
-          <span class="mopd-admin-recent__verb">
-            {% if entry.is_addition %}{% translate 'Added' %}{% elif entry.is_change %}{% translate 'Changed' %}{% elif entry.is_deletion %}{% translate 'Deleted' %}{% endif %}
-          </span>
-        </li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-    </aside>
-
     <section class="mopd-admin-shortcuts-panel">
       <div class="mopd-admin-shortcuts">
+        <a href="{% url 'admin:recent_actions' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">R</div>
+          <h3>{% translate 'Recent actions' %}</h3>
+          <p>{% translate 'View your latest edits and additions' %}</p>
+        </a>
         <a href="{% url 'admin:website_sitesettings_changelist' %}" class="mopd-admin-card">
           <div class="mopd-admin-card__icon">S</div>
           <h3>{% translate 'Site settings' %}</h3>

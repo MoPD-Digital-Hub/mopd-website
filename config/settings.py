@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+import config.env  # noqa: F401 — load .env for runserver, gunicorn, and management commands
+
 from config.i18n import (
     LANGUAGES,
     MODELTRANSLATION_DEFAULT_LANGUAGE,
@@ -41,7 +43,10 @@ ALLOWED_HOSTS = [
     if h.strip()
 ]
 
-SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
+if DEBUG and '*' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('*')
+
+SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
 
 # Telegram — news notifications (group only; bots cannot message users without /start)
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')

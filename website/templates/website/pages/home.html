@@ -4,8 +4,9 @@
 {% block page_id %}home{% endblock %}
 
 {% block extra_head %}
-  <link rel="preload" as="image" href="{% static 'img/hero/hero-video-poster.jpg' %}">
+  <link rel="preload" as="image" href="https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg">
   <link rel="preconnect" href="https://www.youtube-nocookie.com">
+  <link rel="preconnect" href="https://img.youtube.com">
 {% endblock %}
 
 {% block content %}
@@ -18,7 +19,7 @@
       <div
         class="sx-hero__video-poster"
         aria-hidden="true"
-        style="background-image: url('{% static 'img/hero/hero-video-poster.jpg' %}'), url('{% static 'img/hero/hero-video-poster-fallback.jpg' %}');"
+        style="background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg'), url('https://img.youtube.com/vi/d7YfFd1gYAE/hqdefault.jpg');"
       ></div>
       <div id="heroVideoMount" class="sx-hero__video-player" data-video-id="d7YfFd1gYAE" data-video-end="30">
         <div class="sx-hero__video-cover" aria-hidden="true"></div>

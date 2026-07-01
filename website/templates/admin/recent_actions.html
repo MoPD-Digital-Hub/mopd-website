@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo; {% translate 'Recent actions' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="mopd-admin-page">
+  <div class="mopd-admin-recent-page">
+    <div class="mopd-admin-recent-page__header">
+      <h1>{% translate 'Recent actions' %}</h1>
+      <p>{% translate 'A log of content changes you have made in this admin.' %}</p>
+    </div>
+    <div class="module mopd-admin-recent mopd-admin-recent--page">
+      {% include "admin/includes/recent_actions_list.html" with limit=50 %}
+    </div>
+  </div>
+</div>
+{% endblock %}
