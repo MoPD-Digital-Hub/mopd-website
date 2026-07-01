@@ -11,7 +11,7 @@
   --cv-white: #ffffff;
   --cv-muted: rgba(255, 255, 255, 0.78);
   --cv-divider: rgba(255, 255, 255, 0.14);
-  --cv-font: 'Inter Tight', 'Inter', 'Noto Sans Ethiopic', system-ui, sans-serif;
+  --cv-font: 'BwModelica', 'Noto Sans Ethiopic', sans-serif;
 
   --sx-wrap: min(1320px, 100% - 48px);
 

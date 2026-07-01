@@ -2,6 +2,7 @@ import html
 import re
 from datetime import date
 from pathlib import Path
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.management import call_command
@@ -169,6 +170,14 @@ def join_paragraphs(keys, en, am, field='en'):
     return '\n\n'.join(p for p in parts if p)
 
 
+def local_leader_photo_name(slug, source_url):
+    suffix = Path(urlparse(source_url).path).suffix or '.jpg'
+    media_name = f'leaders/{slug}{suffix}'
+    if (Path(settings.MEDIA_ROOT) / media_name).exists():
+        return media_name
+    return ''
+
+
 class Command(BaseCommand):
     help = 'Seed site settings, translations, news, leaders, gallery, documents, carousel, and affiliates'
 
@@ -177,6 +186,11 @@ class Command(BaseCommand):
             '--clear',
             action='store_true',
             help='Delete existing content before seeding',
+        )
+        parser.add_argument(
+            '--skip-news',
+            action='store_true',
+            help='Skip syncing news from mopd.gov.et (useful when offline)',
         )
 
     def handle(self, *args, **options):
@@ -197,7 +211,10 @@ class Command(BaseCommand):
 
         self.seed_settings(en, am)
         self.seed_translations(en, am)
-        self.seed_news()
+        if not options.get('skip_news'):
+            self.seed_news()
+        else:
+            self.stdout.write('  News (skipped — --skip-news flag set)')
         self.seed_leaders(en, am)
         self.seed_gallery(en, am)
         self.seed_documents()
@@ -263,7 +280,11 @@ class Command(BaseCommand):
             leader.sort_order = item['sort_order']
             leader.is_published = True
             if item.get('photo_src'):
-                assign_image_from_url(leader, 'photo', item['photo_src'])
+                local_photo = local_leader_photo_name(item['slug'], item['photo_src'])
+                if local_photo:
+                    leader.photo.name = local_photo
+                elif not assign_image_from_url(leader, 'photo', item['photo_src']):
+                    leader.photo = ''
             leader.save()
             leader.paragraphs.all().delete()
             for idx, key in enumerate(item['paragraph_keys']):
@@ -305,8 +326,12 @@ class Command(BaseCommand):
                 doc_type=Document.DocType.CLIMATE,
                 file_url=url,
                 defaults={
-                    'title_en': title,
                     'title': title,
+                    'title_en': title,
+                    'title_am': '',
+                    'description': '',
+                    'description_en': '',
+                    'description_am': '',
                     'climate_category': category,
                     'sort_order': idx,
                     'is_published': True,
@@ -317,7 +342,12 @@ class Command(BaseCommand):
                 doc_type=Document.DocType.STATISTICS,
                 file_url=url,
                 defaults={
+                    'title': title,
                     'title_en': title,
+                    'title_am': '',
+                    'description': '',
+                    'description_en': '',
+                    'description_am': '',
                     'sort_order': idx,
                     'is_published': True,
                 },
