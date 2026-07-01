@@ -122,7 +122,7 @@ window.MOPD_I18N = {
     'service.5.desc': 'የህዝብ ልማት ፕሮጀክቶችን ተግባራዊ መሆናቸውን ለማረጋገጥ ክትትል እና ግምገማ።',
 
     'dev.tag': 'በትኩረት ስር',
-    'dev.title': '10 ዓመት የልማት እቅድ',
+    'dev.title': '10 ዓመት<br>የልማት እቅድ',
     'dev.period': '2021 — 2030',
     'dev.p1': 'የ10 ዓመት የልማት እቅድ ኢትዮጵያን "የአፍሪካ የብልጽግና ተምሳሌት" ለማድረግ የረጅም ጊዜ እቅድ ነው።',
     'dev.p2': 'ግቦቹ፡ የኑሮ ደረጃ ማሻሻል፣ የአገልግሎት ተደራሽነት፣ የጾታ ተሳትፎ እና በሰው ሀብት እና በግል ዘርፍ ተሳትፎ ኢኮኖሚን ለውጥ ማድረግ።',
@@ -139,6 +139,7 @@ window.MOPD_I18N = {
     'timeline.status': '55% የጊዜ ገደብ ተሞልቷል',
 
     'news.tag': 'ዜና እና ሚዲያ',
+    'news.featured': 'ተመራጭ',
     'news.title': 'የቅርብ ጊዜ ዜናዎች',
     'news.cta': 'ሁሉንም ዜናዎች ይመልከቱ',
     'news.0.tag': 'ኢኮኖሚ',
@@ -233,8 +234,36 @@ window.MOPD_I18N = {
     'page.contact.captcha': 'የደህንነት ማረጋገጫ',
     'nav.sub.procurement': 'ግዥ',
     'nav.sub.vacancies': 'ክፍት የስራ ቦታዎች',
+    'nav.sub.faq': 'ተደጋጋሚ ጥያቄዎች',
     'page.search.title': 'ፍለጋ',
     'page.search.desc': 'ዜና፣ ሰነዶች እና የድረ-ገጽ ይዘትን ይፈልጉ።',
+    'page.faq.title': 'በተደጋጋሚ የሚነሱ ጥያቄዎች',
+    'page.faq.desc': 'ስለ ሚኒስቴር ዝማኔዎች፣ ህትመቶች፣ ግዥ፣ ክፍት የስራ ቦታዎች፣ ስታትስቲክስ እና ለMoPD መገናኘት ፈጣን መልሶችን ያግኙ።',
+    'page.faq.search_label': 'ጥያቄዎችን ይፈልጉ',
+    'page.faq.search_placeholder': 'ጥያቄ ፈልግ…',
+    'page.faq.topic_all': 'ሁሉም',
+    'page.faq.topic_documents': 'ሰነዶች',
+    'page.faq.topic_procurement': 'ግዥ',
+    'page.faq.topic_vacancies': 'ክፍት የስራ ቦታዎች',
+    'page.faq.topic_contact': 'አግኙን',
+    'page.faq.topic_accessibility': 'ተደራሽነት',
+    'page.faq.q_documents': 'ኦፊሴላዊ የMoPD ሰነዶችን ከየት ማግኘት እችላለሁ?',
+    'page.faq.a_documents': 'የ<a href="/climate/documents/">የአየር ንብረት ሰነዶች</a> እና <a href="/statistics-documents/">የስታትስቲክስ ሰነዶች</a> ገጾችን ተጠቅመው የታተሙ የPDF ሰነዶችን ለማስሱ፣ ቅድመ-እይታ ለማድረግ እና ለማውረድ ይጠቀሙ።',
+    'page.faq.q_download': 'ሰነዶችን ከድረ-ገጹ ማውረድ እችላለሁ?',
+    'page.faq.a_download': 'አዎ። የሰነድ ቤተ-መጽሐፍ ንጥሎች የቅድመ-እይታ እና የማውረድ አማራጮችን ያካትታሉ፣ የመነሻ ፋይሉ ሲገኝ።',
+    'page.faq.q_procurement': 'የግዥ ማስታወቂያዎች የት ይተደረጋሉ?',
+    'page.faq.a_procurement': 'ንቁ የጨረታ ማስታወቂያዎች በ<a href="/procurement/">ግዥ</a> ገጽ ላይ ይዘረዝራሉ። ጊዜው ያለፈባቸው ማስታወቂያዎች ከህዝባዊ ዝርዝሩ ተደብቀዋል።',
+    'page.faq.q_vacancies': 'አሁን ያሉ የስራ ቦታዎችን እንዴት ማረጋገጥ እችላለሁ?',
+    'page.faq.a_vacancies': 'አሁን ያሉ ክፍት ቦታዎች፣ የመጨረሻ ቀኖች፣ ቦታዎች እና ለማውረድ የሚገኙ የስራ መግለጫ ፋይሎችን ለማየት <a href="/vacancies/">ክፍት የስራ ቦታዎች</a> ገጹን ይጎብኙ።',
+    'page.faq.q_contact': 'ሚኒስቴሩን እንዴት ለመገናኘት እችላለሁ?',
+    'page.faq.a_contact': 'መልዕክት ለመላክ ወይም የሚኒስቴሩን ስልክ፣ ኢሜይል፣ አድራሻ እና የካርታ ቦታ ለማግኘት <a href="/contact/">አግኙን</a> ገጹን ይጠቀሙ።',
+    'page.faq.q_response': 'ምላሽ በምን ያህል ፍጥነት እንደሚገኝ?',
+    'page.faq.a_response': 'የምላሽ ጊዜ በጥያቄው አይነት እና በቢሮው የስራ ጫና ይለያያል። መልዕክትዎን ለሚመለከተው ቡድን እንዲደርስ ትክክለኛ የእውቂያ መረጃ እና በቂ ዝርዝር ያካትቱ።',
+    'page.faq.q_language': 'ድረ-ገጹ አማርኛና እንግሊዝኛ ይደግፋል?',
+    'page.faq.a_language': 'አዎ። በራስ-ገዝ የሚገኙትን የድረ-ገጽ ቋንቋዎች ለመቀየር በራስጌር ያለውን የቋንቋ ቁልፍ ይጠቀሙ።',
+    'page.faq.q_accessibility': 'የተደራሽነት ችግር ካጋጠመኝ ምን ማድረግ አለብኝ?',
+    'page.faq.a_accessibility': 'የተደራሽነት መሰረታዊ መሰረቶችን ለመገምገም እና ተሞክሮውን ለማሻሻል በ<a href="/contact/">አግኙን</a> ገጽ በኩል ያሳውቁን።',
+    'page.faq.empty': 'ከፍለጋዎ ጋር የሚዛመዱ ጥያቄዎች የሉም።',
     'page.procurement.title': 'ግዥ እና ጨረታዎች',
     'page.vacancies.title': 'ክፍት የስራ ቦታዎች',
     'footer.privacy': 'ግላዊነት',
@@ -433,6 +462,19 @@ window.MOPD_I18N = {
 
 const MOPD_DEFAULT_LANG = 'en';
 
+function mopdLooksLikeHtml(text) {
+  return typeof text === 'string' && /<[a-z][\s\S]*>/i.test(text);
+}
+
+function mopdSetElementContent(el, text) {
+  if (text == null) return;
+  if (mopdLooksLikeHtml(text)) {
+    el.innerHTML = text;
+  } else {
+    el.textContent = text;
+  }
+}
+
 function mopdLanguageCodes() {
   if (Array.isArray(window.MOPD_LANGUAGES) && window.MOPD_LANGUAGES.length) {
     return window.MOPD_LANGUAGES.map((item) => item.code);
@@ -468,20 +510,20 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
 
   document.querySelectorAll('.bilingual').forEach((el) => {
     const text = el.dataset[lang] || el.dataset[MOPD_DEFAULT_LANG] || '';
-    el.textContent = text;
+    mopdSetElementContent(el, text);
   });
 
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.dataset.i18n;
     const dbText = mopdDbText(key, lang);
     if (dbText !== undefined) {
-      el.textContent = dbText;
+      mopdSetElementContent(el, dbText);
     } else {
       const staticText = mopdStaticText(key, lang);
       if (staticText !== undefined) {
-        el.textContent = staticText;
+        mopdSetElementContent(el, staticText);
       } else if (el.dataset.i18nDefault !== undefined) {
-        el.textContent = el.dataset.i18nDefault;
+        mopdSetElementContent(el, el.dataset.i18nDefault);
       }
     }
   });

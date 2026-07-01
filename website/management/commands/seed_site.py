@@ -24,10 +24,47 @@ from website.models import (
     SiteTranslation,
 )
 
-I18N_PATTERN = re.compile(
-    r'data-i18n(?:-html)?="([^"]+)"[^>]*>(.*?)</',
+I18N_TEXT_PATTERN = re.compile(
+    r'data-i18n="([^"]+)"[^>]*>(.*?)</',
     re.DOTALL | re.IGNORECASE,
 )
+
+# Curated HTML copy — template scraping breaks on nested tags.
+I18N_HTML_DEFAULTS = {
+    'hero.title': (
+        'Shaping Ethiopia\'s<br><span class="mp-hero__accent">Sustainable Future</span>'
+    ),
+    'climate.title': 'Green Technology &amp;<br>Environmental Stewardship',
+    'dev.title': '10-Year<br>Development Plan',
+}
+
+# Hero ticker — not in templates (content comes from CarouselSlide / i18n.js for Amharic).
+CAROUSEL_EN_DEFAULTS = {
+    'carousel.0.tag': 'Economic',
+    'carousel.0.title': (
+        'UN Secretary-General António Guterres praised Ethiopia\'s commitment '
+        'in aligning food policy with climate and environmental goals'
+    ),
+    'carousel.1.tag': 'Nature',
+    'carousel.1.title': '#ACS2 Call for flagship initiatives is open!',
+    'carousel.2.tag': 'Nature',
+    'carousel.2.title': (
+        'Ethiopia\'s State Minister Calls for United African Leadership Ahead of ACS2'
+    ),
+    'carousel.link': 'Read story →',
+}
+
+CAROUSEL_NEWS_SLUGS = {
+    'carousel.0.title': 'un-guterres',
+    'carousel.1.title': 'acs2',
+    'carousel.2.title': 'state-minister-acs2',
+}
+
+
+def strip_html_tags(value):
+    text = html.unescape(re.sub(r'<[^>]+>', ' ', value))
+    return re.sub(r'\s+', ' ', text).strip()
+
 
 CLIMATE_DOCS = [
     ('The Addis Ababa Declaration on Climate Change & Call to Action', 'https://mopd.gov.et/media/climate-documents/Climate_Change_Declaration.pdf', 'multilateral'),
@@ -110,19 +147,19 @@ AFFILIATES = [
         'Environmental Protection Authority',
         'https://www.epa.gov.et/',
         'affiliate.epa',
-        'https://mopd.gov.et/media/photos/2025/01/09/epa-removebg-preview.png',
+        'static/picture/affiliates/environmental-protection-authority.png',
     ),
     (
         'Central Statistics Service',
         'http://www.csa.gov.et/',
         'affiliate.csa',
-        'https://mopd.gov.et/media/photos/2025/01/09/photo_2025-01-09_13-42-42-removebg-preview.png',
+        'static/picture/affiliates/central-statistics-service.png',
     ),
     (
         'Policy Study Institute',
         'https://psi.org.et',
         'affiliate.psi',
-        'https://mopd.gov.et/media/photos/2025/01/09/logo-psi-400x100-1-removebg-preview.png',
+        'static/picture/affiliates/policy-study-institute.png',
     ),
 ]
 
@@ -150,10 +187,31 @@ def collect_en_defaults():
     root = Path(settings.BASE_DIR) / 'website' / 'templates'
     for path in root.rglob('*.html'):
         text = path.read_text(encoding='utf-8', errors='ignore')
-        for match in I18N_PATTERN.finditer(text):
+        for match in I18N_TEXT_PATTERN.finditer(text):
             key = match.group(1)
-            value = html.unescape(re.sub(r'\s+', ' ', match.group(2).strip()))
+            value = strip_html_tags(match.group(2).strip())
             if value and key not in en:
+                en[key] = value
+    en.update(collect_html_defaults_from_templates())
+    en.update(I18N_HTML_DEFAULTS)
+    en.update(CAROUSEL_EN_DEFAULTS)
+    return en
+
+
+def collect_html_defaults_from_templates():
+    """Collect data-i18n-html values with a simple tag-aware parser."""
+    en = {}
+    root = Path(settings.BASE_DIR) / 'website' / 'templates'
+    tag_pattern = re.compile(
+        r'<(\w+)[^>]*\sdata-i18n-html="([^"]+)"[^>]*>(.*?)</\1>',
+        re.DOTALL | re.IGNORECASE,
+    )
+    for path in root.rglob('*.html'):
+        text = path.read_text(encoding='utf-8', errors='ignore')
+        for match in tag_pattern.finditer(text):
+            key = match.group(2)
+            value = html.unescape(re.sub(r'\s+', ' ', match.group(3).strip()))
+            if value:
                 en[key] = value
     return en
 
@@ -162,6 +220,16 @@ def text_for(key, en, am, field='en'):
     if field == 'am':
         return am.get(key, '')
     return en.get(key, '')
+
+
+def carousel_text_for(key, en, am, field='en'):
+    if field == 'en':
+        slug = CAROUSEL_NEWS_SLUGS.get(key)
+        if slug:
+            article = NewsArticle.objects.filter(slug=slug).first()
+            if article and article.title_en:
+                return article.title_en
+    return text_for(key, en, am, field)
 
 
 def join_paragraphs(keys, en, am, field='en'):
@@ -421,10 +489,10 @@ class Command(BaseCommand):
         CarouselSlide.objects.all().delete()
         for slide in slides:
             obj = CarouselSlide(
-                tag_en=text_for(slide['tag_key'], en, am),
-                tag_am=text_for(slide['tag_key'], en, am, 'am'),
-                title_en=text_for(slide['title_key'], en, am),
-                title_am=text_for(slide['title_key'], en, am, 'am'),
+                tag_en=carousel_text_for(slide['tag_key'], en, am),
+                tag_am=carousel_text_for(slide['tag_key'], en, am, 'am'),
+                title_en=carousel_text_for(slide['title_key'], en, am),
+                title_am=carousel_text_for(slide['title_key'], en, am, 'am'),
                 link_url=slide['link_url'],
                 sort_order=slide['sort_order'],
                 is_active=True,
