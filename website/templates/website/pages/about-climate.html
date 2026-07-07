@@ -1,81 +1,576 @@
 {% extends 'website/base.html' %}
 {% load static %}
-{% block title %}About Climate — MoPD{% endblock %}
-{% block meta_description %}Climate action in Ethiopia.{% endblock %}
+{% block title %}Climate Change Overview — Ethiopia — MoPD{% endblock %}
+{% block meta_description %}Climate change overview for Ethiopia: national context, restoration, strategic evolution, targets, and governance.{% endblock %}
 {% block page_id %}climate{% endblock %}
 
+{% block extra_head %}
+<style>
+  .climate-page .container--climate {
+    max-width: 1080px;
+  }
+  .climate-block {
+    margin-bottom: 64px;
+  }
+  .climate-block:last-child {
+    margin-bottom: 0;
+  }
+  .climate-block__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .climate-block__num {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #12a35c, #0d7a45);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 8px 24px rgba(18, 163, 92, 0.28);
+  }
+  .climate-block__title {
+    font-size: clamp(1.4rem, 2.8vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #0a1f14;
+    margin: 4px 0 0;
+  }
+  .climate-block__lead {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #4a554e;
+  }
+  .climate-block__lead + .climate-block__lead {
+    margin-top: 14px;
+  }
+  .climate-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 28px 0;
+  }
+  .climate-stat {
+    padding: 20px 18px;
+    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(18, 163, 92, 0.1), rgba(18, 163, 92, 0.03));
+    border: 1px solid rgba(18, 163, 92, 0.15);
+    text-align: center;
+  }
+  .climate-stat strong {
+    display: block;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: #0d7a45;
+    line-height: 1.1;
+  }
+  .climate-stat span {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.82rem;
+    color: #5a6560;
+    line-height: 1.4;
+  }
+  .climate-figure {
+    margin-top: 28px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 28px 72px rgba(5, 46, 26, 0.14);
+    border: 1px solid rgba(5, 46, 26, 0.06);
+  }
+  .climate-figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .climate-figure figcaption {
+    padding: 14px 18px;
+    font-size: 0.88rem;
+    color: #6b7570;
+    font-style: italic;
+    background: #f7faf8;
+    border-top: 1px solid rgba(5, 46, 26, 0.06);
+  }
+  .climate-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .climate-split__visual {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(5, 46, 26, 0.16);
+    border: 1px solid rgba(5, 46, 26, 0.06);
+  }
+  .climate-split__visual img {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    object-fit: cover;
+    display: block;
+  }
+  .climate-benefits {
+    display: grid;
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .climate-benefit {
+    display: flex;
+    gap: 16px;
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid rgba(5, 46, 26, 0.08);
+    box-shadow: 0 10px 28px rgba(5, 46, 26, 0.05);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .climate-benefit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(5, 46, 26, 0.1);
+  }
+  .climate-benefit__icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: rgba(18, 163, 92, 0.12);
+    color: #0d7a45;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+  .climate-benefit h3 {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    color: #0a1f14;
+  }
+  .climate-benefit p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #5a6560;
+  }
+  .climate-timeline {
+    position: relative;
+    margin-top: 28px;
+    padding-left: 28px;
+  }
+  .climate-timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, #12a35c, rgba(18, 163, 92, 0.2));
+    border-radius: 2px;
+  }
+  .climate-timeline article {
+    position: relative;
+    padding: 0 0 28px 24px;
+  }
+  .climate-timeline article:last-child {
+    padding-bottom: 0;
+  }
+  .climate-timeline article::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #12a35c;
+    box-shadow: 0 0 0 4px rgba(18, 163, 92, 0.2);
+  }
+  .climate-timeline .year {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #12a35c;
+    margin-bottom: 6px;
+  }
+  .climate-timeline h3 {
+    margin: 0 0 8px;
+    font-size: 1.08rem;
+    color: #0a1f14;
+  }
+  .climate-timeline p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #5a6560;
+  }
+  .climate-targets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .climate-target {
+    padding: 22px 20px;
+    border-radius: 16px;
+    background: #fafbfa;
+    border: 1px solid rgba(5, 46, 26, 0.06);
+    box-shadow: 0 8px 24px rgba(5, 46, 26, 0.04);
+  }
+  .climate-target strong {
+    display: block;
+    font-size: 0.95rem;
+    color: #0a1f14;
+    margin-bottom: 8px;
+  }
+  .climate-target span {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: #5a6560;
+  }
+  .climate-dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .climate-panel {
+    padding: 28px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(5, 46, 26, 0.08);
+    box-shadow: 0 12px 36px rgba(5, 46, 26, 0.06);
+  }
+  .climate-panel h3 {
+    margin: 0 0 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0a1f14;
+  }
+  .climate-panel p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #5a6560;
+  }
+  .climate-panel ul {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .climate-panel li {
+    position: relative;
+    padding: 10px 0 10px 20px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #5a6560;
+    border-bottom: 1px solid rgba(5, 46, 26, 0.06);
+  }
+  .climate-panel li:last-child {
+    border-bottom: none;
+  }
+  .climate-panel li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.1em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #12a35c;
+  }
+  .climate-panel li strong {
+    color: #0a1f14;
+  }
+  .climate-governance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 28px;
+  }
+  .climate-gov-card {
+    padding: 28px;
+    border-radius: 16px;
+    background: #fafbfa;
+    border: 1px solid rgba(5, 46, 26, 0.06);
+    box-shadow: 0 10px 32px rgba(5, 46, 26, 0.04);
+  }
+  .climate-gov-card__label {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a9490;
+  }
+  .climate-gov-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.05rem;
+    color: #0a1f14;
+  }
+  .climate-gov-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #5a6560;
+  }
+  .climate-gov-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .climate-gov-list li {
+    position: relative;
+    padding: 10px 0 10px 18px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #5a6560;
+    border-bottom: 1px solid rgba(5, 46, 26, 0.06);
+  }
+  .climate-gov-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .climate-gov-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.15em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #b8c2bc;
+  }
+  .climate-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(5, 46, 26, 0.1);
+  }
+  @media (max-width: 900px) {
+    .climate-stats { grid-template-columns: 1fr; }
+    .climate-split,
+    .climate-dual { grid-template-columns: 1fr; }
+    .climate-split__visual img { min-height: 240px; }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<main class="page sx-page cv-page">
-<section class="page-hero">
-      <div class="container">
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
-          <span>/</span>
-          <span data-i18n="nav.sub.about_climate">About Climate</span>
-        </nav>
-        <h1 class="page-hero__title" data-i18n="page.climate.title">Climate Action in Ethiopia</h1>
-        <p class="page-hero__desc" data-i18n="page.climate.lead">Building a climate-resilient, sustainable, and low-carbon future through strong policy, national coordination, and long-term development planning.</p>
-      </div>
-    </section>
+<main class="page sx-page cv-page climate-page">
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
+        <span>/</span>
+        <span data-i18n="nav.sub.about_climate">About Climate</span>
+      </nav>
+      <h1 class="page-hero__title">Climate Change Overview — Ethiopia</h1>
+      <p class="page-hero__desc">Scientific context, national strategies, targets, and governance for climate-resilient development in Ethiopia.</p>
+    </div>
+  </section>
 
-    <section class="page-body page-body--narrow">
-      <div class="container">
-        <div class="page-section reveal">
-          <h2 class="section-title" style="font-size:1.6rem;margin-bottom:16px;" data-i18n="page.climate.change_title">Climate Change in Ethiopia</h2>
-          <p data-i18n="page.climate.p1">Ethiopia is one of Africa's most climate-vulnerable countries. Rising temperatures, recurrent droughts, erratic rainfall, and extreme weather events are increasing food insecurity, threatening water supplies, and challenging economic growth.</p>
-          <p style="margin-top:14px;" data-i18n="page.climate.p2">Climate change, driven largely by human activities such as deforestation and fossil fuel use, is altering rainfall patterns and affecting agriculture, water resources, ecosystems, and the health of communities.</p>
-          <p style="margin-top:14px;" data-i18n="page.climate.p3">In response, Ethiopia is taking bold action to protect lives and livelihoods, strengthen resilience, and secure a sustainable future for coming generations.</p>
-        </div>
+  <section class="page-body">
+    <div class="container container--climate">
 
-        <div class="page-section reveal">
-          <figure class="media-frame" style="margin-bottom:24px;">
-            <img src="{% static 'img/pages/climate/climate1.jpg' %}" alt="Climate action in Ethiopia" class="content-img">
-          </figure>
-          <h2 class="section-title" style="font-size:1.6rem;margin-bottom:16px;" data-i18n="page.climate.framework_title">Climate Policy Frameworks &amp; National Strategies</h2>
-          <p data-i18n="page.climate.p4">Ethiopia has established robust policy frameworks to support sustainable, climate-resilient, and low-emission development across key sectors.</p>
-          <div class="climate-framework" style="margin-top:24px;">
-            <article class="climate-framework__card">
-              <h3 data-i18n="page.climate.crge">Climate Resilient Green Economy (CRGE)</h3>
-              <p data-i18n="page.climate.crge_desc">Promotes economic growth while reducing greenhouse gas emissions and building resilience to climate impacts.</p>
-            </article>
-            <article class="climate-framework__card">
-              <h3 data-i18n="page.climate.ndc">Nationally Determined Contribution (NDC)</h3>
-              <p data-i18n="page.climate.ndc_desc">Sets Ethiopia's commitments under the Paris Agreement for emission reduction and climate adaptation.</p>
-            </article>
-            <article class="climate-framework__card">
-              <h3 data-i18n="page.climate.nap">National Adaptation Plan (NAP-ETH)</h3>
-              <p data-i18n="page.climate.nap_desc">Provides a long-term roadmap to strengthen resilience across agriculture, water, health, infrastructure, and other sectors.</p>
-            </article>
-            <article class="climate-framework__card">
-              <h3 data-i18n="page.climate.green_legacy">Green Legacy Initiative</h3>
-              <p data-i18n="page.climate.green_legacy_desc">Supports large-scale tree planting and ecosystem restoration to improve environmental sustainability and carbon sequestration.</p>
-            </article>
-            <article class="climate-framework__card">
-              <h3 data-i18n="page.climate.ltleds">LT-LEDS 2050</h3>
-              <p data-i18n="page.climate.ltleds_desc">Charts Ethiopia's pathway toward a climate-resilient and low-emission economy by 2050.</p>
-            </article>
-            <article class="climate-framework__card">
-              <h3 data-i18n="page.climate.commitment">National Climate Commitment</h3>
-              <p data-i18n="page.climate.commitment_desc">Together, these frameworks reinforce Ethiopia's commitment to mitigation, adaptation, and sustainable development aligned with global climate goals.</p>
-            </article>
+      <section class="climate-block reveal">
+        <header class="climate-block__head">
+          <span class="climate-block__num">1</span>
+          <h2 class="climate-block__title">Scientific &amp; National Context</h2>
+        </header>
+        <p class="climate-block__lead">Climate change refers to long-term shifts in temperature and typical weather patterns. In Ethiopia, recent observations show a warming trend and increasing rainfall variability. These changes affect livelihoods and national development through impacts on water availability, agricultural productivity, and ecosystem stability.</p>
+        <div class="climate-stats">
+          <div class="climate-stat">
+            <strong>~1&deg;C</strong>
+            <span>Mean temperature increase since the 1960s</span>
+          </div>
+          <div class="climate-stat">
+            <strong>~25%</strong>
+            <span>Increase in rainfall variability</span>
+          </div>
+          <div class="climate-stat">
+            <strong>1&ndash;4%</strong>
+            <span>Annual GDP loss during severe climate events</span>
           </div>
         </div>
+        <p class="climate-block__lead">Ethiopia is particularly vulnerable because its economy and food systems depend heavily on climate-sensitive sectors. Mitigation and adaptation are not only environmental priorities — they are essential for economic survival, food security, and social stability.</p>
+        <figure class="climate-figure">
+          <img src="{% static 'img/pages/climate/borana-drought-2022.png' %}" alt="Drought affecting livestock in Borana zone, October 2022">
+          <figcaption>The severity of the drought affecting the livestock of Borana zone in October 2022</figcaption>
+        </figure>
+      </section>
 
-        <div class="page-section reveal">
-          <figure class="media-frame" style="margin-bottom:24px;">
-            <img src="{% static 'img/pages/climate/climate2.jpeg' %}" alt="MoPD climate leadership" class="content-img">
+      <section class="climate-block reveal">
+        <header class="climate-block__head">
+          <span class="climate-block__num">2</span>
+          <h2 class="climate-block__title">Landscape Restoration</h2>
+        </header>
+        <div class="climate-split">
+          <figure class="climate-split__visual">
+            <img src="{% static 'img/pages/climate/landscape-restoration.png' %}" alt="Restored highland landscape in Ethiopia">
           </figure>
-          <h2 class="section-title" style="font-size:1.6rem;margin-bottom:16px;" data-i18n="page.climate.role_title">Role of the Ministry of Planning and Development</h2>
-          <p data-i18n="page.climate.role_p1">The Ministry of Planning and Development leads the country's climate response by integrating climate action into national development plans and long-term strategies.</p>
-          <p style="margin-top:14px;" data-i18n="page.climate.role_p2">It ensures alignment between climate priorities and broader development objectives, including the 10-Year Development Plan and the LT-LEDS 2050.</p>
-          <p style="margin-top:14px;" data-i18n="page.climate.role_p3">The ministry guides the implementation of key climate policies such as the CRGE and NDCs, while also advancing the National Carbon Market Strategy to support Ethiopia's participation in international carbon markets.</p>
-          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;">
-            <a href="{% url 'climate_docs' %}" class="btn btn--outline" data-i18n="nav.sub.climate_docs">Climate Documents</a>
-            <a href="{% url 'green_tech' %}" class="btn btn--outline" data-i18n="nav.sub.green_tech">Green Technology</a>
-            <a href="https://climate.mopd.gov.et/" target="_blank" rel="noopener" class="btn btn--primary" data-i18n="nav.sub.climate_portal">Climate Knowledge Portal</a>
+          <div class="climate-split__body">
+            <p class="climate-block__lead">Landscape restoration in Ethiopia&rsquo;s highlands is a central national response to climate vulnerability. By improving soil health, conserving biodiversity, restoring degraded lands, and strengthening watershed functions, restoration efforts help communities maintain agricultural productivity under changing climate conditions.</p>
+            <p class="climate-block__lead">Given that Ethiopia&rsquo;s climate-dependent agriculture supports the livelihoods of the majority of the population, restoration contributes directly to both adaptation and mitigation outcomes.</p>
           </div>
         </div>
-      </div>
-    </section>
+        <div class="climate-benefits">
+          <article class="climate-benefit">
+            <span class="climate-benefit__icon">ADAPT</span>
+            <div>
+              <h3>Adaptation</h3>
+              <p>Resilience to drought, reduced erosion, and improved water retention across restored watersheds and highland landscapes.</p>
+            </div>
+          </article>
+          <article class="climate-benefit">
+            <span class="climate-benefit__icon">MITIG</span>
+            <div>
+              <h3>Mitigation</h3>
+              <p>Enhanced carbon sequestration through improved vegetation cover, agroforestry, and expanded forest restoration programs.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="climate-block reveal">
+        <header class="climate-block__head">
+          <span class="climate-block__num">3</span>
+          <h2 class="climate-block__title">Strategic Evolution (2011&ndash;2026)</h2>
+        </header>
+        <p class="climate-block__lead">Ethiopia&rsquo;s climate action has evolved through major national initiatives:</p>
+        <div class="climate-timeline">
+          <article>
+            <span class="year">2011</span>
+            <h3>Climate Resilient Green Economy (CRGE) Launch</h3>
+            <p>Ethiopia launched CRGE with the objective of achieving middle-income status by 2025 while pursuing development pathways with no net increase in greenhouse gas emissions.</p>
+          </article>
+          <article>
+            <span class="year">2019</span>
+            <h3>NAP-ETH</h3>
+            <p>NAP-ETH is a national framework for strengthening climate adaptation planning and implementation, launched in May 2019 with 18 adaptation options to guide coordinated efforts across sectors and levels.</p>
+          </article>
+          <article>
+            <span class="year">2019</span>
+            <h3>Green Legacy Initiative</h3>
+            <p>A national restoration program that has planted more than 48 billion seedlings, with forest coverage reportedly increasing from about 17% to 23.6% toward a 30% national target.</p>
+          </article>
+          <article>
+            <span class="year">2021</span>
+            <h3>Updated NDC 2.0</h3>
+            <p>Ethiopia&rsquo;s enhanced climate action plan strengthening mitigation targets, sectoral strategies, and MRV coordination mechanisms across government.</p>
+          </article>
+          <article>
+            <span class="year">2020&ndash;2050</span>
+            <h3>LT-LEDS</h3>
+            <p>Long-term roadmap for shifting development toward low-emissions, climate-resilient pathways and aligning policies, investments, and planning with mitigation objectives.</p>
+          </article>
+          <article>
+            <span class="year">2024</span>
+            <h3>Green Mobility Transition</h3>
+            <p>Accelerating the shift to greener, low-emission transport through cleaner technologies, led by the Ministry of Transport and Logistics.</p>
+          </article>
+          <article>
+            <span class="year">2025/2026</span>
+            <h3>NDC 3.0</h3>
+            <p>Ethiopia&rsquo;s 3rd Nationally Determined Contribution, aligned with long-term development vision and strengthened climate ambition for 2025&ndash;2035.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="climate-block reveal">
+        <header class="climate-block__head">
+          <span class="climate-block__num">4</span>
+          <h2 class="climate-block__title">Current Targets &amp; Pledges</h2>
+        </header>
+        <p class="climate-block__lead">Under NDC 3.0 (2025&ndash;2035) and LT-LEDS, Ethiopia commits to the following priorities:</p>
+        <div class="climate-targets">
+          <div class="climate-target">
+            <strong>GHG Mitigation</strong>
+            <span>70.3% reduction versus Business As Usual (BAU) by 2035</span>
+          </div>
+          <div class="climate-target">
+            <strong>Forest Cover</strong>
+            <span>Increase to 30.0% by 2030</span>
+          </div>
+          <div class="climate-target">
+            <strong>Renewable Energy</strong>
+            <span>Reach 16,058 MW installed capacity by 2030</span>
+          </div>
+          <div class="climate-target">
+            <strong>Green Mobility</strong>
+            <span>Deploy 500,000 Electric Vehicles on the road by 2033</span>
+          </div>
+          <div class="climate-target">
+            <strong>Net-Zero Status</strong>
+            <span>Full carbon neutrality targeted by 2050</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="climate-block reveal">
+        <header class="climate-block__head">
+          <span class="climate-block__num">5</span>
+          <h2 class="climate-block__title">Renewable Energy &amp; Key Adaptation Sectors</h2>
+        </header>
+        <div class="climate-dual">
+          <div class="climate-panel">
+            <h3>Renewable Energy Focus</h3>
+            <p>Ethiopia generates about 98% of its electricity from renewable sources, including hydropower, wind, and geothermal. Regional interconnection and clean energy development are central to sustaining low-carbon growth.</p>
+          </div>
+          <div class="climate-panel">
+            <h3>Key Adaptation Sectors</h3>
+            <ul>
+              <li><strong>Water</strong> — integrated watershed management, improved water retention, and drought risk reduction</li>
+              <li><strong>Agriculture</strong> — drought-resistant crops and climate-smart production systems</li>
+              <li><strong>Health</strong> — strengthened surveillance for climate-sensitive diseases</li>
+              <li><strong>Transport</strong> — resilient infrastructure planning and low-carbon mobility options</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="climate-block reveal">
+        <header class="climate-block__head">
+          <span class="climate-block__num">6</span>
+          <h2 class="climate-block__title">Governance for Climate Resilience</h2>
+        </header>
+        <p class="climate-block__lead">Ethiopia has established an evolving climate governance framework integrating resilience, low-emission development, and sustainable economic transformation into national planning — guided by CRGE, NAP, NDCs, and LT-LEDS.</p>
+        <div class="climate-governance-grid">
+          <article class="climate-gov-card">
+            <span class="climate-gov-card__label">Institutional mandate</span>
+            <h3>National Institutional Framework</h3>
+            <p>MoPD coordinates climate-resilient development under Proclamation No. 1263/2021, overseeing CRGE implementation, NDC coordination, climate monitoring, and strategic policy alignment. Sector ministries mainstream resilience into sectoral plans and implementation.</p>
+          </article>
+          <article class="climate-gov-card">
+            <span class="climate-gov-card__label">Coordination</span>
+            <h3>Coordination Mechanisms</h3>
+            <ul class="climate-gov-list">
+              <li>CRGE National Steering Committee</li>
+              <li>CRGE Technical Team</li>
+              <li>CRGE Unit</li>
+              <li>CRGE Forum</li>
+              <li>Climate governance &amp; coordination system</li>
+            </ul>
+          </article>
+        </div>
+        <div class="climate-cta">
+          <a href="{% url 'green_tech' %}" class="btn btn--outline" data-i18n="nav.sub.green_tech">Green Technology</a>
+          <a href="https://climate.mopd.gov.et/" target="_blank" rel="noopener" class="btn btn--primary" data-i18n="nav.sub.climate_portal">Climate Knowledge Portal</a>
+        </div>
+      </section>
+
+    </div>
+  </section>
 </main>
 {% endblock %}
