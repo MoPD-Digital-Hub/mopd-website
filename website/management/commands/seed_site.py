@@ -331,7 +331,11 @@ class Command(BaseCommand):
         self.stdout.write(f'  Translations ({len(keys)} keys, {created} new)')
 
     def seed_news(self):
-        call_command('sync_official_news', featured=3)
+        try:
+            call_command('sync_official_news', featured=3)
+        except Exception as exc:
+            self.stdout.write(self.style.WARNING(f'  News sync failed ({exc}); importing local media/news instead'))
+            call_command('import_local_news', featured=3)
 
     def seed_leaders(self, en, am):
         for item in LEADERS:
@@ -377,6 +381,7 @@ class Command(BaseCommand):
         album.images.all().delete()
         alt_en = en.get('page.gallery.alt', 'MoPD event — May 19, 2025')
         alt_am = am.get('page.gallery.alt', '')
+        linked = 0
         for idx, url in enumerate(GALLERY_IMAGES):
             image = GalleryImage(
                 album=album,
@@ -384,9 +389,14 @@ class Command(BaseCommand):
                 alt_am=alt_am,
                 sort_order=idx,
             )
-            assign_image_from_url(image, 'image', url)
-            image.save()
-        self.stdout.write('  Gallery album')
+            if assign_image_from_url(image, 'image', url):
+                image.save()
+                linked += 1
+        if linked == 0:
+            self.stdout.write(self.style.WARNING('  Gallery remote download failed; importing local media/gallery instead'))
+            call_command('import_local_gallery')
+        else:
+            self.stdout.write('  Gallery album')
 
     def seed_documents(self):
         for idx, (title, url, category) in enumerate(CLIMATE_DOCS):
