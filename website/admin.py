@@ -1,6 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.utils.html import format_html
 from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 
@@ -209,6 +210,34 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
             defaults={'tag': 'News'},
         )
         super().save_model(request, obj, form, change)
+
+        if not obj.is_published or obj.article_type != 'news':
+            return
+
+        article_id = obj.pk
+
+        def _telegram_admin_feedback():
+            from website.models import NewsArticle
+            from website.telegram_news import telegram_configured
+
+            article = NewsArticle.objects.get(pk=article_id)
+            if not article.is_published or article.article_type != 'news':
+                return
+            if not telegram_configured():
+                messages.warning(
+                    request,
+                    'Telegram bot token is not loaded. Add TELEGRAM_BOT_TOKEN to .env and restart runserver.',
+                )
+                return
+            if article.telegram_notified_at:
+                messages.success(request, 'Article sent to Telegram.')
+            else:
+                messages.warning(
+                    request,
+                    'Article saved, but Telegram delivery failed. Ensure the bot is in the group and can post messages.',
+                )
+
+        transaction.on_commit(_telegram_admin_feedback)
 
     @admin.display(description='Current image')
     def image_preview(self, obj):

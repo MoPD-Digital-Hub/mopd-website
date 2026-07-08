@@ -7,7 +7,7 @@ register = template.Library()
 def nav_active(current, page_id):
     about_pages = {'about', 'leadership', 'leader', 'leader_detail'}
     news_pages = {'news', 'news_detail', 'gallery', 'press', 'press-release'}
-    climate_pages = {'climate', 'climate_docs', 'green_tech', 'about-climate'}
+    climate_pages = {'climate', 'green_tech', 'about-climate'}
     data_pages = {'stats', 'procurement', 'vacancies'}
 
     if page_id == 'about':
