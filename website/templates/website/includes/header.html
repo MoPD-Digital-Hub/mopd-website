@@ -36,7 +36,6 @@
           <a href="{% url 'climate' %}" class="mp-nav__link{% if current_page|nav_active:'climate' %} is-active{% endif %}" data-i18n="nav.climate">Climate</a>
           <ul class="mp-nav__sub">
             <li><a href="{% url 'climate' %}" data-i18n="nav.sub.about_climate">About Climate</a></li>
-            <li><a href="{% url 'climate_docs' %}" data-i18n="nav.sub.climate_docs">Documents</a></li>
             <li><a href="{% url 'green_tech' %}" data-i18n="nav.sub.green_tech">Green Technology</a></li>
           </ul>
         </li>
@@ -108,7 +107,6 @@
         </button>
         <div class="sx-menu__group-links">
           <a href="{% url 'climate' %}" data-i18n="nav.sub.about_climate">About Climate</a>
-          <a href="{% url 'climate_docs' %}" data-i18n="nav.sub.climate_docs">Documents</a>
           <a href="{% url 'green_tech' %}" data-i18n="nav.sub.green_tech">Green Technology</a>
         </div>
       </div>

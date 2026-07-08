@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .climate_documents import climate_doc_sections
 from .forms import ContactForm, NewsletterForm
 from .models import (
     CarouselSlide,
@@ -32,7 +31,6 @@ PAGE_TEMPLATES = {
     'gallery': 'website/pages/gallery.html',
     'press-release': 'website/pages/press-release.html',
     'about-climate': 'website/pages/about-climate.html',
-    'climate-documents': 'website/pages/climate-documents.html',
     'green-technology': 'website/pages/green-technology.html',
     'statistics-documents': 'website/pages/statistics-documents.html',
     'development-planning': 'website/pages/development-planning.html',
@@ -50,7 +48,6 @@ PAGE_NAV_IDS = {
     'gallery': 'gallery',
     'press-release': 'press',
     'about-climate': 'climate',
-    'climate-documents': 'climate_docs',
     'green-technology': 'green_tech',
     'statistics-documents': 'stats',
     'development-planning': 'devplan',
@@ -76,17 +73,6 @@ def _page_context(page_id):
         )
     elif page_id == 'gallery':
         ctx['albums'] = GalleryAlbum.objects.filter(is_published=True).prefetch_related('images')
-    elif page_id == 'climate-documents':
-        climate_docs = Document.objects.filter(
-            is_published=True,
-            doc_type=Document.DocType.CLIMATE,
-        ).order_by('sort_order', 'id')
-        ctx['climate_doc_sections'] = climate_doc_sections(climate_docs)
-        ctx['document_filters'] = [
-            {'code': section['code'], 'label': section['label'], 'count': len(section['documents'])}
-            for section in ctx['climate_doc_sections']
-        ]
-        ctx['document_count'] = sum(filter_item['count'] for filter_item in ctx['document_filters'])
     elif page_id == 'statistics-documents':
         documents = Document.objects.filter(is_published=True, doc_type=Document.DocType.STATISTICS)
         ctx['documents'] = documents
