@@ -54,6 +54,30 @@ CAROUSEL_EN_DEFAULTS = {
     'carousel.link': 'Read story →',
 }
 
+LEADERS_EN_DEFAULTS = {
+    'leader.0.name': 'H.E. Fitsum Assefa (PhD)',
+    'leader.0.role': 'Minister',
+    'leader.0.bio': 'H.E. Fitsum Assefa (PhD) leads the Ministry of Planning and Development and is a member of the Prosperity Party Central Committee.',
+    'page.leader1.p1': 'Fitsum Assefa Adela is a competent economist and politician who has made significant contributions to Ethiopia\'s development. She has served as the Minister of Planning and Development since 2018.',
+    'page.leader1.p2': 'She holds a Master\'s degree in Accounting and Development Studies from Addis Ababa University, and a PhD in Agricultural Economics from the University of Giessen, Germany. Prior to her ministerial appointment, she was a lecturer and researcher at Hawassa University for over ten years.',
+    'page.leader1.p3': 'As Minister, she is responsible for overseeing the implementation of Ethiopia\'s long-term development plans. She has been a strong advocate for data-driven policymaking to ensure equality and opportunities for all citizens.',
+
+    'leader.1.name': 'H.E. Bereket Fesehatsion',
+    'leader.1.role': 'State Minister',
+    'leader.1.bio': 'H.E. Bereket Fesehatsion serves as State Minister in the Ministry of Planning and Development.',
+    'page.leader2.p1': 'He supports the Ministry\'s work in national planning, policy coordination, and development program implementation.',
+
+    'leader.2.name': 'H.E. Tirumar Abate',
+    'leader.2.role': 'State Minister',
+    'leader.2.bio': 'State Minister at the Ministry of Planning and Development who holds a Master\'s in Leadership and Administration.',
+    'page.leader4.p1': 'H.E. Tirumar Abate is State Minister at the Ministry of Planning and Development. She is a Business Administration graduate and holds a Master\'s in Leadership and Administration.',
+
+    'leader.3.name': 'H.E. Seyum Mekonen',
+    'leader.3.role': 'State Minister',
+    'leader.3.bio': 'An outstanding leader with experience at various government levels.',
+    'page.leader3.p1': 'H.E. Seyum Mekonen is a special leader with experience at various levels of government.'
+}
+
 CAROUSEL_NEWS_SLUGS = {
     'carousel.0.title': 'un-guterres',
     'carousel.1.title': 'acs2',
@@ -195,6 +219,7 @@ def collect_en_defaults():
     en.update(collect_html_defaults_from_templates())
     en.update(I18N_HTML_DEFAULTS)
     en.update(CAROUSEL_EN_DEFAULTS)
+    en.update(LEADERS_EN_DEFAULTS)
     return en
 
 
@@ -310,7 +335,7 @@ class Command(BaseCommand):
         settings_obj.copyright_text_am = am.get('footer.copyright', '')
         settings_obj.topbar_tag_am = am.get('topbar.tag', '')
         settings_obj.development_plan_pdf_url = (
-            'https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf'
+            '/media/ten-year-document/ten_year_development_plan.pdf'
         )
         settings_obj.save()
         self.stdout.write('  Site settings')
