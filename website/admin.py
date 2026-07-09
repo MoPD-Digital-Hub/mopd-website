@@ -65,6 +65,18 @@ class SiteTranslationAdmin(TabbedTranslationAdmin):
     ordering = ('key',)
     fields = ('key', 'text', 'notes')
 
+    class Media:
+        css = {'all': ('admin/css/site_translation_admin.css',)}
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'text':
+            kwargs['widget'] = forms.Textarea(attrs={'rows': 4, 'class': 'vLargeTextField'})
+            kwargs['help_text'] = (
+                'Plain text only — no HTML or styling tags. '
+                'Press Enter for a new line on supported headings.'
+            )
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
     @admin.display(description='English')
     def preview_en(self, obj):
         return _lang_preview(obj, 'text', 'en')

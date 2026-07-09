@@ -35,13 +35,15 @@ function initMpStagger() {
 }
 
 function initSxLang() {
-  document.querySelectorAll('.sx-lang__btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (typeof applyMopdLanguage === 'function') applyMopdLanguage(btn.dataset.lang);
-      document.querySelectorAll('.sx-lang__btn').forEach((b) => {
-        b.classList.toggle('is-active', b === btn);
-      });
-    });
+  const onLangClick = (btn) => {
+    if (typeof applyMopdLanguage === 'function') {
+      applyMopdLanguage(btn.dataset.lang);
+    }
+    mopdSyncLangButtons(btn.dataset.lang);
+  };
+
+  document.querySelectorAll('.sx-lang__btn, .mp-lang__btn, .lang-switch__btn').forEach((btn) => {
+    btn.addEventListener('click', () => onLangClick(btn));
   });
 }
 
@@ -128,10 +130,12 @@ function initSxProgress() {
 function initSxHeroVideo() {
   const mount = document.getElementById('heroVideoMount');
   const poster = document.querySelector('.sx-hero__video-poster');
-  if (!mount) return;
+  const video = mount?.querySelector('.sx-hero__video');
+  if (!mount || !video) return;
 
-  const videoId = mount.dataset.videoId || 'd7YfFd1gYAE';
   const segmentEnd = Math.max(1, parseInt(mount.dataset.videoEnd || '30', 10));
+  const posterDelayMs = Math.max(0, parseInt(mount.dataset.videoDelay || '2000', 10));
+  let playbackStarted = false;
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return;
@@ -147,132 +151,44 @@ function initSxHeroVideo() {
     poster?.classList.add('is-hidden');
   };
 
-  const ytCmd = (iframe, func, args = []) => {
-    iframe.contentWindow?.postMessage(
-      JSON.stringify({ event: 'command', func, args }),
-      '*'
-    );
+  const playFromStart = () => {
+    video.currentTime = 0;
+    video.play().catch(() => {});
   };
 
-  const loadIframe = () => {
-    if (mount.dataset.loaded) return;
-    mount.dataset.loaded = '1';
+  const kickPlay = () => {
+    startPlayback(true);
+  };
 
-    const iframe = document.createElement('iframe');
-    iframe.setAttribute('title', 'MoPD hero background video');
-    iframe.setAttribute('tabindex', '-1');
-    iframe.setAttribute('loading', 'eager');
-    iframe.setAttribute('width', '1920');
-    iframe.setAttribute('height', '1080');
-    iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
-    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    const origin = encodeURIComponent(window.location.origin);
-    iframe.src = [
-      `https://www.youtube-nocookie.com/embed/${videoId}`,
-      '?autoplay=1&mute=1&controls=0&rel=0',
-      '&playsinline=1&modestbranding=1&iv_load_policy=3',
-      '&disablekb=1&fs=0&cc_load_policy=0&autohide=1',
-      '&showinfo=0&enablejsapi=1',
-      `&start=0&end=${segmentEnd}`,
-      `&origin=${origin}`,
-    ].join('');
+  const startPlayback = (skipDelay = false) => {
+    if (playbackStarted) return;
+    playbackStarted = true;
 
-    let segmentTimer;
-    let bootTimer;
-    let revealed = false;
-
-    const reveal = () => {
-      if (revealed) return;
-      revealed = true;
-      showVideo();
+    const play = () => {
+      video.play().then(showVideo).catch(() => {});
     };
 
-    const playFromStart = () => {
-      ytCmd(iframe, 'seekTo', [0, true]);
-      ytCmd(iframe, 'playVideo', []);
-    };
-
-    const bootPlayer = () => {
-      iframe.contentWindow?.postMessage(
-        JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }),
-        '*'
-      );
-      ytCmd(iframe, 'mute', []);
-      ytCmd(iframe, 'playVideo', []);
-      // Prefer highest available stream (YouTube may cap embed quality)
-      ['highres', 'hd1080', 'hd720', 'large'].forEach((q) => {
-        ytCmd(iframe, 'setPlaybackQuality', [q]);
-      });
-    };
-
-    const kickPlay = () => {
-      bootPlayer();
-      setTimeout(reveal, 350);
-    };
-
-    const onYoutubeMessage = (event) => {
-      if (!event.origin.includes('youtube')) return;
-      let data;
-      try {
-        data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-      } catch {
-        return;
-      }
-
-      if (data.event === 'onStateChange') {
-        if (data.info === 1) {
-          reveal();
-        } else if (data.info === 2) {
-          ytCmd(iframe, 'playVideo', []);
-        } else if (data.info === 0) {
-          playFromStart();
-        }
-      }
-
-      if (data.event === 'infoDelivery' && typeof data.info?.currentTime === 'number') {
-        if (data.info.currentTime >= segmentEnd - 0.3) {
-          playFromStart();
-        }
-      }
-    };
-
-    window.addEventListener('message', onYoutubeMessage);
-
-    iframe.addEventListener('load', () => {
-      [200, 600, 1200, 2000, 3500].forEach((ms) => setTimeout(bootPlayer, ms));
-      bootTimer = setInterval(bootPlayer, 4000);
-      setTimeout(reveal, 2200);
-
-      segmentTimer = setInterval(() => {
-        ytCmd(iframe, 'getCurrentTime', []);
-      }, 600);
-    });
-
-    const cover = mount.querySelector('.sx-hero__video-cover');
-    const mask = mount.querySelector('.sx-hero__video-mask');
-    const shield = mount.querySelector('.sx-hero__video-shield');
-    const heroMedia = mount.closest('.sx-hero__media');
-
-    if (cover) {
-      mount.insertBefore(iframe, cover);
-    } else if (shield) {
-      mount.insertBefore(iframe, mask || shield);
+    if (skipDelay || posterDelayMs === 0) {
+      play();
     } else {
-      mount.appendChild(iframe);
+      setTimeout(play, posterDelayMs);
     }
-
-    // Programmatic play — shield/cover block the YouTube button from view & clicks
-    shield?.addEventListener('click', kickPlay);
-    heroMedia?.addEventListener('click', kickPlay);
-
-    mount._ytCleanup = () => {
-      window.removeEventListener('message', onYoutubeMessage);
-      clearInterval(segmentTimer);
-      clearInterval(bootTimer);
-    };
   };
 
-  requestAnimationFrame(loadIframe);
+  video.addEventListener('playing', showVideo);
+  video.addEventListener('timeupdate', () => {
+    if (video.currentTime >= segmentEnd - 0.15) {
+      playFromStart();
+    }
+  });
+  video.addEventListener('ended', playFromStart);
+
+  const shield = mount.querySelector('.sx-hero__video-shield');
+  const heroMedia = mount.closest('.sx-hero__media');
+  shield?.addEventListener('click', kickPlay);
+  heroMedia?.addEventListener('click', kickPlay);
+
+  requestAnimationFrame(() => startPlayback());
 }
 
 function initSxHeroFeed() {

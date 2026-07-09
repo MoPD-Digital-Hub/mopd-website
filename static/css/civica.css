@@ -312,7 +312,7 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   position: absolute;
   inset: 0;
   background-color: var(--cv-primary);
-  background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg');
+  background-image: url('../img/hero/hero-video-poster.jpg');
   background-size: cover;
   background-position: center;
   z-index: 0;
@@ -334,13 +334,13 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   clip-path: inset(0);
 }
 
-/* Poster cover blocks YouTube play/pause UI; video starts via JS autoplay */
+/* Poster cover until autoplay starts */
 .sx-hero__video-cover {
   position: absolute;
   inset: 0;
   z-index: 8;
   background-color: var(--cv-primary);
-  background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg');
+  background-image: url('../img/hero/hero-video-poster.jpg');
   background-size: cover;
   background-position: center;
   opacity: 1;
@@ -354,8 +354,8 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   pointer-events: none;
 }
 
-/* Iframe cropped so centre play/pause sits outside the visible frame */
-.sx-hero__video-player iframe {
+/* Cover-fit background loop */
+.sx-hero__video-player .sx-hero__video {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -365,41 +365,10 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   min-height: 100vh;
   min-height: 100svh;
   max-width: none;
-  transform: translate(-50%, -50%) scale(1.32);
-  transform-origin: center center;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
   border: 0;
   pointer-events: none;
-}
-
-/* Hide YouTube logo / title chrome in corners */
-.sx-hero__video-mask {
-  position: absolute;
-  inset: 0;
-  z-index: 9;
-  pointer-events: none;
-}
-
-.sx-hero__video-mask::before,
-.sx-hero__video-mask::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-}
-
-.sx-hero__video-mask::before {
-  bottom: 0;
-  right: 0;
-  width: 220px;
-  height: 90px;
-  background: linear-gradient(145deg, transparent 20%, rgba(5, 46, 26, 0.96) 100%);
-}
-
-.sx-hero__video-mask::after {
-  top: 0;
-  left: 0;
-  width: 160px;
-  height: 72px;
-  background: linear-gradient(215deg, transparent 30%, rgba(5, 46, 26, 0.92) 100%);
 }
 
 /* Soft green mist over video — subtle, not heavy */
@@ -1662,8 +1631,8 @@ body[data-page="home"] .sx-meta-link:hover {
     font-size: 1rem;
   }
 
-  .sx-hero__video-player iframe {
-    transform: translate(-50%, -50%) scale(1.18);
+  .sx-hero__video-player .sx-hero__video {
+    transform: translate(-50%, -50%);
   }
 
   .cv-cta-bar__inner {
@@ -1735,15 +1704,6 @@ body[data-page="home"] .sx-meta-link:hover {
   .sx-hero__feed-link {
     width: 100%;
     justify-content: space-between;
-  }
-
-  .sx-hero__video-player iframe {
-    transform: translate(-50%, -50%) scale(1.15);
-  }
-
-  .sx-hero__video-mask::before {
-    width: 140px;
-    height: 64px;
   }
 
   .cv-btn {

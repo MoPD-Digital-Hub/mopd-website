@@ -23,20 +23,25 @@ from website.models import (
     SiteSettings,
     SiteTranslation,
 )
+from website.translation_text import plain_translation_text
 
 I18N_TEXT_PATTERN = re.compile(
     r'data-i18n="([^"]+)"[^>]*>(.*?)</',
     re.DOTALL | re.IGNORECASE,
 )
 
-# Curated HTML copy — template scraping breaks on nested tags.
-I18N_HTML_DEFAULTS = {
-    'hero.title': (
-        'Shaping Ethiopia\'s<br><span class="mp-hero__accent">Sustainable Future</span>'
-    ),
-    'climate.title': 'Green Technology &amp;<br>Environmental Stewardship',
-    'dev.title': '10-Year<br>Development Plan',
+# Curated multiline copy — plain text only (line breaks render in supported headings).
+I18N_MULTILINE_DEFAULTS = {
+    'hero.title.line1': "Shaping Ethiopia's",
+    'hero.title.line2': 'Sustainable Future',
+    'climate.title': 'Green Technology &\nEnvironmental Stewardship',
+    'dev.title': '10-Year\nDevelopment Plan',
 }
+
+# Legacy keys replaced by split/multiline defaults above.
+DEPRECATED_TRANSLATION_KEYS = (
+    'hero.title',
+)
 
 # Hero ticker — not in templates (content comes from CarouselSlide / i18n.js for Amharic).
 CAROUSEL_EN_DEFAULTS = {
@@ -216,29 +221,11 @@ def collect_en_defaults():
             value = strip_html_tags(match.group(2).strip())
             if value and key not in en:
                 en[key] = value
-    en.update(collect_html_defaults_from_templates())
-    en.update(I18N_HTML_DEFAULTS)
+    en.update(I18N_MULTILINE_DEFAULTS)
     en.update(CAROUSEL_EN_DEFAULTS)
     en.update(LEADERS_EN_DEFAULTS)
-    return en
+    return {key: plain_translation_text(value) for key, value in en.items()}
 
-
-def collect_html_defaults_from_templates():
-    """Collect data-i18n-html values with a simple tag-aware parser."""
-    en = {}
-    root = Path(settings.BASE_DIR) / 'website' / 'templates'
-    tag_pattern = re.compile(
-        r'<(\w+)[^>]*\sdata-i18n-html="([^"]+)"[^>]*>(.*?)</\1>',
-        re.DOTALL | re.IGNORECASE,
-    )
-    for path in root.rglob('*.html'):
-        text = path.read_text(encoding='utf-8', errors='ignore')
-        for match in tag_pattern.finditer(text):
-            key = match.group(2)
-            value = html.unescape(re.sub(r'\s+', ' ', match.group(3).strip()))
-            if value:
-                en[key] = value
-    return en
 
 
 def text_for(key, en, am, field='en'):
@@ -307,7 +294,7 @@ class Command(BaseCommand):
             SiteTranslation.objects.all().delete()
 
         en = collect_en_defaults()
-        am = load_am_dict()
+        am = {key: plain_translation_text(value) for key, value in load_am_dict().items()}
 
         self.seed_settings(en, am)
         self.seed_translations(en, am)
@@ -348,14 +335,15 @@ class Command(BaseCommand):
         self.stdout.write('  Site settings')
 
     def seed_translations(self, en, am):
-        keys = sorted(set(en) | set(am))
+        SiteTranslation.objects.filter(key__in=DEPRECATED_TRANSLATION_KEYS).delete()
+        keys = sorted((set(en) | set(am)) - set(DEPRECATED_TRANSLATION_KEYS))
         created = 0
         for key in keys:
             _, was_created = SiteTranslation.objects.update_or_create(
                 key=key,
                 defaults={
-                    'text_en': en.get(key, ''),
-                    'text_am': am.get(key, ''),
+                    'text_en': plain_translation_text(en.get(key, '')),
+                    'text_am': plain_translation_text(am.get(key, '')),
                 },
             )
             if was_created:

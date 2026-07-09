@@ -46,9 +46,9 @@
     </nav>
 
     <div class="mp-header__actions">
-      <div class="mp-lang">
+      <div class="mp-lang" role="group" aria-label="Language">
         {% for lang in site_languages %}
-        <button type="button" class="mp-lang__btn sx-lang__btn{% if forloop.first %} is-active{% endif %}" data-lang="{{ lang.code }}">{{ lang.label }}</button>
+        <button type="button" class="mp-lang__btn sx-lang__btn{% if forloop.first %} is-active{% endif %}" data-lang="{{ lang.code }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ lang.label }}</button>
         {% endfor %}
       </div>
       <a href="{% url 'search' %}" class="mp-nav__link" aria-label="Search" data-i18n-aria="page.search.label">
@@ -66,6 +66,11 @@
   <div class="sx-menu__backdrop" id="sxMenuBackdrop"></div>
   <div class="sx-menu__panel">
     <nav class="sx-menu__nav" aria-label="Mobile">
+      <div class="sx-menu__lang" role="group" aria-label="Language">
+        {% for lang in site_languages %}
+        <button type="button" class="mp-lang__btn sx-lang__btn{% if forloop.first %} is-active{% endif %}" data-lang="{{ lang.code }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ lang.label }}</button>
+        {% endfor %}
+      </div>
       <div class="sx-menu__group is-open">
         <button type="button" class="sx-menu__group-toggle" aria-expanded="true">
           <span data-i18n="nav.about">About</span>
