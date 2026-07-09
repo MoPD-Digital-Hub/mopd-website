@@ -271,6 +271,13 @@ def local_leader_photo_name(slug, source_url):
     return ''
 
 
+def leader_field_text(key, en, am, field='en'):
+    """Resolve leader copy from translations, with curated English fallbacks."""
+    if field == 'am':
+        return am.get(key, '')
+    return en.get(key, '') or LEADERS_EN_DEFAULTS.get(key, '')
+
+
 class Command(BaseCommand):
     help = 'Seed site settings, translations, news, leaders, gallery, documents, carousel, and affiliates'
 
@@ -367,12 +374,21 @@ class Command(BaseCommand):
             leader = Leader.objects.filter(slug=item['slug']).first()
             if leader is None:
                 leader = Leader(slug=item['slug'])
-            leader.name_en = text_for(item['name_key'], en, am)
-            leader.name_am = text_for(item['name_key'], en, am, 'am')
-            leader.role_en = text_for(item['role_key'], en, am)
-            leader.role_am = text_for(item['role_key'], en, am, 'am')
-            leader.short_bio_en = text_for(item['bio_key'], en, am)
-            leader.short_bio_am = text_for(item['bio_key'], en, am, 'am')
+            name_en = leader_field_text(item['name_key'], en, am)
+            name_am = leader_field_text(item['name_key'], en, am, 'am')
+            role_en = leader_field_text(item['role_key'], en, am)
+            role_am = leader_field_text(item['role_key'], en, am, 'am')
+            bio_en = leader_field_text(item['bio_key'], en, am)
+            bio_am = leader_field_text(item['bio_key'], en, am, 'am')
+            leader.name = name_en
+            leader.name_en = name_en
+            leader.name_am = name_am
+            leader.role = role_en
+            leader.role_en = role_en
+            leader.role_am = role_am
+            leader.short_bio = bio_en
+            leader.short_bio_en = bio_en
+            leader.short_bio_am = bio_am
             leader.wide_photo = item.get('wide_photo', False)
             leader.sort_order = item['sort_order']
             leader.is_published = True
@@ -385,10 +401,13 @@ class Command(BaseCommand):
             leader.save()
             leader.paragraphs.all().delete()
             for idx, key in enumerate(item['paragraph_keys']):
+                para_en = leader_field_text(key, en, am)
+                para_am = leader_field_text(key, en, am, 'am')
                 LeaderParagraph.objects.create(
                     leader=leader,
-                    text_en=en.get(key, ''),
-                    text_am=am.get(key, ''),
+                    text=para_en,
+                    text_en=para_en,
+                    text_am=para_am,
                     sort_order=idx,
                 )
         self.stdout.write(f'  Leaders ({len(LEADERS)})')
