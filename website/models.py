@@ -107,7 +107,10 @@ class SiteSettings(models.Model):
 class SiteTranslation(models.Model):
     """UI labels and static page copy — keys match data-i18n attributes."""
     key = models.CharField(max_length=120, unique=True, db_index=True)
-    text = models.TextField(blank=True)
+    text = models.TextField(
+        blank=True,
+        help_text='Plain text only. Press Enter for a new line on supported headings. Do not enter HTML tags.',
+    )
     notes = models.CharField(max_length=200, blank=True, help_text='Admin note only')
 
     class Meta:
@@ -117,6 +120,14 @@ class SiteTranslation(models.Model):
 
     def __str__(self):
         return self.key
+
+    def save(self, *args, **kwargs):
+        from .translation_text import plain_translation_text
+
+        self.text = plain_translation_text(self.text)
+        self.text_en = plain_translation_text(self.text_en)
+        self.text_am = plain_translation_text(self.text_am)
+        super().save(*args, **kwargs)
 
 
 class NewsArticle(models.Model):
