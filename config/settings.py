@@ -184,6 +184,12 @@ STORAGES = {
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Let Django serve uploaded media when no nginx/Apache rule handles /media/.
+# Set to false once a front-end web server serves MEDIA_ROOT directly.
+SERVE_MEDIA_FILES = os.environ.get(
+    'DJANGO_SERVE_MEDIA_FILES', 'true',
+).lower() in ('1', 'true', 'yes')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -1,6 +1,7 @@
 import os
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.text import slugify
 
 from website.news_content import card_excerpt, filter_paragraphs, is_junk_paragraph
@@ -101,7 +102,7 @@ class SiteSettings(models.Model):
     def development_plan_cover(self):
         if self.development_plan_cover_url:
             return self.development_plan_cover_url
-        return '/media/10-year-plan-cover.jpg'
+        return static('img/pages/10-year-plan-cover.jpg')
 
 
 class SiteTranslation(models.Model):
