@@ -133,16 +133,22 @@ function initSxHeroVideo() {
   const video = mount?.querySelector('.sx-hero__video');
   if (!mount || !video) return;
 
-  const segmentEnd = Math.max(1, parseInt(mount.dataset.videoEnd || '30', 10));
-  const posterDelayMs = Math.max(0, parseInt(mount.dataset.videoDelay || '2000', 10));
+  const src = mount.dataset.videoSrc || '';
+  const posterDelayMs = Math.max(0, parseInt(mount.dataset.videoDelay || '1200', 10));
   let playbackStarted = false;
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Poster-only on phones / reduced motion / constrained networks
+  const isMobile = window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
+  if (
+    !src ||
+    isMobile ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
     return;
   }
 
   const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  if (conn && (conn.saveData || /(^2g$|^slow-2g$)/.test(conn.effectiveType || ''))) {
+  if (conn && (conn.saveData || /(^2g$|^slow-2g$|^3g$)/.test(conn.effectiveType || ''))) {
     return;
   }
 
@@ -151,18 +157,20 @@ function initSxHeroVideo() {
     poster?.classList.add('is-hidden');
   };
 
-  const playFromStart = () => {
-    video.currentTime = 0;
-    video.play().catch(() => {});
-  };
-
-  const kickPlay = () => {
-    startPlayback(true);
+  const ensureSource = () => {
+    if (video.dataset.srcLoaded) return;
+    video.dataset.srcLoaded = '1';
+    const source = document.createElement('source');
+    source.src = src;
+    source.type = 'video/mp4';
+    video.appendChild(source);
+    video.load();
   };
 
   const startPlayback = (skipDelay = false) => {
     if (playbackStarted) return;
     playbackStarted = true;
+    ensureSource();
 
     const play = () => {
       video.play().then(showVideo).catch(() => {});
@@ -176,19 +184,22 @@ function initSxHeroVideo() {
   };
 
   video.addEventListener('playing', showVideo);
-  video.addEventListener('timeupdate', () => {
-    if (video.currentTime >= segmentEnd - 0.15) {
-      playFromStart();
-    }
-  });
-  video.addEventListener('ended', playFromStart);
 
   const shield = mount.querySelector('.sx-hero__video-shield');
   const heroMedia = mount.closest('.sx-hero__media');
+  const kickPlay = () => startPlayback(true);
   shield?.addEventListener('click', kickPlay);
   heroMedia?.addEventListener('click', kickPlay);
 
-  requestAnimationFrame(() => startPlayback());
+  // Wait for first paint / idle so CSS/fonts/images win the network race
+  const schedule = () => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => startPlayback(), { timeout: 2200 });
+    } else {
+      setTimeout(() => startPlayback(), 700);
+    }
+  };
+  requestAnimationFrame(schedule);
 }
 
 function initSxHeroFeed() {

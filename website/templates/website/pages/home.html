@@ -5,7 +5,6 @@
 
 {% block extra_head %}
   <link rel="preload" as="image" href="{% static 'img/hero/hero-video-poster.jpg' %}">
-  <link rel="preload" as="video" href="{% static 'video/hero.mp4' %}" type="video/mp4">
 {% endblock %}
 
 {% block content %}
@@ -20,10 +19,13 @@
         aria-hidden="true"
         style="background-image: url('{% static 'img/hero/hero-video-poster.jpg' %}'), url('{% static 'img/hero/hero-video-poster-fallback.jpg' %}');"
       ></div>
-      <div id="heroVideoMount" class="sx-hero__video-player" data-video-end="30">
-        <video class="sx-hero__video" muted playsinline preload="auto" tabindex="-1" aria-hidden="true">
-          <source src="{% static 'video/hero.mp4' %}" type="video/mp4">
-        </video>
+      <div
+        id="heroVideoMount"
+        class="sx-hero__video-player"
+        data-video-src="{% static 'video/hero.mp4' %}"
+        data-video-delay="1200"
+      >
+        <video class="sx-hero__video" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
         <div class="sx-hero__video-cover" aria-hidden="true"></div>
         <div class="sx-hero__video-shield" aria-hidden="true"></div>
       </div>
