@@ -46,6 +46,18 @@ ALLOWED_HOSTS = [
 if DEBUG and '*' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('*')
 
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    if o.strip()
+]
+
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS.extend([
+        'http://127.0.0.1:8000',
+        'http://localhost:8000',
+    ])
+
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
 
 # Telegram — news notifications (group only; bots cannot message users without /start)
@@ -74,6 +86,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'website.middleware.DevTunnelTrustedOriginMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

@@ -1,22 +1,29 @@
 {% load i18n log %}
-{% get_admin_log limit as admin_log for_user user %}
+{% get_admin_log 50 as admin_log for_user user %}
 {% if not admin_log %}
 <p class="mopd-admin-recent__empty">{% translate 'None available' %}</p>
 {% else %}
 <ul class="actionlist">
 {% for entry in admin_log %}
-<li class="mopd-admin-recent__item{% if entry.is_addition %} addlink{% endif %}{% if entry.is_change %} changelink{% endif %}{% if entry.is_deletion %} deletelink{% endif %}">
+<li class="mopd-admin-recent__item{% if entry.is_addition %} is-addition{% elif entry.is_change %} is-change{% elif entry.is_deletion %} is-deletion{% endif %}">
   <span class="visually-hidden">{% if entry.is_addition %}{% translate 'Added:' %}{% elif entry.is_change %}{% translate 'Changed:' %}{% elif entry.is_deletion %}{% translate 'Deleted:' %}{% endif %}</span>
-  {% if entry.content_type %}
-  <span class="mopd-admin-recent__type">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
-  {% endif %}
-  {% if entry.is_deletion or not entry.get_admin_url %}
-    <span class="mopd-admin-recent__title">{{ entry.object_repr }}</span>
-  {% else %}
-    <a href="{{ entry.get_admin_url }}" class="mopd-admin-recent__title">{{ entry.object_repr }}</a>
-  {% endif %}
-  <span class="mopd-admin-recent__verb">
-    {% if entry.is_addition %}{% translate 'Added' %}{% elif entry.is_change %}{% translate 'Changed' %}{% elif entry.is_deletion %}{% translate 'Deleted' %}{% endif %}
+  <span class="mopd-admin-recent__icon" aria-hidden="true">
+    {% if entry.is_addition %}+{% elif entry.is_change %}✎{% elif entry.is_deletion %}×{% endif %}
+  </span>
+  <span class="mopd-admin-recent__content">
+    <span class="mopd-admin-recent__meta">
+      {% if entry.content_type %}
+      <span class="mopd-admin-recent__type">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+      {% endif %}
+      <span class="mopd-admin-recent__verb">
+        {% if entry.is_addition %}{% translate 'Added' %}{% elif entry.is_change %}{% translate 'Changed' %}{% elif entry.is_deletion %}{% translate 'Deleted' %}{% endif %}
+      </span>
+    </span>
+    {% if entry.is_deletion or not entry.get_admin_url %}
+      <span class="mopd-admin-recent__title">{{ entry.object_repr }}</span>
+    {% else %}
+      <a href="{{ entry.get_admin_url }}" class="mopd-admin-recent__title">{{ entry.object_repr }}</a>
+    {% endif %}
   </span>
 </li>
 {% endfor %}

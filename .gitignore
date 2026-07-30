@@ -47,3 +47,6 @@ Thumbs.db
 
 # Cursor
 .cursor/
+
+# Large unoptimized source video (deploy only compressed hero.mp4)
+static/video/hero.full.mp4
