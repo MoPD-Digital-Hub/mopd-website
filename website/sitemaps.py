@@ -18,7 +18,6 @@ class StaticViewSitemap(Sitemap):
             'gallery',
             'leadership',
             'climate',
-            'climate_docs',
             'green_tech',
             'stats',
             'devplan',

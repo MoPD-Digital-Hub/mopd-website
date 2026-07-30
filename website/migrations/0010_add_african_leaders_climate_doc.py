@@ -4,21 +4,24 @@ from django.db import migrations
 
 
 def add_african_leaders_declaration(apps, schema_editor):
-    Document = apps.get_model('website', 'Document')
     url = (
         'https://mopd.gov.et/media/climate-documents/'
         '45822-pr-African_Leaders_Addis_Ababa_Declaration_on_Climate_Change_and_hU6SHOs.pdf'
     )
-    if Document.objects.filter(file_url=url).exists():
-        return
-    Document.objects.create(
-        doc_type='climate',
-        climate_category='multilateral',
-        title='The Addis Ababa Declaration on Climate Change & Call to Action (African Leaders)',
-        file_url=url,
-        sort_order=1,
-        is_published=True,
-    )
+    title = 'The Addis Ababa Declaration on Climate Change & Call to Action (African Leaders)'
+    # Raw insert: the historical model omits the *_en/*_am columns, which are
+    # NOT NULL without a database default on freshly migrated databases.
+    with schema_editor.connection.cursor() as cursor:
+        cursor.execute('SELECT 1 FROM website_document WHERE file_url = %s', [url])
+        if cursor.fetchone():
+            return
+        cursor.execute(
+            'INSERT INTO website_document '
+            '(doc_type, climate_category, title, title_en, title_am, '
+            'description, description_en, description_am, file_url, sort_order, is_published) '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+            ['climate', 'multilateral', title, title, '', '', '', '', url, 1, True],
+        )
 
 
 class Migration(migrations.Migration):

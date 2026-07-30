@@ -23,9 +23,12 @@ BASE_MAP = (
 
 
 def add_news_translation_columns(apps, schema_editor):
-    with schema_editor.connection.cursor() as cursor:
-        cursor.execute('PRAGMA table_info("website_newsarticle")')
-        existing = {row[1] for row in cursor.fetchall()}
+    connection = schema_editor.connection
+    with connection.cursor() as cursor:
+        existing = {
+            col.name
+            for col in connection.introspection.get_table_description(cursor, 'website_newsarticle')
+        }
         for col, col_type in NEWS_COLS:
             if col not in existing:
                 cursor.execute(

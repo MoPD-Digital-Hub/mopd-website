@@ -37,25 +37,26 @@ window.MOPD_I18N = {
     'page.faq.topic_contact': 'ያግኙን',
     'page.faq.topic_accessibility': 'ተደራሽነት',
     'page.faq.q_documents': 'ኦፊሴላዊ የMoPD ሰነዶችን የት ማግኘት እችላለሁ?',
-    'page.faq.a_documents': 'የታተሙ የPDF ሰነዶችን ለማሰስ፣ ለመመልከት እና ለማውረድ <a href="/climate/documents/">የአየር ንብረት ሰነዶች</a> እና <a href="/statistics-documents/">የስታቲስቲክስ ሰነዶች</a> ገጾችን ይጠቀሙ።',
+    'page.faq.a_documents': 'የታተሙ የPDF ሰነዶችን ለማሰስ፣ ለመመልከት እና ለማውረድ የስታትስቲክስ ሰነዶች ገጽን ይጠቀሙ።',
     'page.faq.q_download': 'ሰነዶችን ከድረ-ገጹ ማውረድ እችላለሁ?',
     'page.faq.a_download': 'አዎ። የሰነድ ዝርዝር ንጥሎች ፋይሉ ሲገኝ የመመልከቻ እና የማውረጃ አማራጮችን ያካትታሉ።',
     'page.faq.q_procurement': 'የግዥ ማስታወቂያዎች የት ይታተማሉ?',
-    'page.faq.a_procurement': 'ንቁ የጨረታ ማስታወቂያዎች በ<a href="/procurement/">ግዥ</a> ገጽ ላይ ይዘረዘራሉ። ጊዜያቸው ያለፈ ማስታወቂያዎች ከሕዝብ ዝርዝር ይደበቃሉ።',
+    'page.faq.a_procurement': 'ንቁ የጨረታ ማስታወቂያዎች በግዥ ገጽ ላይ ይዘረዘራሉ። ጊዜያቸው ያለፈ ማስታወቂያዎች ከሕዝብ ዝርዝር ይደበቃሉ።',
     'page.faq.q_vacancies': 'አሁን ያሉ ክፍት የስራ ቦታዎችን እንዴት ማየት እችላለሁ?',
-    'page.faq.a_vacancies': 'አሁን ያሉ ክፍት የስራ ቦታዎች፣ የማመልከቻ ጊዜ ገደቦች፣ ቦታዎች እና የሚወርዱ ፋይሎችን ለማየት <a href="/vacancies/">ክፍት የስራ ቦታዎች</a> ገጽን ይጎብኙ።',
+    'page.faq.a_vacancies': 'አሁን ያሉ ክፍት የስራ ቦታዎች፣ የማመልከቻ ጊዜ ገደቦች፣ ቦታዎች እና የሚወርዱ ፋይሎችን ለማየት ክፍት የስራ ቦታዎች ገጽን ይጎብኙ።',
     'page.faq.q_contact': 'ሚኒስቴሩን እንዴት ማግኘት እችላለሁ?',
-    'page.faq.a_contact': 'መልዕክት ለመላክ ወይም የሚኒስቴሩን ስልክ፣ ኢሜይል፣ አድራሻ እና የካርታ ቦታ ለማግኘት <a href="/contact/">ያግኙን</a> ገጽን ይጠቀሙ።',
+    'page.faq.a_contact': 'መልዕክት ለመላክ ወይም የሚኒስቴሩን ስልክ፣ ኢሜይል፣ አድራሻ እና የካርታ ቦታ ለማግኘት ያግኙን ገጽን ይጠቀሙ።',
     'page.faq.q_response': 'መልስ ለማግኘት ምን ያህል ጊዜ ይወስዳል?',
     'page.faq.a_response': 'የመልስ ጊዜ በጥያቄው ዓይነት እና በቢሮው የስራ ጫና ላይ ይመሰረታል። መልዕክትዎ በትክክል እንዲመራ ግልጽ የመገናኛ መረጃ እና በቂ ዝርዝር ያካትቱ።',
     'page.faq.q_language': 'ድረ-ገጹ አማርኛን እና እንግሊዝኛን ይደግፋል?',
     'page.faq.a_language': 'አዎ። በራስጌው ያሉትን የቋንቋ አዝራሮች በመጠቀም በሚገኙ የድረ-ገጽ ቋንቋዎች መካከል መቀየር ይችላሉ።',
     'page.faq.q_accessibility': 'የተደራሽነት ችግር ካገኘሁ ምን ማድረግ አለብኝ?',
-    'page.faq.a_accessibility': 'የድረ-ገጹ ቡድን ልምዱን እንዲገመግም እና እንዲያሻሽል የተደራሽነት እንቅፋቶችን በ<a href="/contact/">ያግኙን</a> ገጽ በኩል ያሳውቁ።',
+    'page.faq.a_accessibility': 'የድረ-ገጹ ቡድን ልምዱን እንዲገመግም እና እንዲያሻሽል የተደራሽነት እንቅፋቶችን በያግኙን ገጽ በኩል ያሳውቁ።',
     'page.faq.empty': 'ከፍለጋዎ ጋር የሚዛመድ ተደጋጋሚ ጥያቄ አልተገኘም።',
 
     'hero.badge': 'የአፍሪካ ብልጽግና መብራት',
-    'hero.title': 'ኢትዮጵያን ዘላቂ መንገድ ላይ<br><em>መምራት</em>',
+    'hero.title.line1': 'ኢትዮጵያን ዘላቂ መንገድ ላይ',
+    'hero.title.line2': 'መምራት',
     'hero.desc': 'ፕላንና ልማት ሚኒስቴሩ ብሔራዊ ፖሊሲዎችን ያስተባብራል፣ የልማት ፕሮግራሞችን ያመራል እና ወደ ኢትዮጵያ 10 ዓመት የልማት እቅድ የሚደረግ እድገትን ይከታተላል።',
     'hero.cta1': 'የልማት እቅድ ይመልከቱ',
     'hero.cta2': 'ስለ ሚኒስቴሩ ይወቁ',
@@ -99,7 +100,7 @@ window.MOPD_I18N = {
     'stat.3.label': 'የሚገለገሉ ዜጎች',
 
     'about.tag': 'ስለ ፕላንና ልማት ሚኒስቴር',
-    'about.title': 'ኢትዮጵያን<br>ለልማት መራ',
+    'about.title': 'ኢትዮጵያን ለልማት መራ',
     'about.tab.about': 'ስለ',
     'about.tab.mission': 'ተልዕኮ',
     'about.tab.vision': 'ራዕይ',
@@ -151,7 +152,7 @@ window.MOPD_I18N = {
     'service.5.desc': 'የህዝብ ልማት ፕሮጀክቶችን ተግባራዊ መሆናቸውን ለማረጋገጥ ክትትል እና ግምገማ።',
 
     'dev.tag': 'በትኩረት ስር',
-    'dev.title': '10 ዓመት<br>የልማት እቅድ',
+    'dev.title': '10 ዓመት\nየልማት እቅድ',
     'dev.period': '2021 — 2030',
     'dev.p1': 'የ10 ዓመት የልማት እቅድ ኢትዮጵያን "የአፍሪካ የብልጽግና ተምሳሌት" ለማድረግ የረጅም ጊዜ እቅድ ነው።',
     'dev.p2': 'ግቦቹ፡ የኑሮ ደረጃ ማሻሻል፣ የአገልግሎት ተደራሽነት፣ የጾታ ተሳትፎ እና በሰው ሀብት እና በግል ዘርፍ ተሳትፎ ኢኮኖሚን ለውጥ ማድረግ።',
@@ -181,10 +182,10 @@ window.MOPD_I18N = {
     'news.link': 'ተጨማሪ ያንብቡ →',
 
     'climate.tag': 'የአየር ንብረት እርምጃ',
-    'climate.title': 'አረንጓዴ ቴክኖሎጂ<br>እና አካባቢያዊ ኃላፊነት',
+    'climate.title': 'አረንጓዴ ቴክኖሎጂ\nእና አካባቢያዊ ኃላፊነት',
     'climate.desc': 'MoPD የኢትዮጵያን የአየር ንብረት ፖሊሲ ውህደት፣ አረንጓዴ ቴክኖሎጂ አድጋብ እና የልማት ግቦችን ከአካባቢያዊ ዘላቂነት ጋር ማስማማት ያስተባብራል።',
     'climate.link.0': 'ስለ ተፈጥሮ →',
-    'climate.link.1': 'ሰነዶች →',
+    'climate.link.1': 'አረንጓዴ ቴክኖሎጂ →',
     'climate.link.2': 'አረንጓዴ ቴክኖሎጂ →',
     'climate.link.3': 'የአየር ንብረት ፖርታል →',
     'climate.stat.0.num': '30B+',
@@ -208,7 +209,7 @@ window.MOPD_I18N = {
     'leader.3.bio': 'በተለያዩ የመንግሥት ደረጃዎች ልምድ ያላቸው ልዩ አመራር።',
 
     'digital.tag': 'መረጃ እና አገናኞች',
-    'digital.title': 'ዲጂታል ክትትል<br>እና ግምገማ',
+    'digital.title': 'ዲጂታል ክትትል\nእና ግምገማ',
     'digital.desc': 'የዲጂታል ቴክኖሎጂዎች ውጤታማ ክትትል እና ሪፖርት ለማድረግ አዲስ እድሎችን ከፍተዋል። የMoPD ዲጂታል M&E ስርዓት ብሔራዊ የልማት እቅድን ለመከታተል ያጎልብታል።',
     'digital.f0': 'በቀጥታ የፕሮጀክት አፈጻጸም ክትትል',
     'digital.f1': 'SDG ግብ-ክትትል ውህደት',
@@ -277,21 +278,21 @@ window.MOPD_I18N = {
     'page.faq.topic_contact': 'አግኙን',
     'page.faq.topic_accessibility': 'ተደራሽነት',
     'page.faq.q_documents': 'ኦፊሴላዊ የMoPD ሰነዶችን ከየት ማግኘት እችላለሁ?',
-    'page.faq.a_documents': 'የ<a href="/climate/documents/">የአየር ንብረት ሰነዶች</a> እና <a href="/statistics-documents/">የስታትስቲክስ ሰነዶች</a> ገጾችን ተጠቅመው የታተሙ የPDF ሰነዶችን ለማስሱ፣ ቅድመ-እይታ ለማድረግ እና ለማውረድ ይጠቀሙ።',
+    'page.faq.a_documents': 'የታተሙ የPDF ሰነዶችን ለማሰስ፣ ቅድመ-እይታ ለማድረግ እና ለማውረድ የስታትስቲክስ ሰነዶች ገጽን ይጠቀሙ።',
     'page.faq.q_download': 'ሰነዶችን ከድረ-ገጹ ማውረድ እችላለሁ?',
     'page.faq.a_download': 'አዎ። የሰነድ ቤተ-መጽሐፍ ንጥሎች የቅድመ-እይታ እና የማውረድ አማራጮችን ያካትታሉ፣ የመነሻ ፋይሉ ሲገኝ።',
     'page.faq.q_procurement': 'የግዥ ማስታወቂያዎች የት ይተደረጋሉ?',
-    'page.faq.a_procurement': 'ንቁ የጨረታ ማስታወቂያዎች በ<a href="/procurement/">ግዥ</a> ገጽ ላይ ይዘረዝራሉ። ጊዜው ያለፈባቸው ማስታወቂያዎች ከህዝባዊ ዝርዝሩ ተደብቀዋል።',
+    'page.faq.a_procurement': 'ንቁ የጨረታ ማስታወቂያዎች በግዥ ገጽ ላይ ይዘረዝራሉ። ጊዜው ያለፈባቸው ማስታወቂያዎች ከህዝባዊ ዝርዝሩ ተደብቀዋል።',
     'page.faq.q_vacancies': 'አሁን ያሉ የስራ ቦታዎችን እንዴት ማረጋገጥ እችላለሁ?',
-    'page.faq.a_vacancies': 'አሁን ያሉ ክፍት ቦታዎች፣ የመጨረሻ ቀኖች፣ ቦታዎች እና ለማውረድ የሚገኙ የስራ መግለጫ ፋይሎችን ለማየት <a href="/vacancies/">ክፍት የስራ ቦታዎች</a> ገጹን ይጎብኙ።',
+    'page.faq.a_vacancies': 'አሁን ያሉ ክፍት ቦታዎች፣ የመጨረሻ ቀኖች፣ ቦታዎች እና ለማውረድ የሚገኙ የስራ መግለጫ ፋይሎችን ለማየት ክፍት የስራ ቦታዎች ገጹን ይጎብኙ።',
     'page.faq.q_contact': 'ሚኒስቴሩን እንዴት ለመገናኘት እችላለሁ?',
-    'page.faq.a_contact': 'መልዕክት ለመላክ ወይም የሚኒስቴሩን ስልክ፣ ኢሜይል፣ አድራሻ እና የካርታ ቦታ ለማግኘት <a href="/contact/">አግኙን</a> ገጹን ይጠቀሙ።',
+    'page.faq.a_contact': 'መልዕክት ለመላክ ወይም የሚኒስቴሩን ስልክ፣ ኢሜይል፣ አድራሻ እና የካርታ ቦታ ለማግኘት አግኙን ገጹን ይጠቀሙ።',
     'page.faq.q_response': 'ምላሽ በምን ያህል ፍጥነት እንደሚገኝ?',
     'page.faq.a_response': 'የምላሽ ጊዜ በጥያቄው አይነት እና በቢሮው የስራ ጫና ይለያያል። መልዕክትዎን ለሚመለከተው ቡድን እንዲደርስ ትክክለኛ የእውቂያ መረጃ እና በቂ ዝርዝር ያካትቱ።',
     'page.faq.q_language': 'ድረ-ገጹ አማርኛና እንግሊዝኛ ይደግፋል?',
     'page.faq.a_language': 'አዎ። በራስ-ገዝ የሚገኙትን የድረ-ገጽ ቋንቋዎች ለመቀየር በራስጌር ያለውን የቋንቋ ቁልፍ ይጠቀሙ።',
     'page.faq.q_accessibility': 'የተደራሽነት ችግር ካጋጠመኝ ምን ማድረግ አለብኝ?',
-    'page.faq.a_accessibility': 'የተደራሽነት መሰረታዊ መሰረቶችን ለመገምገም እና ተሞክሮውን ለማሻሻል በ<a href="/contact/">አግኙን</a> ገጽ በኩል ያሳውቁን።',
+    'page.faq.a_accessibility': 'የተደራሽነት መሰረታዊ መሰረቶችን ለመገምገም እና ተሞክሮውን ለማሻሻል በአግኙን ገጽ በኩል ያሳውቁን።',
     'page.faq.empty': 'ከፍለጋዎ ጋር የሚዛመዱ ጥያቄዎች የሉም።',
     'page.procurement.title': 'ግዥ እና ጨረታዎች',
     'page.vacancies.title': 'ክፍት የስራ ቦታዎች',
@@ -429,9 +430,13 @@ window.MOPD_I18N = {
 
 (function () {
   function storeI18nDefaults() {
-    document.querySelectorAll('[data-i18n], [data-i18n-html]').forEach((el) => {
+    document.querySelectorAll('[data-i18n], [data-i18n-multiline], [data-i18n-html]').forEach((el) => {
       if (!el.dataset.i18nDefault) {
-        el.dataset.i18nDefault = el.dataset.i18nHtml ? el.innerHTML.trim() : el.textContent.trim();
+        if (el.dataset.i18nMultiline || el.dataset.i18nHtml) {
+          el.dataset.i18nDefault = el.innerHTML.trim();
+        } else {
+          el.dataset.i18nDefault = el.textContent.trim();
+        }
       }
     });
 
@@ -491,17 +496,41 @@ window.MOPD_I18N = {
 
 const MOPD_DEFAULT_LANG = 'en';
 
-function mopdLooksLikeHtml(text) {
-  return typeof text === 'string' && /<[a-z][\s\S]*>/i.test(text);
+function mopdNormalizeMultiline(text) {
+  return String(text).replace(/\\n/g, '\n');
+}
+
+function mopdEscapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function mopdSetElementContent(el, text) {
   if (text == null) return;
-  if (mopdLooksLikeHtml(text)) {
-    el.innerHTML = text;
-  } else {
-    el.textContent = text;
-  }
+  el.textContent = text;
+}
+
+function mopdSetMultilineContent(el, text) {
+  if (text == null) return;
+  const normalized = mopdNormalizeMultiline(text);
+  const safe = mopdEscapeHtml(normalized).replace(/\n/g, '<br>');
+  el.innerHTML = safe;
+}
+
+function mopdSyncLangButtons(lang) {
+  document.querySelectorAll('.lang-switch__btn').forEach((btn) => {
+    const active = btn.dataset.lang === lang;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+  document.querySelectorAll('.sx-lang__btn, .mp-lang__btn').forEach((btn) => {
+    const active = btn.dataset.lang === lang;
+    btn.classList.toggle('is-active', active);
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
 }
 
 function mopdLanguageCodes() {
@@ -557,17 +586,32 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
     }
   });
 
+  document.querySelectorAll('[data-i18n-multiline]').forEach((el) => {
+    const key = el.dataset.i18nMultiline;
+    const dbText = mopdDbText(key, lang);
+    if (dbText !== undefined) {
+      mopdSetMultilineContent(el, dbText);
+    } else {
+      const staticText = mopdStaticText(key, lang);
+      if (staticText !== undefined) {
+        mopdSetMultilineContent(el, staticText);
+      } else if (el.dataset.i18nDefault !== undefined) {
+        mopdSetMultilineContent(el, el.dataset.i18nDefault.replace(/<br\s*\/?>/gi, '\n'));
+      }
+    }
+  });
+
   document.querySelectorAll('[data-i18n-html]').forEach((el) => {
     const key = el.dataset.i18nHtml;
     const dbText = mopdDbText(key, lang);
     if (dbText !== undefined) {
-      el.innerHTML = dbText;
+      mopdSetMultilineContent(el, dbText);
     } else {
       const staticText = mopdStaticText(key, lang);
       if (staticText !== undefined) {
-        el.innerHTML = staticText;
+        mopdSetMultilineContent(el, staticText);
       } else if (el.dataset.i18nDefault !== undefined) {
-        el.innerHTML = el.dataset.i18nDefault;
+        mopdSetMultilineContent(el, el.dataset.i18nDefault.replace(/<br\s*\/?>/gi, '\n'));
       }
     }
   });
@@ -636,9 +680,7 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
     ? title
     : (titleEl?.dataset.i18nDefault || 'Ministry of Planning and Development — Ethiopia');
 
-  document.querySelectorAll('.lang-switch__btn').forEach((btn) => {
-    btn.classList.toggle('active', btn.dataset.lang === lang);
-  });
+  mopdSyncLangButtons(lang);
 
   localStorage.setItem('mopd-lang', lang);
   window.dispatchEvent(new CustomEvent('mopd:language', { detail: { lang } }));

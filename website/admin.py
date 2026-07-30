@@ -1,6 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.utils.html import format_html
 from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 
@@ -63,6 +64,18 @@ class SiteTranslationAdmin(TabbedTranslationAdmin):
     search_fields = ('key', 'text_en', 'text_am', 'notes')
     ordering = ('key',)
     fields = ('key', 'text', 'notes')
+
+    class Media:
+        css = {'all': ('admin/css/site_translation_admin.css',)}
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'text':
+            kwargs['widget'] = forms.Textarea(attrs={'rows': 4, 'class': 'vLargeTextField'})
+            kwargs['help_text'] = (
+                'Plain text only — no HTML or styling tags. '
+                'Press Enter for a new line on supported headings.'
+            )
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     @admin.display(description='English')
     def preview_en(self, obj):
@@ -209,6 +222,34 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
             defaults={'tag': 'News'},
         )
         super().save_model(request, obj, form, change)
+
+        if not obj.is_published or obj.article_type != 'news':
+            return
+
+        article_id = obj.pk
+
+        def _telegram_admin_feedback():
+            from website.models import NewsArticle
+            from website.telegram_news import telegram_configured
+
+            article = NewsArticle.objects.get(pk=article_id)
+            if not article.is_published or article.article_type != 'news':
+                return
+            if not telegram_configured():
+                messages.warning(
+                    request,
+                    'Telegram bot token is not loaded. Add TELEGRAM_BOT_TOKEN to .env and restart runserver.',
+                )
+                return
+            if article.telegram_notified_at:
+                messages.success(request, 'Article sent to Telegram.')
+            else:
+                messages.warning(
+                    request,
+                    'Article saved, but Telegram delivery failed. Ensure the bot is in the group and can post messages.',
+                )
+
+        transaction.on_commit(_telegram_admin_feedback)
 
     @admin.display(description='Current image')
     def image_preview(self, obj):

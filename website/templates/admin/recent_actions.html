@@ -7,6 +7,8 @@
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 
+{% block content_title %}{% endblock %}
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
   <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
@@ -22,7 +24,7 @@
       <p>{% translate 'A log of content changes you have made in this admin.' %}</p>
     </div>
     <div class="module mopd-admin-recent mopd-admin-recent--page">
-      {% include "admin/includes/recent_actions_list.html" with limit=50 %}
+      {% include "admin/includes/recent_actions_list.html" %}
     </div>
   </div>
 </div>

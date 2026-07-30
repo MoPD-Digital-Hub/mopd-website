@@ -4,7 +4,7 @@
 {% block meta_description %}Learn about the Ministry of Planning and Development (MoPD).{% endblock %}
 {% block page_id %}about{% endblock %}
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/about-premium.css' %}">
+<link rel="stylesheet" href="{% static 'css/about-premium.css' %}?v=3">
 {% endblock %}
 
 {% block content %}
@@ -61,7 +61,7 @@
               </div>
               <div class="about-intro-banner__visual">
                 <div class="about-intro-banner__image-frame">
-                  <img src="/media/Awards.jpg" alt="Ministry of Planning and Development" class="about-intro-banner__image">
+                  <img src="{% static 'img/pages/awards.jpg' %}" alt="Ministry of Planning and Development" class="about-intro-banner__image">
                   <div class="about-intro-banner__image-badge">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     <span>Est. 1991</span>
@@ -157,7 +157,7 @@
               </div>
               <div class="about__visual about__visual--vision">
                 <figure class="about__image-wrap about__image-wrap--vision">
-                  <img src="https://mopd.gov.et/media/photos/2023/06/29/ethiopia-an-african__1_-removebg-preview.png" alt="Ethiopia — An African Beacon of Prosperity" class="about__image about__image--vision content-img">
+                  <img src="{% static 'img/pages/ethiopia-vision.png' %}" alt="Ethiopia — An African Beacon of Prosperity" class="about__image about__image--vision content-img">
                 </figure>
               </div>
             </div>

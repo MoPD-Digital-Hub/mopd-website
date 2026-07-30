@@ -188,6 +188,10 @@
   border-top-color: rgba(77, 184, 122, 0.2);
 }
 
+.mp-hero--art .mp-hero__content {
+  padding-bottom: 250px;
+}
+
 /* ─── METRICS ART ─── */
 .mp-metrics--art {
   position: relative;

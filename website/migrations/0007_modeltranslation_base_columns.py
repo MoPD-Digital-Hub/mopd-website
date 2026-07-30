@@ -53,16 +53,15 @@ TRANSLATABLE = {
 }
 
 
-def _table_columns(cursor, table):
-    cursor.execute(f'PRAGMA table_info("{table}")')
-    return {row[1] for row in cursor.fetchall()}
+def _table_columns(connection, cursor, table):
+    return {col.name for col in connection.introspection.get_table_description(cursor, table)}
 
 
 def add_base_columns(apps, schema_editor):
     connection = schema_editor.connection
     with connection.cursor() as cursor:
         for table, fields in TRANSLATABLE.items():
-            columns = _table_columns(cursor, table)
+            columns = _table_columns(connection, cursor, table)
             for base, col_type in fields:
                 if base in columns:
                     continue

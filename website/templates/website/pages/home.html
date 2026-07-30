@@ -4,9 +4,7 @@
 {% block page_id %}home{% endblock %}
 
 {% block extra_head %}
-  <link rel="preload" as="image" href="https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg">
-  <link rel="preconnect" href="https://www.youtube-nocookie.com">
-  <link rel="preconnect" href="https://img.youtube.com">
+  <link rel="preload" as="image" href="{% static 'img/hero/hero-video-poster.jpg' %}">
 {% endblock %}
 
 {% block content %}
@@ -19,11 +17,16 @@
       <div
         class="sx-hero__video-poster"
         aria-hidden="true"
-        style="background-image: url('https://img.youtube.com/vi/d7YfFd1gYAE/maxresdefault.jpg'), url('https://img.youtube.com/vi/d7YfFd1gYAE/hqdefault.jpg');"
+        style="background-image: url('{% static 'img/hero/hero-video-poster.jpg' %}'), url('{% static 'img/hero/hero-video-poster-fallback.jpg' %}');"
       ></div>
-      <div id="heroVideoMount" class="sx-hero__video-player" data-video-id="d7YfFd1gYAE" data-video-end="30">
+      <div
+        id="heroVideoMount"
+        class="sx-hero__video-player"
+        data-video-src="{% static 'video/hero.mp4' %}"
+        data-video-delay="1200"
+      >
+        <video class="sx-hero__video" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
         <div class="sx-hero__video-cover" aria-hidden="true"></div>
-        <div class="sx-hero__video-mask" aria-hidden="true"></div>
         <div class="sx-hero__video-shield" aria-hidden="true"></div>
       </div>
       <div class="sx-hero__overlay"></div>
@@ -32,7 +35,10 @@
     <div class="mp-hero__accent-line" aria-hidden="true"></div>
 
     <div class="mp-hero__content mp-hero__content--enter">
-      <h1 class="mp-hero__title" data-i18n-html="hero.title">Shaping Ethiopia's<br><span class="mp-hero__accent">Sustainable Future</span></h1>
+      <h1 class="mp-hero__title">
+        <span data-i18n="hero.title.line1">Shaping Ethiopia's</span><br>
+        <span class="mp-hero__accent" data-i18n="hero.title.line2">Sustainable Future</span>
+      </h1>
       <p class="mp-hero__desc" data-i18n="hero.desc">The Ministry of Planning and Development drives national policy, coordinates development programs, and monitors progress toward Ethiopia's 10-Year Development Plan.</p>
       <div class="mp-hero__actions">
         <a href="{% url 'devplan' %}" class="mp-btn mp-btn--fill" data-i18n="hero.cta1">Explore Development Plan</a>
@@ -109,7 +115,7 @@
       <div class="mp-bento__grid mp-stagger">
         <figure class="mp-bento__visual">
           <div class="mp-bento__frame" aria-hidden="true"></div>
-          <img src="/media/Awards.jpg" alt="Ministry of Planning and Development">
+          <img src="{% static 'img/pages/awards.jpg' %}" alt="Ministry of Planning and Development">
           <figcaption class="mp-bento__caption">
             <strong data-i18n="dev.period">2021 — 2030</strong>
             <span data-i18n="stat.0.label">National Development Plan</span>
@@ -169,7 +175,7 @@
       <div class="mp-devplan__content">
         <span class="mp-section-num mp-section-num--light" aria-hidden="true">02</span>
         <span class="mp-eyebrow" data-i18n="dev.tag">In Focus</span>
-        <h2 class="mp-heading mp-heading--light mp-heading--display" data-i18n-html="dev.title">10-Year<br>Development Plan</h2>
+        <h2 class="mp-heading mp-heading--light mp-heading--display" data-i18n-multiline="dev.title">10-Year<br>Development Plan</h2>
         <p data-i18n="dev.p1">The 10-Year Development Plan outlines Ethiopia's vision, objectives, and strategic pillars for sustainable development through 2030.</p>
         <ol class="mp-devplan__timeline">
           <li data-i18n="timeline.0">Plan Launch — 2021</li>
@@ -307,11 +313,11 @@
       <div class="mp-climate__content">
         <span class="mp-section-num mp-section-num--light" aria-hidden="true">05</span>
         <span class="mp-eyebrow mp-eyebrow--mint" data-i18n="climate.tag">Climate Action</span>
-        <h2 class="mp-heading mp-heading--light" data-i18n-html="climate.title">Green Technology &amp;<br>Environmental Stewardship</h2>
+        <h2 class="mp-heading mp-heading--light" data-i18n-multiline="climate.title">Green Technology &amp;<br>Environmental Stewardship</h2>
         <p data-i18n="climate.desc">MoPD leads Ethiopia's climate policy integration, green technology adoption, and alignment of development goals with environmental sustainability.</p>
         <div class="mp-climate__actions">
           <a href="{% url 'climate' %}" class="mp-btn mp-btn--fill" data-i18n="climate.link.0">About Climate</a>
-          <a href="{% url 'climate_docs' %}" class="mp-btn mp-btn--ghost" data-i18n="climate.link.1">Documents</a>
+          <a href="{% url 'green_tech' %}" class="mp-btn mp-btn--ghost" data-i18n="climate.link.1">Green Technology</a>
         </div>
       </div>
       <div class="mp-climate__stats">

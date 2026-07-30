@@ -11,16 +11,15 @@ TRANSLATION_FIELDS = [
 ]
 
 
-def _table_columns(cursor, table):
-    cursor.execute(f'PRAGMA table_info("{table}")')
-    return {row[1] for row in cursor.fetchall()}
+def _table_columns(connection, cursor, table):
+    return {col.name for col in connection.introspection.get_table_description(cursor, table)}
 
 
 def add_document_translation_columns(apps, schema_editor):
     connection = schema_editor.connection
     table = 'website_document'
     with connection.cursor() as cursor:
-        columns = _table_columns(cursor, table)
+        columns = _table_columns(connection, cursor, table)
         for column, col_type in TRANSLATION_FIELDS:
             if column in columns:
                 continue

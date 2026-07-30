@@ -23,20 +23,25 @@ from website.models import (
     SiteSettings,
     SiteTranslation,
 )
+from website.translation_text import plain_translation_text
 
 I18N_TEXT_PATTERN = re.compile(
     r'data-i18n="([^"]+)"[^>]*>(.*?)</',
     re.DOTALL | re.IGNORECASE,
 )
 
-# Curated HTML copy — template scraping breaks on nested tags.
-I18N_HTML_DEFAULTS = {
-    'hero.title': (
-        'Shaping Ethiopia\'s<br><span class="mp-hero__accent">Sustainable Future</span>'
-    ),
-    'climate.title': 'Green Technology &amp;<br>Environmental Stewardship',
-    'dev.title': '10-Year<br>Development Plan',
+# Curated multiline copy — plain text only (line breaks render in supported headings).
+I18N_MULTILINE_DEFAULTS = {
+    'hero.title.line1': "Shaping Ethiopia's",
+    'hero.title.line2': 'Sustainable Future',
+    'climate.title': 'Green Technology &\nEnvironmental Stewardship',
+    'dev.title': '10-Year\nDevelopment Plan',
 }
+
+# Legacy keys replaced by split/multiline defaults above.
+DEPRECATED_TRANSLATION_KEYS = (
+    'hero.title',
+)
 
 # Hero ticker — not in templates (content comes from CarouselSlide / i18n.js for Amharic).
 CAROUSEL_EN_DEFAULTS = {
@@ -52,6 +57,30 @@ CAROUSEL_EN_DEFAULTS = {
         'Ethiopia\'s State Minister Calls for United African Leadership Ahead of ACS2'
     ),
     'carousel.link': 'Read story →',
+}
+
+LEADERS_EN_DEFAULTS = {
+    'leader.0.name': 'H.E. Fitsum Assefa (PhD)',
+    'leader.0.role': 'Minister',
+    'leader.0.bio': 'H.E. Fitsum Assefa (PhD) leads the Ministry of Planning and Development and is a member of the Prosperity Party Central Committee.',
+    'page.leader1.p1': 'Fitsum Assefa Adela is a competent economist and politician who has made significant contributions to Ethiopia\'s development. She has served as the Minister of Planning and Development since 2018.',
+    'page.leader1.p2': 'She holds a Master\'s degree in Accounting and Development Studies from Addis Ababa University, and a PhD in Agricultural Economics from the University of Giessen, Germany. Prior to her ministerial appointment, she was a lecturer and researcher at Hawassa University for over ten years.',
+    'page.leader1.p3': 'As Minister, she is responsible for overseeing the implementation of Ethiopia\'s long-term development plans. She has been a strong advocate for data-driven policymaking to ensure equality and opportunities for all citizens.',
+
+    'leader.1.name': 'H.E. Bereket Fesehatsion',
+    'leader.1.role': 'State Minister',
+    'leader.1.bio': 'H.E. Bereket Fesehatsion serves as State Minister in the Ministry of Planning and Development.',
+    'page.leader2.p1': 'He supports the Ministry\'s work in national planning, policy coordination, and development program implementation.',
+
+    'leader.2.name': 'H.E. Tirumar Abate',
+    'leader.2.role': 'State Minister',
+    'leader.2.bio': 'State Minister at the Ministry of Planning and Development who holds a Master\'s in Leadership and Administration.',
+    'page.leader4.p1': 'H.E. Tirumar Abate is State Minister at the Ministry of Planning and Development. She is a Business Administration graduate and holds a Master\'s in Leadership and Administration.',
+
+    'leader.3.name': 'H.E. Seyum Mekonen',
+    'leader.3.role': 'State Minister',
+    'leader.3.bio': 'An outstanding leader with experience at various government levels.',
+    'page.leader3.p1': 'H.E. Seyum Mekonen is a special leader with experience at various levels of government.'
 }
 
 CAROUSEL_NEWS_SLUGS = {
@@ -192,28 +221,11 @@ def collect_en_defaults():
             value = strip_html_tags(match.group(2).strip())
             if value and key not in en:
                 en[key] = value
-    en.update(collect_html_defaults_from_templates())
-    en.update(I18N_HTML_DEFAULTS)
+    en.update(I18N_MULTILINE_DEFAULTS)
     en.update(CAROUSEL_EN_DEFAULTS)
-    return en
+    en.update(LEADERS_EN_DEFAULTS)
+    return {key: plain_translation_text(value) for key, value in en.items()}
 
-
-def collect_html_defaults_from_templates():
-    """Collect data-i18n-html values with a simple tag-aware parser."""
-    en = {}
-    root = Path(settings.BASE_DIR) / 'website' / 'templates'
-    tag_pattern = re.compile(
-        r'<(\w+)[^>]*\sdata-i18n-html="([^"]+)"[^>]*>(.*?)</\1>',
-        re.DOTALL | re.IGNORECASE,
-    )
-    for path in root.rglob('*.html'):
-        text = path.read_text(encoding='utf-8', errors='ignore')
-        for match in tag_pattern.finditer(text):
-            key = match.group(2)
-            value = html.unescape(re.sub(r'\s+', ' ', match.group(3).strip()))
-            if value:
-                en[key] = value
-    return en
 
 
 def text_for(key, en, am, field='en'):
@@ -246,6 +258,13 @@ def local_leader_photo_name(slug, source_url):
     return ''
 
 
+def leader_field_text(key, en, am, field='en'):
+    """Resolve leader copy from translations, with curated English fallbacks."""
+    if field == 'am':
+        return am.get(key, '')
+    return en.get(key, '') or LEADERS_EN_DEFAULTS.get(key, '')
+
+
 class Command(BaseCommand):
     help = 'Seed site settings, translations, news, leaders, gallery, documents, carousel, and affiliates'
 
@@ -275,7 +294,7 @@ class Command(BaseCommand):
             SiteTranslation.objects.all().delete()
 
         en = collect_en_defaults()
-        am = load_am_dict()
+        am = {key: plain_translation_text(value) for key, value in load_am_dict().items()}
 
         self.seed_settings(en, am)
         self.seed_translations(en, am)
@@ -310,20 +329,21 @@ class Command(BaseCommand):
         settings_obj.copyright_text_am = am.get('footer.copyright', '')
         settings_obj.topbar_tag_am = am.get('topbar.tag', '')
         settings_obj.development_plan_pdf_url = (
-            'https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf'
+            '/media/ten-year-document/ten_year_development_plan.pdf'
         )
         settings_obj.save()
         self.stdout.write('  Site settings')
 
     def seed_translations(self, en, am):
-        keys = sorted(set(en) | set(am))
+        SiteTranslation.objects.filter(key__in=DEPRECATED_TRANSLATION_KEYS).delete()
+        keys = sorted((set(en) | set(am)) - set(DEPRECATED_TRANSLATION_KEYS))
         created = 0
         for key in keys:
             _, was_created = SiteTranslation.objects.update_or_create(
                 key=key,
                 defaults={
-                    'text_en': en.get(key, ''),
-                    'text_am': am.get(key, ''),
+                    'text_en': plain_translation_text(en.get(key, '')),
+                    'text_am': plain_translation_text(am.get(key, '')),
                 },
             )
             if was_created:
@@ -331,19 +351,32 @@ class Command(BaseCommand):
         self.stdout.write(f'  Translations ({len(keys)} keys, {created} new)')
 
     def seed_news(self):
-        call_command('sync_official_news', featured=3)
+        try:
+            call_command('sync_official_news', featured=3)
+        except Exception as exc:
+            self.stdout.write(self.style.WARNING(f'  News sync failed ({exc}); importing local media/news instead'))
+            call_command('import_local_news', featured=3)
 
     def seed_leaders(self, en, am):
         for item in LEADERS:
             leader = Leader.objects.filter(slug=item['slug']).first()
             if leader is None:
                 leader = Leader(slug=item['slug'])
-            leader.name_en = text_for(item['name_key'], en, am)
-            leader.name_am = text_for(item['name_key'], en, am, 'am')
-            leader.role_en = text_for(item['role_key'], en, am)
-            leader.role_am = text_for(item['role_key'], en, am, 'am')
-            leader.short_bio_en = text_for(item['bio_key'], en, am)
-            leader.short_bio_am = text_for(item['bio_key'], en, am, 'am')
+            name_en = leader_field_text(item['name_key'], en, am)
+            name_am = leader_field_text(item['name_key'], en, am, 'am')
+            role_en = leader_field_text(item['role_key'], en, am)
+            role_am = leader_field_text(item['role_key'], en, am, 'am')
+            bio_en = leader_field_text(item['bio_key'], en, am)
+            bio_am = leader_field_text(item['bio_key'], en, am, 'am')
+            leader.name = name_en
+            leader.name_en = name_en
+            leader.name_am = name_am
+            leader.role = role_en
+            leader.role_en = role_en
+            leader.role_am = role_am
+            leader.short_bio = bio_en
+            leader.short_bio_en = bio_en
+            leader.short_bio_am = bio_am
             leader.wide_photo = item.get('wide_photo', False)
             leader.sort_order = item['sort_order']
             leader.is_published = True
@@ -356,10 +389,13 @@ class Command(BaseCommand):
             leader.save()
             leader.paragraphs.all().delete()
             for idx, key in enumerate(item['paragraph_keys']):
+                para_en = leader_field_text(key, en, am)
+                para_am = leader_field_text(key, en, am, 'am')
                 LeaderParagraph.objects.create(
                     leader=leader,
-                    text_en=en.get(key, ''),
-                    text_am=am.get(key, ''),
+                    text=para_en,
+                    text_en=para_en,
+                    text_am=para_am,
                     sort_order=idx,
                 )
         self.stdout.write(f'  Leaders ({len(LEADERS)})')
@@ -377,6 +413,7 @@ class Command(BaseCommand):
         album.images.all().delete()
         alt_en = en.get('page.gallery.alt', 'MoPD event — May 19, 2025')
         alt_am = am.get('page.gallery.alt', '')
+        linked = 0
         for idx, url in enumerate(GALLERY_IMAGES):
             image = GalleryImage(
                 album=album,
@@ -384,9 +421,14 @@ class Command(BaseCommand):
                 alt_am=alt_am,
                 sort_order=idx,
             )
-            assign_image_from_url(image, 'image', url)
-            image.save()
-        self.stdout.write('  Gallery album')
+            if assign_image_from_url(image, 'image', url):
+                image.save()
+                linked += 1
+        if linked == 0:
+            self.stdout.write(self.style.WARNING('  Gallery remote download failed; importing local media/gallery instead'))
+            call_command('import_local_gallery')
+        else:
+            self.stdout.write('  Gallery album')
 
     def seed_documents(self):
         for idx, (title, url, category) in enumerate(CLIMATE_DOCS):
