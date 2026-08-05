@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from django.db.models import Count, Max, Sum
 from django.db.models.functions import TruncDate
+from django.core.paginator import Paginator
 from django.utils import timezone
 
 from .models import NewsArticle, NewsComment, NewsletterSubscriber, PageVisit
@@ -124,7 +125,7 @@ def _day_bounds(days: int):
     return start, now
 
 
-def build_analytics_summary(*, include_bots: bool = False) -> dict:
+def build_analytics_summary(*, include_bots: bool = False, recent_page=1) -> dict:
     qs = PageVisit.objects.all()
     if not include_bots:
         qs = qs.exclude(device_type=PageVisit.DEVICE_BOT)
@@ -173,7 +174,7 @@ def build_analytics_summary(*, include_bots: bool = False) -> dict:
         .order_by('-count')[:10]
     )
 
-    recent_visits = list(qs[:40])
+    recent_visits = Paginator(qs, 10).get_page(recent_page)
 
     top_ips = list(
         month_qs.exclude(ip_address=None)

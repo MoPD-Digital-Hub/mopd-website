@@ -1251,6 +1251,32 @@ body.login .mopd-login-footer a:hover {
   max-width: 280px;
 }
 
+.mopd-analytics__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 0.88rem;
+}
+
+.mopd-analytics__pagination a {
+  padding: 7px 11px;
+  border: 1px solid #c8ddd1;
+  border-radius: 6px;
+  color: #0a5d35;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mopd-analytics__pagination a:hover {
+  background: #edf7f1;
+}
+
+.mopd-analytics__pagination span {
+  color: #5c6b63;
+}
+
 @media (max-width: 1100px) {
   .mopd-analytics__cards,
   .mopd-analytics__grid {

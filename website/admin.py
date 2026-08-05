@@ -445,7 +445,10 @@ def _analytics_view(request):
     from .analytics import build_analytics_summary
 
     include_bots = request.GET.get('bots') in ('1', 'true', 'yes')
-    summary = build_analytics_summary(include_bots=include_bots)
+    summary = build_analytics_summary(
+        include_bots=include_bots,
+        recent_page=request.GET.get('visits_page', 1),
+    )
     context = {
         **admin.site.each_context(request),
         'title': 'Website analytics',
