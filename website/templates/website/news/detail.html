@@ -1,35 +1,176 @@
 {% extends 'website/base.html' %}
-
+{% load static %}
 {% block title %}{{ article.title_en }} — MoPD{% endblock %}
 {% block page_id %}news{% endblock %}
 
 {% block content %}
-<main class="page sx-page cv-page">
-  <section class="page-hero">
-    <div class="container">
+<main class="page sx-page cv-page mp-article-page">
+  <section class="mp-article-hero">
+    <div class="container mp-article-hero__inner">
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a><span>/</span>
         <a href="{% url 'news' %}" data-i18n="nav.news">News &amp; Media</a><span>/</span>
         <span>{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
       </nav>
-      <span class="article-page__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
-      <h1 class="page-hero__title">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</h1>
+
+      <div class="mp-article-hero__meta">
+        <span class="mp-article-hero__tag">{% include 'website/includes/bilingual.html' with en=article.tag_en am=article.tag_am %}</span>
+        <span class="mp-article-hero__category">{{ article.get_category_display }}</span>
+        <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:"d M Y" }}</time>
+      </div>
+
+      <h1 class="mp-article-hero__title">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</h1>
     </div>
   </section>
-  <section class="page-body page-body--narrow">
-    <div class="container">
-      <article class="article-page__body reveal">
+
+  <section class="mp-article">
+    <div class="container mp-article__layout">
+      <article class="mp-article__main">
         {% if article.image %}
-        <figure class="article-page__hero-img">
-          <img src="{{ article.image.url }}" alt="" class="content-img">
+        <figure class="mp-article__figure">
+          <img src="{{ article.image.url }}" alt="" class="mp-article__image">
         </figure>
         {% endif %}
-        {% for para_en, para_am in article.body_pairs %}
-        <p><span class="bilingual" data-en="{{ para_en }}" data-am="{{ para_am|default:para_en }}">{{ para_en }}</span></p>
-        {% endfor %}
-        <a href="{% url 'news' %}" class="btn btn--outline" style="margin-top:32px;" data-i18n="page.news.back">← Back to News</a>
+
+        <div class="mp-article__body">
+          {% if article.body_pairs %}
+          {% for para_en, para_am in article.body_pairs %}
+          <p class="mp-article__p{% if forloop.first %} mp-article__p--lead{% endif %}">
+            <span class="bilingual" data-en="{{ para_en }}" data-am="{{ para_am|default:para_en }}">{{ para_en }}</span>
+          </p>
+          {% endfor %}
+          {% elif article.body_en or article.body_am %}
+          <div class="mp-article__p mp-article__p--lead bilingual" data-en="{{ article.body_en }}" data-am="{{ article.body_am|default:article.body_en }}">{{ article.body_en|linebreaksbr }}</div>
+          {% elif article.excerpt_en or article.excerpt_am %}
+          <p class="mp-article__p mp-article__p--lead">
+            <span class="bilingual" data-en="{{ article.excerpt_en }}" data-am="{{ article.excerpt_am|default:article.excerpt_en }}">{{ article.excerpt_en }}</span>
+          </p>
+          {% endif %}
+        </div>
+
+        <div class="mp-article__engage" data-news-engage data-like-url="{% url 'news_like' article.slug %}" data-liked="{% if liked %}1{% else %}0{% endif %}">
+          <button type="button" class="mp-article__like{% if liked %} is-liked{% endif %}" data-like-btn {% if liked %}disabled{% endif %} aria-pressed="{% if liked %}true{% else %}false{% endif %}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            <span data-i18n="news.like">Like</span>
+            <span class="mp-article__like-count" data-like-count>{{ article.like_count }}</span>
+          </button>
+
+          <div class="mp-article__share" data-share-root>
+            <button type="button" class="mp-article__share-btn" data-share-toggle aria-expanded="false" aria-controls="shareMenu">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+              <span data-i18n="news.share">Share</span>
+            </button>
+            <div class="mp-article__share-menu" id="shareMenu" hidden data-share-menu>
+              <button type="button" data-share-copy data-i18n="news.share.copy">Copy link</button>
+              <a href="https://wa.me/?text={{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" data-i18n="news.share.whatsapp">WhatsApp</a>
+              <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ article.title_en|urlencode }}" target="_blank" rel="noopener">X</a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener">Facebook</a>
+              <a href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}&text={{ article.title_en|urlencode }}" target="_blank" rel="noopener">Telegram</a>
+              <button type="button" data-share-native hidden data-i18n="news.share.device">Share via device</button>
+            </div>
+          </div>
+
+          <a href="#comments" class="mp-article__comment-jump" data-i18n="news.comment">Comment</a>
+        </div>
+
+        <section class="mp-article__comments" id="comments" data-comment-root data-article-slug="{{ article.slug }}">
+          <h2 class="mp-article__section-title" data-i18n="news.comments.title">Comments</h2>
+
+          {% if messages %}
+          <ul class="mp-article__messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% if comments %}
+          <ul class="mp-article__comment-list">
+            {% for comment in comments %}
+            <li class="mp-article__comment" id="comment-{{ comment.pk }}" data-comment-item>
+              <div class="mp-article__comment-head">
+                <strong>{{ comment.name }}</strong>
+                <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"d M Y" }}</time>
+              </div>
+              <p data-comment-body>{{ comment.body }}</p>
+              {% if comment.was_edited %}<span class="mp-article__edited" data-i18n="news.comments.edited">(edited)</span>{% endif %}
+              {% include 'website/includes/news_comment_actions.html' with comment=comment show_reply=True %}
+
+              {% with replies=comment.replies.all %}
+              {% if replies %}
+              <ul class="mp-article__reply-list">
+                {% for reply in replies %}
+                <li class="mp-article__comment mp-article__comment--reply" id="comment-{{ reply.pk }}" data-comment-item>
+                  <div class="mp-article__comment-head">
+                    <strong>{{ reply.name }}</strong>
+                    <time datetime="{{ reply.created_at|date:'c' }}">{{ reply.created_at|date:"d M Y" }}</time>
+                  </div>
+                  <p data-comment-body>{{ reply.body }}</p>
+                  {% if reply.was_edited %}<span class="mp-article__edited" data-i18n="news.comments.edited">(edited)</span>{% endif %}
+                  {% include 'website/includes/news_comment_actions.html' with comment=reply show_reply=False %}
+                </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+              {% endwith %}
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="mp-article__empty" data-i18n="news.comments.empty">No comments yet. Be the first to share your thoughts.</p>
+          {% endif %}
+
+          <h3 class="mp-article__form-title" data-i18n="news.comments.leave">Leave a comment</h3>
+          <p class="mp-article__policy" data-i18n="news.comments.policy">Comments appear right away. Improper language and hate speech are not allowed. You can edit your comment within {{ comment_edit_minutes }} minutes and delete it anytime on this device.</p>
+
+          <form method="post" class="mp-article__form" id="commentForm" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="comment">
+            {{ comment_form.website_url }}
+            <input type="hidden" name="parent_id" value="">
+            <label>
+              <span data-i18n="news.comments.name">Name</span>
+              {{ comment_form.name }}
+              {{ comment_form.name.errors }}
+            </label>
+            <label>
+              <span data-i18n="news.comments.body">Comment</span>
+              {{ comment_form.body }}
+              {{ comment_form.body.errors }}
+            </label>
+            <button type="submit" class="mp-btn mp-btn--fill" data-i18n="news.comments.submit">Post comment</button>
+          </form>
+        </section>
+
+        <a href="{% url 'news' %}" class="mp-article__back" data-i18n="page.news.back">← Back to News</a>
       </article>
     </div>
   </section>
+
+  {% if related_articles %}
+  <section class="mp-article-related" aria-labelledby="inOtherNews">
+    <div class="container">
+      <h2 id="inOtherNews" class="mp-article-related__title" data-i18n="news.related.title">In other news</h2>
+      <div class="mp-article-related__grid">
+        {% for item in related_articles %}
+        <a href="{% url 'news_detail' item.slug %}" class="mp-article-related__card">
+          {% if item.image %}
+          <img src="{{ item.image.url }}" alt="" loading="lazy">
+          {% endif %}
+          <div class="mp-article-related__card-body">
+            <span class="mp-article-related__cat">{{ item.get_category_display }}</span>
+            <h3>{% include 'website/includes/bilingual.html' with en=item.title_en am=item.title_am %}</h3>
+            <time datetime="{{ item.published_at|date:'Y-m-d' }}">{{ item.published_at|date:"d M Y" }}</time>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/news-detail.js' %}?v=4"></script>
 {% endblock %}

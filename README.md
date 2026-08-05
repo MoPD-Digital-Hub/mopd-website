@@ -100,6 +100,39 @@ Schedule news sync (cron example — daily at 6:00):
 0 6 * * * cd /path/to/MOPD && .venv/bin/python manage.py sync_official_news
 ```
 
+### Telegram channel → site drafts (automatic)
+
+New posts on `t.me/PDC_Ethiopia` become **unpublished** news drafts automatically.
+
+1. Add the MoPD bot as an **administrator** of the source channel (`TELEGRAM_SOURCE_CHANNEL_ID`, default `-1001162607534`).
+2. In production `.env` set:
+   - `TELEGRAM_BOT_TOKEN`
+   - `TELEGRAM_SOURCE_CHANNEL_ID=-1001162607534`
+   - `SITE_URL=https://site.mopd.gov.et` (must be HTTPS)
+   - `TELEGRAM_WEBHOOK_SECRET=` a long random string
+3. Register the webhook once (after deploy):
+
+```bash
+python manage.py set_telegram_webhook
+```
+
+Telegram then POSTs each new channel post to `/webhooks/telegram/<secret>/` immediately. No cron is required for inbound sync while the webhook is active.
+
+Optional fallbacks:
+- Continuous long-poll (if webhook cannot be used): `python manage.py sync_telegram_channel --watch`
+- Cron every few minutes: `*/3 * * * * … sync_telegram_channel`
+
+Manual one-shot:
+
+```bash
+python manage.py sync_telegram_channel
+python manage.py sync_telegram_channel --dry-run
+python manage.py set_telegram_webhook --delete
+```
+
+Drafts appear in `/mopdadmin/` under News articles (`is_published` unchecked). Publishing them in admin goes live on the site; outbound Telegram group notify still only runs for published news.
+
+**Note:** Bot API does not backfill older channel history — only posts received after the bot is an admin.
 ## Language
 
 The site uses [django-modeltranslation](https://django-modeltranslation.readthedocs.io/en/latest/) for CMS content (news, leaders, settings, etc.) and client-side switching via `static/js/i18n.js` for UI labels.

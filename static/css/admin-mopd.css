@@ -1025,3 +1025,251 @@ body.login .mopd-login-footer a:hover {
     padding: 16px 18px;
   }
 }
+
+/* Website analytics dashboard */
+.mopd-analytics__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 22px;
+}
+
+.mopd-analytics__header h1 {
+  margin: 0 0 6px;
+  font-size: 1.7rem;
+  color: #0a3d24;
+}
+
+.mopd-analytics__header p {
+  margin: 0;
+  color: #5c6b63;
+}
+
+.mopd-analytics__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.mopd-analytics__toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid #c9d8cf;
+  background: #fff;
+  color: #0a3d24;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.mopd-analytics__toggle--solid {
+  background: #0f7a45;
+  border-color: #0f7a45;
+  color: #fff;
+}
+
+.mopd-analytics__cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mopd-analytics__cards--engage {
+  margin-bottom: 22px;
+}
+
+.mopd-analytics__card {
+  background: #fff;
+  border: 1px solid #dce8e1;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 2px rgba(10, 61, 36, 0.04);
+}
+
+.mopd-analytics__card--soft {
+  background: #f4faf6;
+}
+
+.mopd-analytics__label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #5c6b63;
+  margin-bottom: 8px;
+}
+
+.mopd-analytics__card strong {
+  display: block;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  color: #0a3d24;
+}
+
+.mopd-analytics__sub {
+  display: block;
+  margin-top: 6px;
+  color: #6b7a72;
+  font-size: 0.84rem;
+}
+
+.mopd-analytics__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.mopd-analytics__panel {
+  background: #fff;
+  border: 1px solid #dce8e1;
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+
+.mopd-analytics__panel h2 {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  color: #0a3d24;
+}
+
+.mopd-analytics__subhead {
+  margin-top: 22px !important;
+}
+
+.mopd-analytics__empty {
+  margin: 0;
+  color: #6b7a72;
+  font-size: 0.92rem;
+}
+
+.mopd-analytics__bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.mopd-analytics__bars li {
+  display: grid;
+  grid-template-columns: 88px 1fr 72px;
+  gap: 10px;
+  align-items: center;
+}
+
+.mopd-analytics__bar-label {
+  font-size: 0.8rem;
+  color: #5c6b63;
+}
+
+.mopd-analytics__bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #e8f0eb;
+  overflow: hidden;
+}
+
+.mopd-analytics__bar-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0f7a45, #1aa35c);
+  border-radius: 999px;
+  min-width: 2px;
+}
+
+.mopd-analytics__bar-value {
+  text-align: right;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0a3d24;
+}
+
+.mopd-analytics__bar-value small {
+  font-weight: 500;
+  color: #6b7a72;
+}
+
+.mopd-analytics__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.mopd-analytics__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eef3f0;
+  font-size: 0.9rem;
+}
+
+.mopd-analytics__list li:last-child {
+  border-bottom: 0;
+}
+
+.mopd-analytics__table-wrap {
+  overflow-x: auto;
+}
+
+.mopd-analytics__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.mopd-analytics__table th,
+.mopd-analytics__table td {
+  text-align: left;
+  padding: 9px 10px;
+  border-bottom: 1px solid #e8f0eb;
+  vertical-align: top;
+}
+
+.mopd-analytics__table th {
+  color: #5c6b63;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mopd-analytics__table code {
+  font-size: 0.82rem;
+  color: #0a3d24;
+}
+
+.mopd-analytics__ua {
+  color: #6b7a72;
+  max-width: 280px;
+}
+
+@media (max-width: 1100px) {
+  .mopd-analytics__cards,
+  .mopd-analytics__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .mopd-analytics__cards,
+  .mopd-analytics__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mopd-analytics__bars li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .mopd-analytics__bar-value {
+    text-align: left;
+  }
+}

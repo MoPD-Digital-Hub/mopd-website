@@ -126,10 +126,16 @@ class Command(BaseCommand):
             article.title_am = article.title_am or title[:500]
             article.category = category
             article.tag_en = article.get_category_display()
-            article.excerpt_en = title[:300]
+            article.excerpt_en = article.excerpt_en or title[:300]
             article.excerpt_am = article.excerpt_am or title[:300]
-            article.body_en = title
-            article.body_am = article.body_am or title
+            # Keep real article text — image import must not wipe body content.
+            existing_body = (article.body_en or '').strip()
+            if not existing_body or existing_body == (article.title_en or '').strip():
+                if is_new:
+                    article.body_en = title
+                    article.body_am = article.body_am or title
+            elif not (article.body_am or '').strip():
+                article.body_am = existing_body
             article.published_at = published_at
             article.search_keywords = f'{title} {category}'.lower()
             article.is_published = True

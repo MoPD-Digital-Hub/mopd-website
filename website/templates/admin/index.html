@@ -23,6 +23,11 @@
 
     <section class="mopd-admin-shortcuts-panel">
       <div class="mopd-admin-shortcuts">
+        <a href="{% url 'admin:analytics' %}" class="mopd-admin-card">
+          <div class="mopd-admin-card__icon">V</div>
+          <h3>{% translate 'Website analytics' %}</h3>
+          <p>{% translate 'Impressions, visitors, top pages, and traffic' %}</p>
+        </a>
         <a href="{% url 'admin:recent_actions' %}" class="mopd-admin-card">
           <div class="mopd-admin-card__icon">R</div>
           <h3>{% translate 'Recent actions' %}</h3>

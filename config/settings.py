@@ -64,6 +64,13 @@ SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_GROUP_ID = os.environ.get('TELEGRAM_GROUP_ID', '-5320625965')
 TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID', '')
+# PDC_Ethiopia channel — bot must be a channel admin to receive posts via getUpdates
+TELEGRAM_SOURCE_CHANNEL_ID = os.environ.get(
+    'TELEGRAM_SOURCE_CHANNEL_ID',
+    '-1001162607534',
+)
+# Shared secret in the webhook URL path so only Telegram can hit the endpoint
+TELEGRAM_WEBHOOK_SECRET = os.environ.get('TELEGRAM_WEBHOOK_SECRET', '')
 
 # Application definition
 
@@ -91,6 +98,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'website.middleware.PageVisitMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

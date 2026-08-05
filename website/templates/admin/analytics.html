@@ -1,0 +1,225 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard mopd-analytics-page{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo; {% translate 'Website analytics' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="mopd-admin-page">
+  <div class="mopd-analytics">
+    <div class="mopd-analytics__header">
+      <div>
+        <h1>{% translate 'Website analytics' %}</h1>
+        <p>{% translate 'Page impressions, visitors, and engagement across the public site.' %}</p>
+      </div>
+      <div class="mopd-analytics__header-actions">
+        {% if include_bots %}
+        <a href="?bots=0" class="mopd-analytics__toggle">{% translate 'Hide bots' %}</a>
+        {% else %}
+        <a href="?bots=1" class="mopd-analytics__toggle">{% translate 'Include bots' %}</a>
+        {% endif %}
+        <a href="{% url 'admin:website_pagevisit_changelist' %}" class="mopd-analytics__toggle mopd-analytics__toggle--solid">{% translate 'All visits' %}</a>
+      </div>
+    </div>
+
+    <section class="mopd-analytics__cards">
+      <article class="mopd-analytics__card">
+        <span class="mopd-analytics__label">{% translate 'Today impressions' %}</span>
+        <strong>{{ today.impressions }}</strong>
+        <span class="mopd-analytics__sub">{{ today.visitors }} {% translate 'unique visitors' %}</span>
+      </article>
+      <article class="mopd-analytics__card">
+        <span class="mopd-analytics__label">{% translate 'Last 7 days' %}</span>
+        <strong>{{ week.impressions }}</strong>
+        <span class="mopd-analytics__sub">{{ week.visitors }} {% translate 'unique visitors' %}</span>
+      </article>
+      <article class="mopd-analytics__card">
+        <span class="mopd-analytics__label">{% translate 'Last 30 days' %}</span>
+        <strong>{{ month.impressions }}</strong>
+        <span class="mopd-analytics__sub">{{ month.visitors }} {% translate 'unique visitors' %}</span>
+      </article>
+      <article class="mopd-analytics__card">
+        <span class="mopd-analytics__label">{% translate 'All-time impressions' %}</span>
+        <strong>{{ all_time.impressions }}</strong>
+        <span class="mopd-analytics__sub">{{ all_time.visitors }} {% translate 'unique visitors' %}</span>
+      </article>
+    </section>
+
+    <section class="mopd-analytics__cards mopd-analytics__cards--engage">
+      <article class="mopd-analytics__card mopd-analytics__card--soft">
+        <span class="mopd-analytics__label">{% translate 'Published news' %}</span>
+        <strong>{{ engagement.news_articles }}</strong>
+      </article>
+      <article class="mopd-analytics__card mopd-analytics__card--soft">
+        <span class="mopd-analytics__label">{% translate 'News likes' %}</span>
+        <strong>{{ engagement.total_likes }}</strong>
+      </article>
+      <article class="mopd-analytics__card mopd-analytics__card--soft">
+        <span class="mopd-analytics__label">{% translate 'Comments' %}</span>
+        <strong>{{ engagement.comments }}</strong>
+      </article>
+      <article class="mopd-analytics__card mopd-analytics__card--soft">
+        <span class="mopd-analytics__label">{% translate 'Newsletter subscribers' %}</span>
+        <strong>{{ engagement.newsletter }}</strong>
+      </article>
+    </section>
+
+    <div class="mopd-analytics__grid">
+      <section class="mopd-analytics__panel">
+        <h2>{% translate 'Impressions (7 days)' %}</h2>
+        {% if daily %}
+        <ul class="mopd-analytics__bars">
+          {% for row in daily %}
+          <li>
+            <span class="mopd-analytics__bar-label">{{ row.day|date:"D d M" }}</span>
+            <div class="mopd-analytics__bar-track">
+              <span class="mopd-analytics__bar-fill" style="width: {{ row.bar }}%;"></span>
+            </div>
+            <span class="mopd-analytics__bar-value">{{ row.impressions }} <small>/ {{ row.visitors }}</small></span>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="mopd-analytics__empty">{% translate 'No visits recorded yet. Browse the public site to start collecting data.' %}</p>
+        {% endif %}
+      </section>
+
+      <section class="mopd-analytics__panel">
+        <h2>{% translate 'Devices (30 days)' %}</h2>
+        {% if devices %}
+        <ul class="mopd-analytics__list">
+          {% for row in devices %}
+          <li>
+            <span>{{ row.device_type|title }}</span>
+            <strong>{{ row.count }}</strong>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="mopd-analytics__empty">{% translate 'No device data yet.' %}</p>
+        {% endif %}
+
+        <h2 class="mopd-analytics__subhead">{% translate 'Top referrers' %}</h2>
+        {% if referrers %}
+        <ul class="mopd-analytics__list">
+          {% for row in referrers %}
+          <li>
+            <span>{{ row.referrer_host }}</span>
+            <strong>{{ row.count }}</strong>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="mopd-analytics__empty">{% translate 'No external referrers yet.' %}</p>
+        {% endif %}
+      </section>
+    </div>
+
+    <div class="mopd-analytics__grid">
+      <section class="mopd-analytics__panel">
+        <h2>{% translate 'Top pages (30 days)' %}</h2>
+        {% if top_pages %}
+        <div class="mopd-analytics__table-wrap">
+          <table class="mopd-analytics__table">
+            <thead>
+              <tr>
+                <th>{% translate 'Page' %}</th>
+                <th>{% translate 'Views' %}</th>
+                <th>{% translate 'Visitors' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in top_pages %}
+              <tr>
+                <td><code>{{ row.path }}</code></td>
+                <td>{{ row.views }}</td>
+                <td>{{ row.visitors }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="mopd-analytics__empty">{% translate 'No page data yet.' %}</p>
+        {% endif %}
+      </section>
+
+      <section class="mopd-analytics__panel">
+        <h2>{% translate 'Top visitor IPs (30 days)' %}</h2>
+        {% if top_visitors %}
+        <div class="mopd-analytics__table-wrap">
+          <table class="mopd-analytics__table">
+            <thead>
+              <tr>
+                <th>{% translate 'IP' %}</th>
+                <th>{% translate 'Views' %}</th>
+                <th>{% translate 'Last page' %}</th>
+                <th>{% translate 'Last seen' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in top_visitors %}
+              <tr>
+                <td><code>{{ row.ip_address }}</code></td>
+                <td>{{ row.views }}</td>
+                <td><code>{{ row.last_path }}</code></td>
+                <td>{{ row.last_seen|date:"d M Y H:i" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="mopd-analytics__empty">{% translate 'No visitor IPs yet.' %}</p>
+        {% endif %}
+      </section>
+    </div>
+
+    <section class="mopd-analytics__panel">
+      <h2>{% translate 'Recent visits' %}</h2>
+      {% if recent_visits %}
+      <div class="mopd-analytics__table-wrap">
+        <table class="mopd-analytics__table">
+          <thead>
+            <tr>
+              <th>{% translate 'When' %}</th>
+              <th>{% translate 'IP' %}</th>
+              <th>{% translate 'Page' %}</th>
+              <th>{% translate 'Device' %}</th>
+              <th>{% translate 'Referrer' %}</th>
+              <th>{% translate 'Browser' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for visit in recent_visits %}
+            <tr>
+              <td>{{ visit.created_at|date:"d M Y H:i:s" }}</td>
+              <td><code>{{ visit.ip_address|default:"—" }}</code></td>
+              <td><code>{{ visit.path }}</code></td>
+              <td>{{ visit.get_device_type_display }}</td>
+              <td>{{ visit.referrer_host|default:"—" }}</td>
+              <td class="mopd-analytics__ua" title="{{ visit.user_agent }}">{{ visit.user_agent|truncatechars:60 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="mopd-analytics__empty">{% translate 'No visits recorded yet.' %}</p>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -7,7 +7,7 @@
 
 {% block extrastyle %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'css/admin-mopd.css' %}?v=11">
+<link rel="stylesheet" href="{% static 'css/admin-mopd.css' %}?v=12">
 {% endblock %}
 
 {% block branding %}
@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block nav-global %}
+<a href="{% url 'admin:analytics' %}">{% translate 'Analytics' %}</a>
 <a href="{% url 'admin:recent_actions' %}">{% translate 'Recent actions' %}</a>
 <a href="{% url 'home' %}">← View public site</a>
 {% endblock %}
