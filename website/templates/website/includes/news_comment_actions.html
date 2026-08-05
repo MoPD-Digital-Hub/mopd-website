@@ -1,0 +1,73 @@
+{% comment %}Expects: article, comment, liked_comments, owned_comments, editable_comments, show_reply {% endcomment %}
+<div class="mp-article__comment-actions">
+  <button
+    type="button"
+    class="mp-article__comment-like{% if comment.pk in liked_comments %} is-liked{% endif %}"
+    data-comment-like
+    data-like-url="{% url 'news_comment_like' article.slug comment.pk %}"
+    {% if comment.pk in liked_comments %}disabled aria-pressed="true"{% else %}aria-pressed="false"{% endif %}
+  >
+    <span data-i18n="news.like">Like</span>
+    <span data-comment-like-count>{{ comment.like_count }}</span>
+  </button>
+  {% if show_reply %}
+  <button type="button" class="mp-article__comment-reply-btn" data-reply-btn data-parent-id="{{ comment.pk }}" data-parent-name="{{ comment.name }}" aria-expanded="false">
+    <span data-i18n="news.comments.reply">Reply</span>
+  </button>
+  {% endif %}
+  {% if comment.pk in editable_comments %}
+  <button type="button" class="mp-article__comment-edit-btn" data-edit-toggle data-i18n="news.comments.edit">Edit</button>
+  {% endif %}
+  {% if comment.pk in owned_comments or user.is_staff %}
+  <form method="post" action="{% url 'news_comment_delete' article.slug comment.pk %}" class="mp-article__comment-delete-form" data-delete-form>
+    {% csrf_token %}
+    <button type="submit" class="mp-article__comment-delete-btn" data-i18n="news.comments.delete">Delete</button>
+  </form>
+  {% endif %}
+</div>
+{% if comment.pk in editable_comments %}
+<form method="post" action="{% url 'news_comment_edit' article.slug comment.pk %}" class="mp-article__edit-form" data-edit-form hidden>
+  {% csrf_token %}
+  <label>
+    <span class="visually-hidden" data-i18n="news.comments.body">Comment</span>
+    <textarea name="body" class="mp-article__textarea" rows="3" required maxlength="2000">{{ comment.body }}</textarea>
+  </label>
+  <div class="mp-article__edit-actions">
+    <button type="submit" class="mp-btn mp-btn--fill" data-i18n="news.comments.save">Save</button>
+    <button type="button" class="mp-article__cancel-edit" data-edit-cancel data-i18n="news.comments.cancel_edit">Cancel</button>
+  </div>
+</form>
+{% endif %}
+{% if show_reply %}
+<form method="post" class="mp-article__inline-reply" data-inline-reply hidden>
+  {% csrf_token %}
+  <input type="hidden" name="form_type" value="comment">
+  <input type="hidden" name="website_url" value="">
+  <input type="hidden" name="parent_id" value="{{ comment.pk }}">
+  <p class="mp-article__inline-reply-label">
+    <span data-i18n="news.comments.replying">Replying to</span>
+    <strong>{{ comment.name }}</strong>
+  </p>
+  <input
+    type="text"
+    name="name"
+    class="mp-article__inline-reply-name"
+    placeholder="Your name"
+    autocomplete="name"
+    required
+    maxlength="120"
+  >
+  <textarea
+    name="body"
+    class="mp-article__inline-reply-body"
+    rows="3"
+    placeholder="Write a reply…"
+    required
+    maxlength="2000"
+  ></textarea>
+  <div class="mp-article__inline-reply-actions">
+    <button type="submit" class="mp-btn mp-btn--fill mp-btn--sm" data-i18n="news.comments.post_reply">Post reply</button>
+    <button type="button" class="mp-article__inline-reply-cancel" data-reply-cancel data-i18n="news.comments.cancel_reply">Cancel</button>
+  </div>
+</form>
+{% endif %}

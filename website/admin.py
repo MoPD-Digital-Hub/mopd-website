@@ -17,6 +17,8 @@ from .models import (
     LeaderParagraph,
     NewsletterSubscriber,
     NewsArticle,
+    NewsComment,
+    PageVisit,
     ProcurementNotice,
     SiteSettings,
     SiteTranslation,
@@ -197,22 +199,26 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
             return cleaned
 
     form = NewsArticleAdminForm
-    list_display = ('title_en', 'article_type', 'category', 'published_at', 'is_published', 'is_featured_home', 'thumb')
+    list_display = ('title_en', 'article_type', 'category', 'published_at', 'like_count', 'is_published', 'is_featured_home', 'thumb')
     list_editable = ('is_published', 'is_featured_home')
     list_filter = ('article_type', 'category', 'is_published', 'published_at')
-    search_fields = ('title_en', 'title_am', 'slug', 'search_keywords')
+    search_fields = ('title_en', 'title_am', 'slug', 'search_keywords', 'source_path')
     prepopulated_fields = {'slug': ('title_en',)}
     date_hierarchy = 'published_at'
     fieldsets = (
-        (None, {'fields': ('slug', 'article_type', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords')}),
+        (None, {'fields': ('slug', 'article_type', 'category', 'published_at', 'is_published', 'image', 'image_preview', 'search_keywords', 'like_count')}),
         ('Article content', {'fields': ('title', 'excerpt', 'body')}),
         ('Tags', {'fields': ('tag',)}),
         ('Homepage', {
             'fields': ('is_featured_home',),
             'classes': ('collapse',),
         }),
+        ('Telegram sync', {
+            'fields': ('source_path', 'telegram_message_id', 'telegram_notified_at'),
+            'classes': ('collapse',),
+        }),
     )
-    readonly_fields = ('image_preview',)
+    readonly_fields = ('image_preview', 'source_path', 'telegram_message_id', 'telegram_notified_at', 'like_count')
 
     def save_model(self, request, obj, form, change):
         _fill_missing_amharic(
@@ -258,6 +264,39 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
     @admin.display(description='Image')
     def thumb(self, obj):
         return _image_thumb(obj.image, 36)
+
+
+@admin.register(NewsComment)
+class NewsCommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'article', 'parent', 'like_count', 'is_approved', 'created_at', 'body_preview')
+    list_filter = ('is_approved', 'created_at')
+    search_fields = ('name', 'body', 'article__title', 'article__title_en')
+    list_editable = ('is_approved',)
+    readonly_fields = ('created_at', 'updated_at', 'like_count', 'owner_token')
+    raw_id_fields = ('article', 'parent')
+    actions = ('show_comments', 'hide_comments', 'delete_inappropriate')
+    date_hierarchy = 'created_at'
+
+    @admin.display(description='Comment')
+    def body_preview(self, obj):
+        text = (obj.body or '').strip()
+        return text[:80] + ('…' if len(text) > 80 else '')
+
+    @admin.action(description='Show on site')
+    def show_comments(self, request, queryset):
+        updated = queryset.update(is_approved=True)
+        self.message_user(request, f'{updated} comment(s) shown on site.')
+
+    @admin.action(description='Hide from site')
+    def hide_comments(self, request, queryset):
+        updated = queryset.update(is_approved=False)
+        self.message_user(request, f'{updated} comment(s) hidden from site.')
+
+    @admin.action(description='Delete selected (inappropriate / irrelevant)')
+    def delete_inappropriate(self, request, queryset):
+        count = queryset.count()
+        queryset.delete()
+        self.message_user(request, f'{count} comment(s) permanently deleted.')
 
 
 @admin.register(ContactSubmission)
@@ -348,6 +387,48 @@ admin.site.site_title = 'MoPD Admin'
 admin.site.index_title = 'Manage website content'
 
 
+@admin.register(PageVisit)
+class PageVisitAdmin(admin.ModelAdmin):
+    list_display = (
+        'created_at',
+        'ip_address',
+        'path',
+        'device_type',
+        'referrer_host',
+        'status_code',
+        'visitor_short',
+    )
+    list_filter = ('device_type', 'status_code', 'created_at', 'referrer_host')
+    search_fields = ('path', 'ip_address', 'visitor_key', 'user_agent', 'referrer', 'referrer_host')
+    readonly_fields = (
+        'path',
+        'query_string',
+        'ip_address',
+        'visitor_key',
+        'session_key',
+        'user_agent',
+        'device_type',
+        'referrer',
+        'referrer_host',
+        'language',
+        'status_code',
+        'created_at',
+    )
+    date_hierarchy = 'created_at'
+    ordering = ('-created_at',)
+
+    @admin.display(description='Visitor')
+    def visitor_short(self, obj):
+        key = obj.visitor_key or ''
+        return f'{key[:10]}…' if len(key) > 10 else key
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
 def _recent_actions_view(request):
     from django.template.response import TemplateResponse
 
@@ -358,10 +439,25 @@ def _recent_actions_view(request):
     return TemplateResponse(request, 'admin/recent_actions.html', context)
 
 
+def _analytics_view(request):
+    from django.template.response import TemplateResponse
+
+    from .analytics import build_analytics_summary
+
+    include_bots = request.GET.get('bots') in ('1', 'true', 'yes')
+    summary = build_analytics_summary(include_bots=include_bots)
+    context = {
+        **admin.site.each_context(request),
+        'title': 'Website analytics',
+        **summary,
+    }
+    return TemplateResponse(request, 'admin/analytics.html', context)
+
+
 _original_get_urls = admin.site.get_urls
 
 
-def _get_urls_with_recent_actions():
+def _get_urls_with_custom_admin_pages():
     from django.urls import path
 
     custom_urls = [
@@ -370,8 +466,13 @@ def _get_urls_with_recent_actions():
             admin.site.admin_view(_recent_actions_view),
             name='recent_actions',
         ),
+        path(
+            'analytics/',
+            admin.site.admin_view(_analytics_view),
+            name='analytics',
+        ),
     ]
     return custom_urls + _original_get_urls()
 
 
-admin.site.get_urls = _get_urls_with_recent_actions
+admin.site.get_urls = _get_urls_with_custom_admin_pages

@@ -1,7 +1,9 @@
 import os
+import secrets
 
 from django.db import models
 from django.templatetags.static import static
+from django.utils import timezone
 from django.utils.text import slugify
 
 from website.news_content import card_excerpt, filter_paragraphs, is_junk_paragraph
@@ -172,6 +174,13 @@ class NewsArticle(models.Model):
         blank=True,
         help_text='When this article was posted to Telegram',
     )
+    telegram_message_id = models.BigIntegerField(
+        null=True,
+        blank=True,
+        unique=True,
+        help_text='Telegram channel message id used for inbound sync dedupe',
+    )
+    like_count = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ['-published_at', '-created_at']
@@ -198,10 +207,18 @@ class NewsArticle(models.Model):
         super().save(*args, **kwargs)
 
     def body_paragraphs_en(self):
-        return [p.strip() for p in self.body_en.split('\n\n') if p.strip()]
+        return self._split_body_paragraphs(self.body_en)
 
     def body_paragraphs_am(self):
-        return [p.strip() for p in self.body_am.split('\n\n') if p.strip()]
+        return self._split_body_paragraphs(self.body_am)
+
+    @staticmethod
+    def _split_body_paragraphs(text):
+        text = (text or '').replace('\r\n', '\n').replace('\r', '\n').strip()
+        if not text:
+            return []
+        parts = text.split('\n\n') if '\n\n' in text else text.split('\n')
+        return [p.strip() for p in parts if p.strip()]
 
     @property
     def card_excerpt_en(self):
@@ -221,8 +238,67 @@ class NewsArticle(models.Model):
     def body_pairs(self):
         en_parts = self.body_paragraphs_en()
         am_parts = self.body_paragraphs_am()
+        if not en_parts and am_parts:
+            en_parts = am_parts
         pairs = [(e, am_parts[i] if i < len(am_parts) else e) for i, e in enumerate(en_parts)]
-        return [(e, a) for e, a in pairs if not is_junk_paragraph(e)]
+        cleaned = [(e, a) for e, a in pairs if not is_junk_paragraph(e)]
+        title = (self.title_en or '').strip().lower()
+        substantive = [(e, a) for e, a in cleaned if e.strip().lower() != title]
+        return substantive or cleaned
+
+
+class NewsComment(models.Model):
+    EDIT_WINDOW = timezone.timedelta(minutes=30)
+
+    article = models.ForeignKey(
+        NewsArticle,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='replies',
+    )
+    name = models.CharField(max_length=120)
+    email = models.EmailField(blank=True)
+    body = models.TextField(max_length=2000)
+    like_count = models.PositiveIntegerField(default=0)
+    owner_token = models.CharField(max_length=64, blank=True, editable=False)
+    is_approved = models.BooleanField(
+        'Visible on site',
+        default=True,
+        help_text='Comments go live immediately. Uncheck only to hide abusive posts.',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['created_at']
+        verbose_name = 'News comment'
+        verbose_name_plural = 'News comments'
+
+    def __str__(self):
+        return f'{self.name} on {self.article_id}'
+
+    def save(self, *args, **kwargs):
+        if not self.owner_token:
+            self.owner_token = secrets.token_urlsafe(32)
+        super().save(*args, **kwargs)
+
+    @property
+    def was_edited(self):
+        if not self.updated_at or not self.created_at:
+            return False
+        return (self.updated_at - self.created_at).total_seconds() > 2
+
+    def edit_deadline(self):
+        return self.created_at + self.EDIT_WINDOW
+
+    def can_edit(self):
+        return timezone.now() <= self.edit_deadline()
 
 
 class Leader(models.Model):
@@ -470,3 +546,50 @@ class AffiliateLink(models.Model):
 
     def __str__(self):
         return self.name_en
+
+
+class PageVisit(models.Model):
+    """One recorded public page impression for site analytics."""
+
+    DEVICE_DESKTOP = 'desktop'
+    DEVICE_MOBILE = 'mobile'
+    DEVICE_TABLET = 'tablet'
+    DEVICE_BOT = 'bot'
+    DEVICE_OTHER = 'other'
+    DEVICE_CHOICES = (
+        (DEVICE_DESKTOP, 'Desktop'),
+        (DEVICE_MOBILE, 'Mobile'),
+        (DEVICE_TABLET, 'Tablet'),
+        (DEVICE_BOT, 'Bot'),
+        (DEVICE_OTHER, 'Other'),
+    )
+
+    path = models.CharField(max_length=500, db_index=True)
+    query_string = models.CharField(max_length=500, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True, db_index=True)
+    visitor_key = models.CharField(max_length=64, db_index=True)
+    session_key = models.CharField(max_length=40, blank=True, db_index=True)
+    user_agent = models.CharField(max_length=400, blank=True)
+    device_type = models.CharField(
+        max_length=20,
+        choices=DEVICE_CHOICES,
+        default=DEVICE_OTHER,
+        db_index=True,
+    )
+    referrer = models.URLField(max_length=500, blank=True)
+    referrer_host = models.CharField(max_length=200, blank=True, db_index=True)
+    language = models.CharField(max_length=16, blank=True)
+    status_code = models.PositiveSmallIntegerField(default=200)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Page visit'
+        verbose_name_plural = 'Page visits'
+        indexes = [
+            models.Index(fields=['-created_at', 'path']),
+            models.Index(fields=['visitor_key', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.path} @ {self.created_at:%Y-%m-%d %H:%M}'

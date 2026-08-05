@@ -9,6 +9,7 @@ urlpatterns = [
     path('about/', views.page, {'page_id': 'about'}, name='about'),
     path('contact/', views.contact, name='contact'),
     path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
+    path('webhooks/telegram/<str:secret>/', views.telegram_webhook, name='telegram_webhook'),
     path('search/', views.site_search, name='search'),
     path('feed/news/', LatestNewsFeed(), name='news_feed'),
     path('robots.txt', views.robots_txt, name='robots'),
@@ -28,6 +29,10 @@ urlpatterns = [
     path('development-planning/', views.page, {'page_id': 'development-planning'}, name='devplan'),
     path('news/', views.news_list, name='news'),
     path('news/<slug:slug>/', views.news_detail, name='news_detail'),
+    path('news/<slug:slug>/like/', views.news_like, name='news_like'),
+    path('news/<slug:slug>/comments/<int:comment_id>/like/', views.news_comment_like, name='news_comment_like'),
+    path('news/<slug:slug>/comments/<int:comment_id>/edit/', views.news_comment_edit, name='news_comment_edit'),
+    path('news/<slug:slug>/comments/<int:comment_id>/delete/', views.news_comment_delete, name='news_comment_delete'),
     # Legacy leader URLs
     path('leader-1.html', RedirectView.as_view(pattern_name='leader_detail', permanent=False), kwargs={'slug': 'fitsum-assefa'}),
     path('leader-2.html', RedirectView.as_view(pattern_name='leader_detail', permanent=False), kwargs={'slug': 'bereket-fesehatsion'}),
