@@ -45,6 +45,17 @@ body.site-shock {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Site-wide page loader (critical styles also inlined in base.html) */
+.mp-page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+}
+
+.news-page #newsGrid .news-card__image {
+  background: #dce8e1;
+}
+
 /* ========== HEADER ========== */
 .mp-header {
   position: fixed;
