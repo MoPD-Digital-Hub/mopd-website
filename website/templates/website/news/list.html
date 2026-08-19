@@ -37,7 +37,14 @@
             <article class="news-card reveal" data-category="{{ article.category }}" data-date="{{ article.published_at|date:'Y-m-d' }}" data-search="{{ article.search_keywords }} {{ article.title_en }} {{ article.title_am }} {{ article.card_excerpt_en }} {{ article.card_excerpt_am }}">
               <a href="{% url 'news_detail' article.slug %}" class="news-card__image">
                 {% if article.image %}
-                <img src="{{ article.image.url }}" alt="">
+                <img
+                  src="{{ article.image.url }}"
+                  alt=""
+                  width="600"
+                  height="400"
+                  decoding="async"
+                  {% if forloop.counter <= 6 %}fetchpriority="{% if forloop.counter <= 2 %}high{% else %}auto{% endif %}"{% else %}loading="lazy"{% endif %}
+                >
                 {% else %}
                 <div class="news-card__placeholder news-card__placeholder--{% cycle '1' '2' '3' %}" aria-hidden="true"></div>
                 {% endif %}

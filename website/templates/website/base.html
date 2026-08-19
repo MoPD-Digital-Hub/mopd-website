@@ -16,13 +16,108 @@
   <link rel="stylesheet" href="{% static 'css/shock-premium.css' %}?v=3">
   <link rel="stylesheet" href="{% static 'css/shock-pages.css' %}?v=6">
   <link rel="stylesheet" href="{% static 'css/civica-pages.css' %}?v=4">
-  <link rel="stylesheet" href="{% static 'css/mopd.css' %}?v=33">
+  <link rel="stylesheet" href="{% static 'css/mopd.css' %}?v=34">
   <link rel="stylesheet" href="{% static 'css/mopd-art.css' %}?v=7">
   {% block extra_head %}{% endblock %}
+  <style id="mp-page-loader-critical">
+    html.mp-loading, html.mp-loading body { overflow: hidden; }
+    .mp-page-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse 70% 50% at 80% 0%, rgba(77, 184, 122, 0.22), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 10% 100%, rgba(201, 162, 39, 0.12), transparent 50%),
+        linear-gradient(160deg, #0a1f14 0%, #143325 48%, #0a1f14 100%);
+      color: #fff;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s;
+    }
+    .mp-page-loader.is-done {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .mp-page-loader__inner {
+      text-align: center;
+      padding: 24px;
+      max-width: 28rem;
+    }
+    .mp-page-loader__logo-wrap {
+      width: min(240px, 68vw);
+      margin: 0 auto 20px;
+      filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.35));
+      animation: mpLoaderPulse 1.8s ease-in-out infinite;
+    }
+    .mp-page-loader__logo {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: brightness(0) invert(1);
+    }
+    .mp-page-loader__sub {
+      margin: 0 0 22px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.72);
+    }
+    .mp-page-loader__bar {
+      width: min(220px, 70vw);
+      height: 3px;
+      margin: 0 auto;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .mp-page-loader__bar > span {
+      display: block;
+      height: 100%;
+      width: 40%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #4db87a, #c9a227, #4db87a);
+      background-size: 200% 100%;
+      animation: mpLoaderBar 1.1s ease-in-out infinite;
+    }
+    @keyframes mpLoaderPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.04); opacity: 0.92; }
+    }
+    @keyframes mpLoaderBar {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(320%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mp-page-loader__logo-wrap,
+      .mp-page-loader__bar > span { animation: none; }
+      .mp-page-loader__bar > span { width: 100%; transform: none; }
+    }
+  </style>
+  <script>document.documentElement.classList.add('mp-loading');</script>
   <script>window.MOPD_I18N_DB = {{ translations_json|safe }};</script>
   <script>window.MOPD_LANGUAGES = {{ site_languages_json|safe }};</script>
 </head>
 <body class="site-shock" data-page="{% block page_id %}{{ current_page }}{% endblock %}">
+
+  <div class="mp-page-loader" id="mpPageLoader" role="status" aria-live="polite" aria-busy="true" aria-label="Loading page">
+    <div class="mp-page-loader__inner">
+      <div class="mp-page-loader__logo-wrap">
+        <img
+          class="mp-page-loader__logo"
+          src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}"
+          alt="Ministry of Planning and Development"
+          width="440"
+          height="120"
+          decoding="async"
+          fetchpriority="high"
+        >
+      </div>
+      <p class="mp-page-loader__sub" data-i18n="loader.tagline">Ministry of Planning and Development</p>
+      <div class="mp-page-loader__bar" aria-hidden="true"><span></span></div>
+    </div>
+  </div>
+  <script src="{% static 'js/page-loader.js' %}?v=2"></script>
 
   <div class="sx-progress" id="scrollProgress" aria-hidden="true"></div>
 
@@ -32,7 +127,7 @@
 
   {% include 'website/includes/footer.html' %}
 
-  <script src="{% static 'js/i18n.js' %}?v=9"></script>
+  <script src="{% static 'js/i18n.js' %}?v=10"></script>
   <script src="{% static 'js/shock.js' %}?v=20"></script>
   {% block extra_js %}{% endblock %}
 </body>

@@ -5,7 +5,8 @@ Django website for the Ministry of Planning and Development (Ethiopia).
 ## Quick start
 
 ```bash
-cd /home/mopd/Desktop/MOPD
+git clone git@github.com:MoPD-Digital-Hub/mopd-website.git
+cd mopd-website
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -84,6 +85,25 @@ MOPD/
 Old `.html` paths redirect automatically (e.g. `/news.html` → `/news/`).
 
 ## Production
+
+The site runs at **https://site.mopd.gov.et** on the ministry ECS server:
+
+- Code: `/var/www/mopd-website` (venv at `.venv`, runs as `www-data`)
+- App server: gunicorn via the `mopd-website` systemd service, unix socket `/run/mopd-website/gunicorn.sock`
+- Web server: nginx (`/etc/nginx/sites-available/mopd-website.conf`), TLS via Let's Encrypt (auto-renews)
+- Database: PostgreSQL, database/user `mopd_site`
+- News sync: daily at 6:00 via `/etc/cron.d/mopd-news-sync`
+
+### CI/CD
+
+Every push to `main` triggers `.github/workflows/deploy.yml`:
+
+1. **Checks** — `manage.py check` and `makemigrations --check` (fails if models changed without a migration)
+2. **Deploy** — SSH to the server (restricted deploy key, `DEPLOY_SSH_KEY_B64` repo secret) runs `/usr/local/bin/deploy-mopd`: pull, install deps, migrate, collectstatic, restart, health check
+
+Manual deploy: Actions tab → Deploy → Run workflow.
+
+### Manual setup
 
 Copy `.env.example` to `.env` and set `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`, and email/DB values.
 

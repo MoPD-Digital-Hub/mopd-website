@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Django checks
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-check-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Django system check
+        run: python manage.py check
+      - name: Verify migrations are in sync with models
+        run: python manage.py makemigrations --check --dry-run
+
+  deploy:
+    name: Deploy to site.mopd.gov.et
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run deploy script over SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY_B64 }}" | base64 -d > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H 196.190.251.182 >> ~/.ssh/known_hosts 2>/dev/null
+          # The key is restricted on the server to only run /usr/local/bin/deploy-mopd
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes root@196.190.251.182
