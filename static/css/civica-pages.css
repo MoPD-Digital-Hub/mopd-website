@@ -824,9 +824,9 @@
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.875rem;
-  background: var(--mp-forest, var(--cv-primary));
+  background: var(--mp-forest, var(--cv-primary)) !important;
   color: #fff !important;
-  border: 1px solid var(--mp-forest, var(--cv-primary));
+  border: 1px solid var(--mp-forest, var(--cv-primary)) !important;
   transition: background 0.2s, transform 0.2s, border-color 0.2s;
 }
 

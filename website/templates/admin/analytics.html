@@ -216,6 +216,17 @@
           </tbody>
         </table>
       </div>
+      {% if recent_visits.has_other_pages %}
+      <nav class="mopd-analytics__pagination" aria-label="Recent visits pages">
+        {% if recent_visits.has_previous %}
+        <a href="?visits_page={{ recent_visits.previous_page_number }}{% if include_bots %}&amp;bots=1{% endif %}">{% translate 'Previous' %}</a>
+        {% endif %}
+        <span>{% blocktranslate with current=recent_visits.number total=recent_visits.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktranslate %}</span>
+        {% if recent_visits.has_next %}
+        <a href="?visits_page={{ recent_visits.next_page_number }}{% if include_bots %}&amp;bots=1{% endif %}">{% translate 'Next' %}</a>
+        {% endif %}
+      </nav>
+      {% endif %}
       {% else %}
       <p class="mopd-analytics__empty">{% translate 'No visits recorded yet.' %}</p>
       {% endif %}
