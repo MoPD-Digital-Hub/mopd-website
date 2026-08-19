@@ -36,7 +36,7 @@ jobs:
       - name: Run deploy script over SSH
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          echo "${{ secrets.DEPLOY_SSH_KEY_B64 }}" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H 196.190.251.182 >> ~/.ssh/known_hosts 2>/dev/null
           # The key is restricted on the server to only run /usr/local/bin/deploy-mopd
