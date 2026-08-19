@@ -56,6 +56,23 @@ body.site-shock {
   background: #dce8e1;
 }
 
+/* Fallback: keep media images visible even if JS fails to apply `is-shown`.
+   `is-shown` (when present) can still enable a subtle fade-in. */
+img.mp-media-img {
+  opacity: 1;
+}
+
+img.mp-media-img.is-shown {
+  transition: opacity 0.35s var(--mp-ease);
+}
+
+.mp-article__figure,
+.mp-article__image,
+.mp-news__featured-img,
+.mp-news__item-thumb {
+  background: #e8f0eb;
+}
+
 /* ========== HEADER ========== */
 .mp-header {
   position: fixed;
