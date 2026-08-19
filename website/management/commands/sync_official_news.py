@@ -48,6 +48,15 @@ DATE_RE = re.compile(
     re.IGNORECASE,
 )
 
+DAY_FIRST_DATE_RE = re.compile(
+    r'\b\d{1,2}\s+'
+    r'(?:January|February|March|April|May|June|July|August|September|October|November|December)'
+    r'\s+\d{4}\b',
+    re.IGNORECASE,
+)
+
+MEDIA_DATE_RE = re.compile(r'/((?:19|20)\d{2})/(\d{1,2})/(\d{1,2})(?:/|$)')
+
 
 def fetch(url):
     request = Request(url, headers={'User-Agent': 'Mozilla/5.0 MoPD-Sync/1.0'})
@@ -70,17 +79,43 @@ def map_category(label):
 
 
 def parse_published_at(paragraphs):
+    formats = (
+        (DATE_RE, '%B %d, %Y'),
+        (DAY_FIRST_DATE_RE, '%d %B %Y'),
+    )
     for paragraph in paragraphs[:6]:
-        match = DATE_RE.search(paragraph)
-        if match:
+        for pattern, date_format in formats:
+            match = pattern.search(paragraph)
+            if not match:
+                continue
             try:
-                return datetime.strptime(match.group(0), '%B %d, %Y').date()
+                return datetime.strptime(match.group(0), date_format).date()
             except ValueError:
-                try:
-                    return datetime.strptime(match.group(0), '%b %d, %Y').date()
-                except ValueError:
-                    continue
-    return date.today()
+                continue
+    return None
+
+
+def parse_media_date(url):
+    match = MEDIA_DATE_RE.search(url or '')
+    if not match:
+        return None
+    try:
+        return date(*(int(part) for part in match.groups()))
+    except ValueError:
+        return None
+
+
+def should_repair_published_at(article, scraped_date, force=False):
+    if not scraped_date or not article.published_at:
+        return False
+    if force:
+        return article.published_at != scraped_date
+
+    updated_date = article.updated_at.date() if article.updated_at else None
+    return (
+        scraped_date < article.published_at
+        and article.published_at == updated_date
+    )
 
 
 def collect_article_paths():
@@ -109,10 +144,12 @@ def scrape_listing_meta():
         if not cards:
             break
         for image, category, path, title in cards:
+            image_src = urljoin(BASE_URL, image)
             meta[path] = {
                 'category': map_category(category),
                 'title_en': clean_text(title),
-                'image_src': urljoin(BASE_URL, image),
+                'image_src': image_src,
+                'published_at': parse_media_date(image_src),
             }
     return meta
 
@@ -133,7 +170,8 @@ def scrape_article_detail(path):
         for p in re.findall(r'<p[^>]*>(.*?)</p>', block, re.DOTALL | re.IGNORECASE)
     ]
     title = clean_text(title_match.group(1)) if title_match else ''
-    published_at = parse_published_at(paragraphs)
+    image_src = urljoin(BASE_URL, image_match.group(1)) if image_match else ''
+    published_at = parse_published_at(paragraphs) or parse_media_date(image_src)
     paragraphs = [
         p for p in paragraphs
         if p and p.lower() != title.lower() and not is_junk_paragraph(p)
@@ -141,7 +179,7 @@ def scrape_article_detail(path):
     usable = filter_paragraphs(paragraphs)
     return {
         'title_en': title,
-        'image_src': urljoin(BASE_URL, image_match.group(1)) if image_match else '',
+        'image_src': image_src,
         'body_en': '\n\n'.join(usable if usable else paragraphs),
         'published_at': published_at,
         'excerpt_en': card_excerpt(title, '', usable, length=200),
@@ -157,6 +195,11 @@ class Command(BaseCommand):
             type=int,
             default=3,
             help='Number of newest articles to mark as homepage featured',
+        )
+        parser.add_argument(
+            '--repair-dates',
+            action='store_true',
+            help='Replace existing dates with dates recovered from the source article',
         )
 
     def handle(self, *args, **options):
@@ -190,6 +233,17 @@ class Command(BaseCommand):
                 if not article.slug:
                     article.slug = slug
 
+            scraped_date = (
+                (detail or {}).get('published_at')
+                or listing.get('published_at')
+            )
+            if is_new and not scraped_date:
+                self.stderr.write(
+                    self.style.WARNING(f'Skipping undated article: {path}')
+                )
+                skipped += 1
+                continue
+
             article.title_en = title[:500]
             if not article.title_am:
                 article.title_am = article.title_en[:500]
@@ -199,7 +253,14 @@ class Command(BaseCommand):
             article.tag_en = article.get_category_display()
             article.body_en = (detail or {}).get('body_en', article.body_en or title)
             article.excerpt_en = (detail or {}).get('excerpt_en', article.excerpt_en or title[:300])
-            article.published_at = (detail or {}).get('published_at', article.published_at or date.today())
+            if is_new:
+                article.published_at = scraped_date
+            elif should_repair_published_at(
+                article,
+                scraped_date,
+                force=options['repair_dates'],
+            ):
+                article.published_at = scraped_date
             article.search_keywords = f'{title} {article.category}'.lower()
             article.is_published = True
 
