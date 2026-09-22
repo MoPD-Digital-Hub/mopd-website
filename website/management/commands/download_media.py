@@ -17,6 +17,10 @@ STATIC_IMAGES = {
     'media/10-year-plan-cover.jpg': 'https://mopd.gov.et/media/photos/2025/07/29/fs_1.jpg',
     # Awards placeholder
     'media/Awards.jpg': 'https://mopd.gov.et/media/photos/2025/07/29/summi_22.jpg',
+    # Official 10-Year Development Plan PDF
+    'media/ten-year-document/ten_year_development_plan.pdf': (
+        'https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf'
+    ),
 }
 
 

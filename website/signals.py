@@ -1,4 +1,6 @@
 from io import BytesIO
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 from django.core.files.base import ContentFile
 from django.db import transaction
@@ -12,6 +14,17 @@ from website.telegram_news import send_article_to_telegram, telegram_configured
 # Max width for news images; quality for JPEG/WebP.
 _NEWS_IMAGE_MAX_WIDTH = 1600
 _NEWS_IMAGE_QUALITY = 80
+_SKIP_TELEGRAM = ContextVar('skip_telegram_news_notify', default=False)
+
+
+@contextmanager
+def suppress_telegram_news_notify():
+    """Disable outbound Telegram posts (used during bulk official news sync)."""
+    token = _SKIP_TELEGRAM.set(True)
+    try:
+        yield
+    finally:
+        _SKIP_TELEGRAM.reset(token)
 
 
 def _compress_image_field(instance, field_name: str, max_width: int, quality: int) -> None:
@@ -99,6 +112,8 @@ def reset_telegram_if_image_changed(sender, instance, **kwargs):
 
 @receiver(post_save, sender=NewsArticle)
 def notify_telegram_on_news_publish(sender, instance, **kwargs):
+    if _SKIP_TELEGRAM.get():
+        return
     if not telegram_configured():
         return
     if not instance.is_published or instance.article_type != 'news':
@@ -109,6 +124,8 @@ def notify_telegram_on_news_publish(sender, instance, **kwargs):
     article_id = instance.pk
 
     def _send():
+        if _SKIP_TELEGRAM.get():
+            return
         article = NewsArticle.objects.get(pk=article_id)
         if article.telegram_notified_at:
             return

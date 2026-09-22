@@ -39,7 +39,7 @@
 </form>
 {% endif %}
 {% if show_reply %}
-<form method="post" class="mp-article__inline-reply" data-inline-reply hidden>
+<form method="post" class="mp-article__inline-reply" data-inline-reply data-comment-form hidden>
   {% csrf_token %}
   <input type="hidden" name="form_type" value="comment">
   <input type="hidden" name="website_url" value="">
@@ -65,6 +65,26 @@
     required
     maxlength="2000"
   ></textarea>
+  <div class="mp-article__captcha mp-article__captcha--inline" data-comment-captcha>
+    <span class="mp-article__captcha-label" data-i18n="news.comments.captcha">Security check</span>
+    <div class="mp-article__captcha-row">
+      <span class="mp-article__captcha-prompt">
+        <span data-i18n="news.comments.captcha_solve">What is</span>
+        <strong data-captcha-question>{{ captcha_question }}</strong>?
+      </span>
+      <input
+        type="text"
+        name="captcha_answer"
+        class="mp-article__captcha-input"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="?"
+        required
+        maxlength="4"
+        aria-label="Solve the addition"
+      >
+    </div>
+  </div>
   <div class="mp-article__inline-reply-actions">
     <button type="submit" class="mp-btn mp-btn--fill mp-btn--sm" data-i18n="news.comments.post_reply">Post reply</button>
     <button type="button" class="mp-article__inline-reply-cancel" data-reply-cancel data-i18n="news.comments.cancel_reply">Cancel</button>

@@ -1299,3 +1299,30 @@ body.login .mopd-login-footer a:hover {
     text-align: left;
   }
 }
+
+/* News admin — Sync news button */
+.mp-admin-sync-form {
+  display: inline;
+  margin: 0;
+}
+
+.mp-admin-sync-btn {
+  appearance: none;
+  display: inline-block;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: #0f7a45;
+  color: #fff !important;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.mp-admin-sync-btn:hover {
+  background: #0d5c35;
+}

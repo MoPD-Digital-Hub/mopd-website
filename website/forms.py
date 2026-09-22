@@ -1,6 +1,7 @@
 from django import forms
 from captcha.fields import CaptchaField
 
+from .math_captcha import verify_math_captcha
 from .models import ContactSubmission, NewsComment, NewsletterSubscriber
 from .moderation import has_blocked_language
 
@@ -49,6 +50,18 @@ class ContactForm(forms.ModelForm):
 class NewsCommentForm(forms.ModelForm):
     website_url = forms.CharField(required=False, widget=forms.HiddenInput)
     parent_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
+    captcha_answer = forms.CharField(
+        label='Security check',
+        required=True,
+        max_length=4,
+        widget=forms.TextInput(attrs={
+            'class': 'mp-article__captcha-input',
+            'inputmode': 'numeric',
+            'autocomplete': 'off',
+            'placeholder': '?',
+            'aria-label': 'Solve the addition',
+        }),
+    )
 
     class Meta:
         model = NewsComment
@@ -66,7 +79,8 @@ class NewsCommentForm(forms.ModelForm):
             }),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, request=None, **kwargs):
+        self.request = request
         super().__init__(*args, **kwargs)
         self.fields['name'].required = True
         self.fields['body'].required = True
@@ -89,6 +103,12 @@ class NewsCommentForm(forms.ModelForm):
         if has_blocked_language(body):
             raise forms.ValidationError(_CONTENT_POLICY_MSG)
         return body
+
+    def clean_captcha_answer(self):
+        answer = self.cleaned_data.get('captcha_answer')
+        if not self.request or not verify_math_captcha(self.request, answer):
+            raise forms.ValidationError('Incorrect answer. Please solve the new sum.')
+        return answer
 
 
 class NewsCommentEditForm(forms.Form):

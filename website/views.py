@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import F, Prefetch, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -14,6 +15,7 @@ import hmac
 import json
 import logging
 from .forms import ContactForm, NewsCommentEditForm, NewsCommentForm, NewsletterForm
+from .math_captcha import consume_math_captcha, current_math_prompt, issue_math_captcha
 from .models import (
     CarouselSlide,
     ContactSubmission,
@@ -317,6 +319,39 @@ def press_list(request):
     )
 
 
+def _wants_json(request):
+    accept = request.headers.get('Accept', '')
+    return (
+        request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        or 'application/json' in accept
+    )
+
+
+def _comment_form_errors(form):
+    errors = []
+    for field_errors in form.errors.values():
+        for err in field_errors:
+            errors.append(str(err))
+    return errors
+
+
+def _render_comment_html(request, article, comment, *, is_reply=False):
+    return render_to_string(
+        'website/includes/news_comment_item.html',
+        {
+            'article': article,
+            'comment': comment,
+            'liked_comments': set(),
+            'owned_comments': {comment.pk},
+            'editable_comments': {comment.pk} if comment.can_edit() else set(),
+            'is_reply': is_reply,
+            'show_replies': not is_reply,
+            'captcha_question': current_math_prompt(request),
+        },
+        request=request,
+    )
+
+
 def news_detail(request, slug):
     article = get_object_or_404(NewsArticle, slug=slug, is_published=True)
     top_comments = (
@@ -340,19 +375,30 @@ def news_detail(request, slug):
     )
 
     liked = request.COOKIES.get(f'mopd_liked_{article.pk}') == '1'
-    comment_form = NewsCommentForm()
+    comment_form = NewsCommentForm(request=request)
+    captcha_question = current_math_prompt(request)
+    wants_json = _wants_json(request)
 
     if request.method == 'POST' and request.POST.get('form_type') == 'comment':
-        comment_form = NewsCommentForm(request.POST)
+        comment_form = NewsCommentForm(request.POST, request=request)
         cache_key = f'news_comment_rate:{request.META.get("REMOTE_ADDR", "unknown")}:{article.pk}'
         if cache.get(cache_key):
-            messages.warning(request, 'Please wait a moment before posting another comment.')
+            message = 'Please wait a moment before posting another comment.'
+            captcha_question = issue_math_captcha(request)
+            if wants_json:
+                return JsonResponse({
+                    'ok': False,
+                    'errors': [message],
+                    'captcha_question': captcha_question,
+                }, status=429)
+            messages.warning(request, message)
         elif comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.article = article
             comment.email = ''
             comment.is_approved = True
             parent_id = comment_form.cleaned_data.get('parent_id')
+            parent = None
             if parent_id:
                 parent = article.comments.filter(
                     pk=parent_id,
@@ -362,17 +408,38 @@ def news_detail(request, slug):
                 if parent:
                     comment.parent = parent
             comment.save()
+            consume_math_captcha(request)
             cache.set(cache_key, True, 20)
+            captcha_question = issue_math_captcha(request)
+            if wants_json:
+                is_reply = bool(comment.parent_id)
+                html = _render_comment_html(request, article, comment, is_reply=is_reply)
+                response = JsonResponse({
+                    'ok': True,
+                    'message': 'Your comment was posted.',
+                    'comment_id': comment.pk,
+                    'parent_id': comment.parent_id,
+                    'is_reply': is_reply,
+                    'html': html,
+                    'captcha_question': captcha_question,
+                    'comment_count': article.comments.filter(is_approved=True).count(),
+                })
+                return _set_comment_owner_cookie(response, comment)
             messages.success(request, 'Your comment was posted.')
             response = redirect(f'{request.path}#comment-{comment.pk}')
             return _set_comment_owner_cookie(response, comment)
         else:
-            for errs in comment_form.errors.values():
-                for err in errs:
-                    messages.error(request, err)
-                    break
-                break
-            else:
+            errors = _comment_form_errors(comment_form)
+            captcha_question = issue_math_captcha(request)
+            if wants_json:
+                return JsonResponse({
+                    'ok': False,
+                    'errors': errors or ['Please correct the errors in the comment form.'],
+                    'captcha_question': captcha_question,
+                }, status=400)
+            for err in errors[:1]:
+                messages.error(request, err)
+            if not errors:
                 messages.error(request, 'Please correct the errors in the comment form.')
 
     liked_comments = set()
@@ -384,6 +451,7 @@ def news_detail(request, slug):
                 pass
 
     owned_comments, editable_comments = _collect_owner_flags(request, top_comments)
+    comment_count = article.comments.filter(is_approved=True).count()
 
     return render(
         request,
@@ -399,6 +467,8 @@ def news_detail(request, slug):
             'owned_comments': owned_comments,
             'editable_comments': editable_comments,
             'comment_edit_minutes': int(NewsComment.EDIT_WINDOW.total_seconds() // 60),
+            'captcha_question': captcha_question,
+            'comment_count': comment_count,
         },
     )
 

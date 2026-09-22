@@ -414,6 +414,9 @@ window.MOPD_I18N = {
     'news.comments.cancel_edit': 'ይቅር',
     'news.comments.delete': 'አጥፋ',
     'news.comments.edited': '(ተስተካክሏል)',
+    'news.comments.captcha': 'የደህንነት ማረጋገጫ',
+    'news.comments.captcha_solve': 'ስንት ነው',
+    'news.comments.count_label': 'አስተያየቶች',
     'news.related.title': 'በሌላ ዜና',
 
     'page.article.un.p1': 'የተ.መ.ድ ጄኔራል ሴክሪቴሪ አንቶኒዮ ጉተሬሽ የኢትዮጵያን የምግብ ፖሊሲ ከአየር ንብረት እና አካባቢያዊ ግቦች ጋር ለማስማማት ያሳየችውን ቁርጠኝነት አመሰገነ።',

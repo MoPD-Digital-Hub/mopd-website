@@ -1,9 +1,14 @@
 from django.contrib import admin, messages
 from django import forms
 from django.core.exceptions import ValidationError
+from django.core.management import call_command
 from django.db import transaction
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
 from django.utils.html import format_html
 from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
+
+from io import StringIO
 
 from .models import (
     AffiliateLink,
@@ -199,6 +204,7 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
             return cleaned
 
     form = NewsArticleAdminForm
+    change_list_template = 'admin/website/newsarticle/change_list.html'
     list_display = ('title_en', 'article_type', 'category', 'published_at', 'like_count', 'is_published', 'is_featured_home', 'thumb')
     list_editable = ('is_published', 'is_featured_home')
     list_filter = ('article_type', 'category', 'is_published', 'published_at')
@@ -219,6 +225,43 @@ class NewsArticleAdmin(TabbedTranslationAdmin):
         }),
     )
     readonly_fields = ('image_preview', 'source_path', 'telegram_message_id', 'telegram_notified_at', 'like_count')
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        # Build from the current changelist path so we never depend on reverse()
+        # during URLconf reload races.
+        extra_context['sync_official_url'] = request.path.rstrip('/') + '/sync-official/'
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def sync_official_news_view(self, request):
+        changelist_url = reverse('admin:website_newsarticle_changelist')
+        if request.method != 'POST':
+            return HttpResponseRedirect(changelist_url)
+
+        out = StringIO()
+        err = StringIO()
+        try:
+            call_command(
+                'sync_official_news',
+                featured=3,
+                repair_dates=True,
+                stdout=out,
+                stderr=err,
+            )
+        except Exception as exc:
+            self.message_user(
+                request,
+                f'News sync failed: {exc}',
+                level=messages.ERROR,
+            )
+            return HttpResponseRedirect(changelist_url)
+
+        summary = (out.getvalue() or '').strip() or 'Sync finished.'
+        warnings = (err.getvalue() or '').strip()
+        self.message_user(request, summary, level=messages.SUCCESS)
+        if warnings:
+            self.message_user(request, warnings, level=messages.WARNING)
+        return HttpResponseRedirect(changelist_url)
 
     def save_model(self, request, obj, form, change):
         _fill_missing_amharic(
@@ -460,6 +503,11 @@ def _analytics_view(request):
 _original_get_urls = admin.site.get_urls
 
 
+def _sync_official_news_admin_view(request):
+    model_admin = admin.site._registry[NewsArticle]
+    return model_admin.sync_official_news_view(request)
+
+
 def _get_urls_with_custom_admin_pages():
     from django.urls import path
 
@@ -473,6 +521,13 @@ def _get_urls_with_custom_admin_pages():
             'analytics/',
             admin.site.admin_view(_analytics_view),
             name='analytics',
+        ),
+        # Registered on AdminSite (not ModelAdmin) so it is not swallowed by
+        # the newsarticle <path:object_id>/ catch-all route.
+        path(
+            'website/newsarticle/sync-official/',
+            admin.site.admin_view(_sync_official_news_admin_view),
+            name='website_newsarticle_sync_official',
         ),
     ]
     return custom_urls + _original_get_urls()

@@ -10,6 +10,7 @@ from django.utils import timezone
 from website.management.commands.sync_official_news import (
     parse_media_date,
     parse_published_at,
+    parse_relative_date,
     should_repair_published_at,
 )
 from website.models import NewsArticle
@@ -26,6 +27,12 @@ class OfficialNewsDateTests(SimpleTestCase):
         self.assertEqual(
             parse_published_at(['Published 23 April 2025']),
             date(2025, 4, 23),
+        )
+
+    def test_parses_relative_listing_date(self):
+        self.assertEqual(
+            parse_relative_date('admin| 1 year, 1 month', today=date(2026, 9, 22)),
+            date(2025, 8, 23),
         )
 
     def test_missing_article_date_does_not_become_today(self):

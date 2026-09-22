@@ -106,62 +106,87 @@
     const root = document.querySelector('[data-comment-root]');
     if (!root) return;
 
-    root.querySelectorAll('[data-comment-like]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const countEl = btn.querySelector('[data-comment-like-count]');
-        postLike(btn, countEl, btn.dataset.likeUrl);
-      });
-    });
+    const list = root.querySelector('[data-comment-list]');
+    const empty = root.querySelector('[data-comment-empty]');
+    const status = root.querySelector('[data-comment-status]');
+    const countNum = root.querySelector('[data-comment-count-num]');
 
-    const closeAllReplies = (except) => {
-      root.querySelectorAll('[data-inline-reply]').forEach((form) => {
-        if (except && form === except) return;
-        form.hidden = true;
-      });
-      root.querySelectorAll('[data-reply-btn]').forEach((btn) => {
-        if (except && btn.closest('[data-comment-item]')?.querySelector('[data-inline-reply]') === except) {
-          btn.setAttribute('aria-expanded', 'true');
-          return;
-        }
-        btn.setAttribute('aria-expanded', 'false');
-      });
-    };
+    function setStatus(message, kind) {
+      if (!status) return;
+      if (!message) {
+        status.hidden = true;
+        status.textContent = '';
+        status.className = 'mp-article__status';
+        return;
+      }
+      status.hidden = false;
+      status.textContent = message;
+      status.className = 'mp-article__status is-' + (kind || 'info');
+    }
 
-    root.querySelectorAll('[data-reply-btn]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const item = btn.closest('[data-comment-item]');
-        const replyForm = item && item.querySelector('[data-inline-reply]');
-        if (!replyForm) return;
-        const opening = replyForm.hidden;
-        closeAllReplies(opening ? replyForm : null);
-        replyForm.hidden = !opening;
-        btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
-        if (opening) {
-          replyForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          const name = replyForm.querySelector('input[name="name"]');
-          const body = replyForm.querySelector('textarea[name="body"]');
-          if (name && !name.value) name.focus();
-          else if (body) body.focus();
-        }
+    function updateCaptcha(question) {
+      if (!question) return;
+      root.querySelectorAll('[data-captcha-question]').forEach((el) => {
+        el.textContent = question;
       });
-    });
-
-    root.querySelectorAll('[data-reply-cancel]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const form = btn.closest('[data-inline-reply]');
-        if (!form) return;
-        form.hidden = true;
-        const item = form.closest('[data-comment-item]');
-        const replyBtn = item && item.querySelector('[data-reply-btn]');
-        if (replyBtn) replyBtn.setAttribute('aria-expanded', 'false');
+      root.querySelectorAll('input[name="captcha_answer"]').forEach((input) => {
+        input.value = '';
       });
-    });
+    }
 
-    root.querySelectorAll('[data-comment-item]').forEach((item) => {
-      const toggle = item.querySelector('[data-edit-toggle]');
-      const editForm = item.querySelector('[data-edit-form]');
-      const body = item.querySelector('[data-comment-body]');
-      const cancelEdit = item.querySelector('[data-edit-cancel]');
+    function updateCount(total) {
+      if (typeof total !== 'number') return;
+      root.dataset.commentCount = String(total);
+      if (countNum) countNum.textContent = String(total);
+    }
+
+    function bindItem(item) {
+      if (!item || item.dataset.bound === '1') return;
+      item.dataset.bound = '1';
+
+      item.querySelectorAll('[data-comment-like]').forEach((btn) => {
+        if (btn.closest('[data-comment-item]') !== item) return;
+        btn.addEventListener('click', () => {
+          const countEl = btn.querySelector('[data-comment-like-count]');
+          postLike(btn, countEl, btn.dataset.likeUrl);
+        });
+      });
+
+      const replyBtn = item.querySelector(':scope > .mp-article__comment-actions [data-reply-btn]');
+      const replyForm = item.querySelector(':scope > [data-inline-reply]');
+      if (replyBtn && replyForm) {
+        replyBtn.addEventListener('click', () => {
+          const opening = replyForm.hidden;
+          root.querySelectorAll('[data-inline-reply]').forEach((form) => {
+            form.hidden = true;
+          });
+          root.querySelectorAll('[data-reply-btn]').forEach((btn) => {
+            btn.setAttribute('aria-expanded', 'false');
+          });
+          if (opening) {
+            replyForm.hidden = false;
+            replyBtn.setAttribute('aria-expanded', 'true');
+            replyForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            const name = replyForm.querySelector('input[name="name"]');
+            const body = replyForm.querySelector('textarea[name="body"]');
+            if (name && !name.value) name.focus();
+            else if (body) body.focus();
+          }
+        });
+      }
+
+      const replyCancel = item.querySelector(':scope > [data-inline-reply] [data-reply-cancel]');
+      if (replyCancel && replyForm && replyBtn) {
+        replyCancel.addEventListener('click', () => {
+          replyForm.hidden = true;
+          replyBtn.setAttribute('aria-expanded', 'false');
+        });
+      }
+
+      const toggle = item.querySelector(':scope > .mp-article__comment-actions [data-edit-toggle]');
+      const editForm = item.querySelector(':scope > [data-edit-form]');
+      const body = item.querySelector(':scope > [data-comment-body]');
+      const cancelEdit = item.querySelector(':scope > [data-edit-form] [data-edit-cancel]');
       if (toggle && editForm && body) {
         toggle.addEventListener('click', () => {
           editForm.hidden = false;
@@ -178,14 +203,128 @@
           toggle.hidden = false;
         });
       }
-    });
 
-    root.querySelectorAll('[data-delete-form]').forEach((form) => {
-      form.addEventListener('submit', (event) => {
-        if (!window.confirm('Delete this comment?')) {
-          event.preventDefault();
+      const deleteForm = item.querySelector(':scope > .mp-article__comment-actions [data-delete-form]');
+      if (deleteForm) {
+        deleteForm.addEventListener('submit', (event) => {
+          if (!window.confirm('Delete this comment?')) {
+            event.preventDefault();
+          }
+        });
+      }
+    }
+
+    function insertComment(html, parentId) {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = html.trim();
+      const item = wrap.firstElementChild;
+      if (!item || !list) return null;
+
+      if (parentId) {
+        const parent = root.querySelector('[data-comment-id="' + parentId + '"]');
+        let replyList = parent && parent.querySelector(':scope > [data-reply-list]');
+        if (parent && !replyList) {
+          replyList = document.createElement('ul');
+          replyList.className = 'mp-article__reply-list';
+          replyList.setAttribute('data-reply-list', '');
+          parent.appendChild(replyList);
         }
-      });
+        if (replyList) {
+          replyList.hidden = false;
+          replyList.appendChild(item);
+        }
+      } else {
+        list.appendChild(item);
+      }
+
+      list.hidden = false;
+      if (empty) empty.hidden = true;
+      bindItem(item);
+      item.classList.add('is-new');
+      item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return item;
+    }
+
+    async function submitCommentForm(form) {
+      const submitBtn = form.querySelector('[type="submit"]');
+      const originalLabel = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Posting…';
+      }
+      setStatus('');
+
+      try {
+        const res = await fetch(window.location.pathname + window.location.search, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCsrf(),
+            'X-Requested-With': 'XMLHttpRequest',
+            Accept: 'application/json',
+          },
+          credentials: 'same-origin',
+          body: new FormData(form),
+        });
+
+        let data = null;
+        try {
+          data = await res.json();
+        } catch {
+          data = null;
+        }
+
+        if (!res.ok || !data || !data.ok) {
+          if (data && data.captcha_question) {
+            updateCaptcha(data.captcha_question);
+          }
+          const err = (data && data.errors && data.errors[0]) || 'Could not post comment. Please try again.';
+          setStatus(err, 'error');
+          return;
+        }
+
+        insertComment(data.html, data.parent_id || null);
+        updateCount(data.comment_count);
+        if (data.captcha_question) {
+          updateCaptcha(data.captcha_question);
+        }
+        setStatus(data.message || 'Your comment was posted.', 'success');
+
+        if (form.hasAttribute('data-inline-reply')) {
+          const parentInput = form.querySelector('input[name="parent_id"]');
+          const parentVal = parentInput ? parentInput.value : '';
+          form.reset();
+          if (parentInput) parentInput.value = parentVal;
+          const typeInput = form.querySelector('input[name="form_type"]');
+          if (typeInput) typeInput.value = 'comment';
+          form.hidden = true;
+          const item = form.closest('[data-comment-item]');
+          const replyBtn = item && item.querySelector('[data-reply-btn]');
+          if (replyBtn) replyBtn.setAttribute('aria-expanded', 'false');
+        } else {
+          const body = form.querySelector('textarea[name="body"]');
+          const captcha = form.querySelector('input[name="captcha_answer"]');
+          if (body) body.value = '';
+          if (captcha) captcha.value = '';
+        }
+
+        window.setTimeout(() => setStatus(''), 4200);
+      } catch {
+        setStatus('Network error. Please try again.', 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      }
+    }
+
+    root.querySelectorAll('[data-comment-item]').forEach(bindItem);
+
+    root.addEventListener('submit', (event) => {
+      const form = event.target.closest('[data-comment-form]');
+      if (!form || !root.contains(form)) return;
+      event.preventDefault();
+      submitCommentForm(form);
     });
   }
 

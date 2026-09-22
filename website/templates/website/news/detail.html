@@ -73,8 +73,16 @@
           <a href="#comments" class="mp-article__comment-jump" data-i18n="news.comment">Comment</a>
         </div>
 
-        <section class="mp-article__comments" id="comments" data-comment-root data-article-slug="{{ article.slug }}">
-          <h2 class="mp-article__section-title" data-i18n="news.comments.title">Comments</h2>
+        <section class="mp-article__comments" id="comments" data-comment-root data-article-slug="{{ article.slug }}" data-comment-count="{{ comment_count }}">
+          <div class="mp-article__comments-head">
+            <h2 class="mp-article__section-title" data-i18n="news.comments.title">Comments</h2>
+            <span class="mp-article__comment-count" data-comment-count-label>
+              <span data-comment-count-num>{{ comment_count }}</span>
+              <span data-i18n="news.comments.count_label">comments</span>
+            </span>
+          </div>
+
+          <div class="mp-article__status" data-comment-status hidden role="status" aria-live="polite"></div>
 
           {% if messages %}
           <ul class="mp-article__messages">
@@ -84,62 +92,44 @@
           </ul>
           {% endif %}
 
-          {% if comments %}
-          <ul class="mp-article__comment-list">
+          <ul class="mp-article__comment-list" data-comment-list {% if not comments %}hidden{% endif %}>
             {% for comment in comments %}
-            <li class="mp-article__comment" id="comment-{{ comment.pk }}" data-comment-item>
-              <div class="mp-article__comment-head">
-                <strong>{{ comment.name }}</strong>
-                <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"d M Y" }}</time>
-              </div>
-              <p data-comment-body>{{ comment.body }}</p>
-              {% if comment.was_edited %}<span class="mp-article__edited" data-i18n="news.comments.edited">(edited)</span>{% endif %}
-              {% include 'website/includes/news_comment_actions.html' with comment=comment show_reply=True %}
-
-              {% with replies=comment.replies.all %}
-              {% if replies %}
-              <ul class="mp-article__reply-list">
-                {% for reply in replies %}
-                <li class="mp-article__comment mp-article__comment--reply" id="comment-{{ reply.pk }}" data-comment-item>
-                  <div class="mp-article__comment-head">
-                    <strong>{{ reply.name }}</strong>
-                    <time datetime="{{ reply.created_at|date:'c' }}">{{ reply.created_at|date:"d M Y" }}</time>
-                  </div>
-                  <p data-comment-body>{{ reply.body }}</p>
-                  {% if reply.was_edited %}<span class="mp-article__edited" data-i18n="news.comments.edited">(edited)</span>{% endif %}
-                  {% include 'website/includes/news_comment_actions.html' with comment=reply show_reply=False %}
-                </li>
-                {% endfor %}
-              </ul>
-              {% endif %}
-              {% endwith %}
-            </li>
+              {% include 'website/includes/news_comment_item.html' with comment=comment is_reply=False show_replies=True %}
             {% endfor %}
           </ul>
-          {% else %}
-          <p class="mp-article__empty" data-i18n="news.comments.empty">No comments yet. Be the first to share your thoughts.</p>
-          {% endif %}
+          <p class="mp-article__empty" data-comment-empty data-i18n="news.comments.empty" {% if comments %}hidden{% endif %}>No comments yet. Be the first to share your thoughts.</p>
 
-          <h3 class="mp-article__form-title" data-i18n="news.comments.leave">Leave a comment</h3>
-          <p class="mp-article__policy" data-i18n="news.comments.policy">Comments appear right away. Improper language and hate speech are not allowed. You can edit your comment within {{ comment_edit_minutes }} minutes and delete it anytime on this device.</p>
+          <div class="mp-article__composer">
+            <h3 class="mp-article__form-title" data-i18n="news.comments.leave">Leave a comment</h3>
+            <p class="mp-article__policy" data-i18n="news.comments.policy">Comments appear right away. Improper language and hate speech are not allowed. You can edit your comment within {{ comment_edit_minutes }} minutes and delete it anytime on this device.</p>
 
-          <form method="post" class="mp-article__form" id="commentForm" novalidate>
-            {% csrf_token %}
-            <input type="hidden" name="form_type" value="comment">
-            {{ comment_form.website_url }}
-            <input type="hidden" name="parent_id" value="">
-            <label>
-              <span data-i18n="news.comments.name">Name</span>
-              {{ comment_form.name }}
-              {{ comment_form.name.errors }}
-            </label>
-            <label>
-              <span data-i18n="news.comments.body">Comment</span>
-              {{ comment_form.body }}
-              {{ comment_form.body.errors }}
-            </label>
-            <button type="submit" class="mp-btn mp-btn--fill" data-i18n="news.comments.submit">Post comment</button>
-          </form>
+            <form method="post" class="mp-article__form" id="commentForm" data-comment-form novalidate>
+              {% csrf_token %}
+              <input type="hidden" name="form_type" value="comment">
+              {{ comment_form.website_url }}
+              <input type="hidden" name="parent_id" value="">
+              <label>
+                <span data-i18n="news.comments.name">Name</span>
+                {{ comment_form.name }}
+              </label>
+              <label>
+                <span data-i18n="news.comments.body">Comment</span>
+                {{ comment_form.body }}
+              </label>
+              <div class="mp-article__captcha" data-comment-captcha>
+                <span class="mp-article__captcha-label" data-i18n="news.comments.captcha">Security check</span>
+                <div class="mp-article__captcha-row">
+                  <span class="mp-article__captcha-prompt">
+                    <span data-i18n="news.comments.captcha_solve">What is</span>
+                    <strong data-captcha-question>{{ captcha_question }}</strong>?
+                  </span>
+                  {{ comment_form.captcha_answer }}
+                </div>
+                <p class="mp-article__field-error" data-captcha-error hidden></p>
+              </div>
+              <button type="submit" class="mp-btn mp-btn--fill" data-comment-submit data-i18n="news.comments.submit">Post comment</button>
+            </form>
+          </div>
         </section>
 
         <a href="{% url 'news' %}" class="mp-article__back" data-i18n="page.news.back">← Back to News</a>
@@ -172,5 +162,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/news-detail.js' %}?v=4"></script>
+<script src="{% static 'js/news-detail.js' %}?v=5"></script>
 {% endblock %}

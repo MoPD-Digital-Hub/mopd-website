@@ -1,0 +1,28 @@
+{% comment %}Expects: article, comment, liked_comments, owned_comments, editable_comments, is_reply, show_replies {% endcomment %}
+<li class="mp-article__comment{% if is_reply %} mp-article__comment--reply{% endif %}" id="comment-{{ comment.pk }}" data-comment-item data-comment-id="{{ comment.pk }}">
+  <div class="mp-article__comment-head">
+    <div class="mp-article__comment-identity">
+      <span class="mp-article__comment-avatar" aria-hidden="true">{{ comment.name|make_list|first|upper }}</span>
+      <div>
+        <strong>{{ comment.name }}</strong>
+        <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"d M Y · H:i" }}</time>
+      </div>
+    </div>
+  </div>
+  <p data-comment-body>{{ comment.body }}</p>
+  {% if comment.was_edited %}<span class="mp-article__edited" data-i18n="news.comments.edited">(edited)</span>{% endif %}
+  {% if is_reply %}
+    {% include 'website/includes/news_comment_actions.html' with comment=comment show_reply=False %}
+  {% else %}
+    {% include 'website/includes/news_comment_actions.html' with comment=comment show_reply=True %}
+  {% endif %}
+  {% if show_replies %}
+    {% with replies=comment.replies.all %}
+    <ul class="mp-article__reply-list" data-reply-list{% if not replies %} hidden{% endif %}>
+      {% for reply in replies %}
+        {% include 'website/includes/news_comment_item.html' with comment=reply is_reply=True show_replies=False %}
+      {% endfor %}
+    </ul>
+    {% endwith %}
+  {% endif %}
+</li>

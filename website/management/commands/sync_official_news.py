@@ -57,6 +57,14 @@ DAY_FIRST_DATE_RE = re.compile(
 
 MEDIA_DATE_RE = re.compile(r'/((?:19|20)\d{2})/(\d{1,2})/(\d{1,2})(?:/|$)')
 
+RELATIVE_DATE_RE = re.compile(
+    r'(\d+)\s+years?(?:,\s*(\d+)\s+months?)?'
+    r'|(\d+)\s+months?'
+    r'|(\d+)\s+weeks?'
+    r'|(\d+)\s+days?',
+    re.IGNORECASE,
+)
+
 
 def fetch(url):
     request = Request(url, headers={'User-Agent': 'Mozilla/5.0 MoPD-Sync/1.0'})
@@ -105,6 +113,32 @@ def parse_media_date(url):
         return None
 
 
+def parse_relative_date(text, *, today=None):
+    """Convert source listing labels like '1 year, 1 month' into a DateField value."""
+    match = RELATIVE_DATE_RE.search(text or '')
+    if not match:
+        return None
+    today = today or date.today()
+    years = months = weeks = days = 0
+    if match.group(1):
+        years = int(match.group(1))
+        months = int(match.group(2) or 0)
+    elif match.group(3):
+        months = int(match.group(3))
+    elif match.group(4):
+        weeks = int(match.group(4))
+    elif match.group(5):
+        days = int(match.group(5))
+    else:
+        return None
+    # Approximate calendar math without extra dependencies.
+    total_days = (years * 365) + (months * 30) + (weeks * 7) + days
+    try:
+        return today.fromordinal(today.toordinal() - total_days)
+    except ValueError:
+        return None
+
+
 def should_repair_published_at(article, scraped_date, force=False):
     if not scraped_date or not article.published_at:
         return False
@@ -145,11 +179,18 @@ def scrape_listing_meta():
             break
         for image, category, path, title in cards:
             image_src = urljoin(BASE_URL, image)
+            # Source listing shows relative labels ("1 year, 1 month"); prefer
+            # media-path dates, then fall back to relative conversion.
+            relative_blob = ''
+            path_pos = html_doc.find(path)
+            if path_pos != -1:
+                relative_blob = html_doc[path_pos:path_pos + 400]
+            published_at = parse_media_date(image_src) or parse_relative_date(relative_blob)
             meta[path] = {
                 'category': map_category(category),
                 'title_en': clean_text(title),
                 'image_src': image_src,
-                'published_at': parse_media_date(image_src),
+                'published_at': published_at,
             }
     return meta
 
@@ -203,84 +244,87 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        from website.signals import suppress_telegram_news_notify
+
         paths = collect_article_paths()
         listing_meta = scrape_listing_meta()
         self.stdout.write(f'Found {len(paths)} articles on mopd.gov.et')
 
         created = updated = skipped = 0
-        for path in paths:
-            detail = scrape_article_detail(path)
-            listing = listing_meta.get(path, {})
-            if not detail and not listing:
-                skipped += 1
-                continue
+        with suppress_telegram_news_notify():
+            for path in paths:
+                detail = scrape_article_detail(path)
+                listing = listing_meta.get(path, {})
+                if not detail and not listing:
+                    skipped += 1
+                    continue
 
-            title = (detail or {}).get('title_en') or listing.get('title_en', '')
-            if not title:
-                skipped += 1
-                continue
+                title = (detail or {}).get('title_en') or listing.get('title_en', '')
+                if not title:
+                    skipped += 1
+                    continue
 
-            slug = path_to_slug(path)
-            article = NewsArticle.objects.filter(source_path=path).first()
-            if article is None:
-                article = NewsArticle.objects.filter(slug=slug).first()
-            if article is None:
-                article = NewsArticle(source_path=path, slug=slug)
-                is_new = True
-            else:
-                is_new = False
-                article.source_path = path
-                if not article.slug:
-                    article.slug = slug
+                slug = path_to_slug(path)
+                article = NewsArticle.objects.filter(source_path=path).first()
+                if article is None:
+                    article = NewsArticle.objects.filter(slug=slug).first()
+                if article is None:
+                    article = NewsArticle(source_path=path, slug=slug)
+                    is_new = True
+                else:
+                    is_new = False
+                    article.source_path = path
+                    if not article.slug:
+                        article.slug = slug
 
-            scraped_date = (
-                (detail or {}).get('published_at')
-                or listing.get('published_at')
-            )
-            if is_new and not scraped_date:
-                self.stderr.write(
-                    self.style.WARNING(f'Skipping undated article: {path}')
+                scraped_date = (
+                    (detail or {}).get('published_at')
+                    or listing.get('published_at')
                 )
-                skipped += 1
-                continue
+                if is_new and not scraped_date:
+                    self.stderr.write(
+                        self.style.WARNING(f'Skipping undated article: {path}')
+                    )
+                    skipped += 1
+                    continue
 
-            article.title_en = title[:500]
-            if not article.title_am:
-                article.title_am = article.title_en[:500]
-            if not article.excerpt_am and article.excerpt_en:
-                article.excerpt_am = article.excerpt_en[:300]
-            article.category = listing.get('category', article.category or 'others')
-            article.tag_en = article.get_category_display()
-            article.body_en = (detail or {}).get('body_en', article.body_en or title)
-            article.excerpt_en = (detail or {}).get('excerpt_en', article.excerpt_en or title[:300])
-            if is_new:
-                article.published_at = scraped_date
-            elif should_repair_published_at(
-                article,
-                scraped_date,
-                force=options['repair_dates'],
-            ):
-                article.published_at = scraped_date
-            article.search_keywords = f'{title} {article.category}'.lower()
-            article.is_published = True
+                article.title_en = title[:500]
+                if not article.title_am:
+                    article.title_am = article.title_en[:500]
+                if not article.excerpt_am and article.excerpt_en:
+                    article.excerpt_am = article.excerpt_en[:300]
+                article.category = listing.get('category', article.category or 'others')
+                article.tag_en = article.get_category_display()
+                article.body_en = (detail or {}).get('body_en', article.body_en or title)
+                article.excerpt_en = (detail or {}).get('excerpt_en', article.excerpt_en or title[:300])
+                if is_new:
+                    article.published_at = scraped_date
+                elif should_repair_published_at(
+                    article,
+                    scraped_date,
+                    force=options['repair_dates'],
+                ):
+                    article.published_at = scraped_date
+                article.search_keywords = f'{title} {article.category}'.lower()
+                article.is_published = True
 
-            image_src = (detail or {}).get('image_src') or listing.get('image_src', '')
-            if image_src:
-                assign_image_from_url(article, 'image', image_src)
-            localize_article_fields(article)
-            article.save()
+                image_src = (detail or {}).get('image_src') or listing.get('image_src', '')
+                if image_src:
+                    assign_image_from_url(article, 'image', image_src)
+                localize_article_fields(article)
+                article.save()
 
-            if is_new:
-                created += 1
-            else:
-                updated += 1
+                if is_new:
+                    created += 1
+                else:
+                    updated += 1
 
-        featured_count = options['featured']
-        if featured_count:
-            NewsArticle.objects.update(is_featured_home=False)
-            for article in NewsArticle.objects.filter(is_published=True).order_by('-published_at', '-created_at')[:featured_count]:
-                article.is_featured_home = True
-                article.save(update_fields=['is_featured_home'])
+            featured_count = options['featured']
+            if featured_count:
+                NewsArticle.objects.update(is_featured_home=False)
+                for article in NewsArticle.objects.filter(is_published=True).order_by('-published_at', '-created_at')[:featured_count]:
+                    article.is_featured_home = True
+                    article.save(update_fields=['is_featured_home'])
 
         self.stdout.write(self.style.SUCCESS(
             f'Sync complete: {created} created, {updated} updated, {skipped} skipped.'
