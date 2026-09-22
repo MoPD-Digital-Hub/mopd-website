@@ -144,11 +144,41 @@ class GalleryAlbumAdmin(TabbedTranslationAdmin):
 
 @admin.register(Document)
 class DocumentAdmin(TabbedTranslationAdmin):
+    change_list_template = 'admin/website/document/change_list.html'
     list_display = ('title_en', 'doc_type', 'climate_category', 'sort_order', 'is_published')
     list_editable = ('sort_order', 'is_published')
     list_filter = ('doc_type', 'climate_category', 'is_published')
     search_fields = ('title_en', 'title_am', 'description_en')
     fields = ('doc_type', 'climate_category', 'title', 'description', 'file_url', 'sort_order', 'is_published')
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['sync_official_url'] = request.path.rstrip('/') + '/sync-official/'
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def sync_official_documents_view(self, request):
+        changelist_url = reverse('admin:website_document_changelist')
+        if request.method != 'POST':
+            return HttpResponseRedirect(changelist_url)
+
+        out = StringIO()
+        err = StringIO()
+        try:
+            call_command('sync_official_documents', stdout=out, stderr=err)
+        except Exception as exc:
+            self.message_user(
+                request,
+                f'Document sync failed: {exc}',
+                level=messages.ERROR,
+            )
+            return HttpResponseRedirect(changelist_url)
+
+        summary = (out.getvalue() or '').strip() or 'Document sync finished.'
+        warnings = (err.getvalue() or '').strip()
+        self.message_user(request, summary, level=messages.SUCCESS)
+        if warnings:
+            self.message_user(request, warnings, level=messages.WARNING)
+        return HttpResponseRedirect(changelist_url)
 
 
 @admin.register(CarouselSlide)
@@ -508,6 +538,11 @@ def _sync_official_news_admin_view(request):
     return model_admin.sync_official_news_view(request)
 
 
+def _sync_official_documents_admin_view(request):
+    model_admin = admin.site._registry[Document]
+    return model_admin.sync_official_documents_view(request)
+
+
 def _get_urls_with_custom_admin_pages():
     from django.urls import path
 
@@ -523,11 +558,16 @@ def _get_urls_with_custom_admin_pages():
             name='analytics',
         ),
         # Registered on AdminSite (not ModelAdmin) so it is not swallowed by
-        # the newsarticle <path:object_id>/ catch-all route.
+        # the newsarticle/document <path:object_id>/ catch-all route.
         path(
             'website/newsarticle/sync-official/',
             admin.site.admin_view(_sync_official_news_admin_view),
             name='website_newsarticle_sync_official',
+        ),
+        path(
+            'website/document/sync-official/',
+            admin.site.admin_view(_sync_official_documents_admin_view),
+            name='website_document_sync_official',
         ),
     ]
     return custom_urls + _original_get_urls()

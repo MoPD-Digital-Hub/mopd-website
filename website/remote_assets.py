@@ -23,7 +23,8 @@ DOWNLOADABLE_SUFFIXES = (
 
 
 def _media_web_path(relative: str) -> str:
-    return f'/{settings.MEDIA_URL.rstrip("/")}/{relative.lstrip("/")}'
+    base = '/' + settings.MEDIA_URL.strip('/')
+    return f'{base}/{relative.lstrip("/")}'
 
 
 def _site_hosts() -> set[str]:

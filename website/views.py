@@ -26,7 +26,6 @@ from .models import (
     NewsArticle,
     NewsComment,
     NewsletterSubscriber,
-    ProcurementNotice,
     SiteSettings,
     Vacancy,
 )
@@ -88,7 +87,6 @@ PAGE_TEMPLATES = {
     'green-technology': 'website/pages/green-technology.html',
     'statistics-documents': 'website/pages/statistics-documents.html',
     'development-planning': 'website/pages/development-planning.html',
-    'procurement': 'website/pages/procurement.html',
     'vacancies': 'website/pages/vacancies.html',
     'privacy': 'website/pages/privacy.html',
     'accessibility': 'website/pages/accessibility.html',
@@ -105,7 +103,6 @@ PAGE_NAV_IDS = {
     'green-technology': 'green_tech',
     'statistics-documents': 'stats',
     'development-planning': 'devplan',
-    'procurement': 'procurement',
     'vacancies': 'vacancies',
     'privacy': 'privacy',
     'accessibility': 'accessibility',
@@ -134,11 +131,6 @@ def _page_context(page_id):
             {'code': 'statistics', 'label': 'Statistics', 'count': documents.count()},
         ]
         ctx['document_count'] = documents.count()
-    elif page_id == 'procurement':
-        today = timezone.localdate()
-        ctx['notices'] = ProcurementNotice.objects.filter(is_published=True).filter(
-            Q(closing_date__isnull=True) | Q(closing_date__gte=today)
-        )
     elif page_id == 'vacancies':
         today = timezone.localdate()
         ctx['vacancies'] = Vacancy.objects.filter(is_published=True).filter(
@@ -593,7 +585,7 @@ def site_search(request):
     query = request.GET.get('q', '')
     result_type = request.GET.get('type', 'all')
     results = run_site_search(query, result_type=result_type)
-    result_keys = ['news', 'documents', 'pages', 'procurement', 'vacancies', 'departments']
+    result_keys = ['news', 'documents', 'pages', 'vacancies', 'departments']
     total = sum(len(results[key]) for key in result_keys)
     return render(
         request,

@@ -1,0 +1,13 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+  <li>
+    <form method="post" action="{{ sync_official_url }}" class="mp-admin-sync-form">
+      {% csrf_token %}
+      <button type="submit" class="mp-admin-sync-btn" title="Import statistics documents and the 10-Year Development Plan from mopd.gov.et (climate excluded)">
+        Sync documents
+      </button>
+    </form>
+  </li>
+  {{ block.super }}
+{% endblock %}

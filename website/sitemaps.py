@@ -21,7 +21,6 @@ class StaticViewSitemap(Sitemap):
             'green_tech',
             'stats',
             'devplan',
-            'procurement',
             'vacancies',
             'privacy',
             'accessibility',

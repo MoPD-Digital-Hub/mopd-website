@@ -601,6 +601,10 @@ window.applyMopdLanguage = function applyMopdLanguage(lang) {
 
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.dataset.i18n;
+    // Keep navigation labels in English regardless of language toggle.
+    if (key && (key === 'nav' || key.startsWith('nav.'))) {
+      return;
+    }
     const dbText = mopdDbText(key, lang);
     if (dbText !== undefined) {
       mopdSetElementContent(el, dbText);

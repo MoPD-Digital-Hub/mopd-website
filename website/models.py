@@ -101,6 +101,22 @@ class SiteSettings(models.Model):
         return obj
 
     @property
+    def development_plan_pdf(self):
+        """Href for the plan cover/CTA: local media after sync, else official URL."""
+        from pathlib import Path
+        from django.conf import settings as dj_settings
+
+        relative = 'ten-year-document/ten_year_development_plan.pdf'
+        local_file = Path(dj_settings.MEDIA_ROOT) / relative
+        local_url = f'/{dj_settings.MEDIA_URL.strip("/")}/{relative}'
+        if local_file.is_file() and local_file.stat().st_size > 0:
+            return local_url
+        stored = (self.development_plan_pdf_url or '').strip()
+        if stored and not stored.startswith('//'):
+            return stored
+        return 'https://mopd.gov.et/media/ten-year-document/ten_year_development_plan.pdf'
+
+    @property
     def development_plan_cover(self):
         if self.development_plan_cover_url:
             return self.development_plan_cover_url

@@ -17,8 +17,8 @@ urlpatterns = [
     path('leadership/<slug:slug>/', views.leader_detail, name='leader_detail'),
     path('gallery/', views.page, {'page_id': 'gallery'}, name='gallery'),
     path('press-release/', views.press_list, name='press'),
-    path('procurement/', views.page, {'page_id': 'procurement'}, name='procurement'),
     path('vacancies/', views.page, {'page_id': 'vacancies'}, name='vacancies'),
+    path('procurement/', RedirectView.as_view(pattern_name='home', permanent=False)),
     path('privacy/', views.page, {'page_id': 'privacy'}, name='privacy'),
     path('accessibility/', views.page, {'page_id': 'accessibility'}, name='accessibility'),
     path('faq/', views.page, {'page_id': 'faq'}, name='faq'),
@@ -58,6 +58,6 @@ urlpatterns = [
     path('news-france-acs2.html', RedirectView.as_view(url='/news/france-acs2/', permanent=False)),
     path('news-donors-green.html', RedirectView.as_view(url='/news/donors-green/', permanent=False)),
     path('news-aprm-session.html', RedirectView.as_view(url='/news/aprm-session/', permanent=False)),
-    path('news-procurement.html', RedirectView.as_view(url='/news/procurement/', permanent=False)),
+    path('news-procurement.html', RedirectView.as_view(pattern_name='home', permanent=False)),
     path('news-finance-cop28.html', RedirectView.as_view(url='/news/finance-cop28/', permanent=False)),
 ]

@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.utils import timezone
 
-from .models import Department, Document, NewsArticle, ProcurementNotice, SiteTranslation, Vacancy
+from .models import Department, Document, NewsArticle, SiteTranslation, Vacancy
 
 
 SEARCH_FILTERS = [
@@ -9,7 +9,6 @@ SEARCH_FILTERS = [
     ('news', 'News'),
     ('documents', 'Documents'),
     ('pages', 'Pages'),
-    ('procurement', 'Procurement'),
     ('vacancies', 'Vacancies'),
     ('departments', 'Departments'),
 ]
@@ -25,7 +24,6 @@ def run_site_search(query, result_type='all', limit=20):
         'news': [],
         'documents': [],
         'pages': [],
-        'procurement': [],
         'vacancies': [],
         'departments': [],
     }
@@ -71,22 +69,6 @@ def run_site_search(query, result_type='all', limit=20):
                 | Q(text_am__icontains=q)
             )
             .exclude(text_en='', text_am='')
-            .distinct()[:limit]
-        )
-
-    if active_type in ('all', 'procurement'):
-        today = timezone.localdate()
-        results['procurement'] = (
-            ProcurementNotice.objects.filter(is_published=True)
-            .filter(Q(closing_date__isnull=True) | Q(closing_date__gte=today))
-            .filter(
-                Q(title_en__icontains=q)
-                | Q(title_am__icontains=q)
-                | Q(reference__icontains=q)
-                | Q(description_en__icontains=q)
-                | Q(description_am__icontains=q)
-                | Q(file_url__icontains=q)
-            )
             .distinct()[:limit]
         )
 

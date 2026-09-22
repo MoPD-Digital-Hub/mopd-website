@@ -189,7 +189,7 @@ STORAGES = {
     },
 }
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Let Django serve uploaded media when no nginx/Apache rule handles /media/.

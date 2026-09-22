@@ -184,11 +184,11 @@
         </ol>
         <div class="mp-devplan__actions">
           <a href="{% url 'devplan' %}" class="mp-btn mp-btn--fill" data-i18n="hero.cta1">Explore Development Plan</a>
-          <a href="{{ site_settings.development_plan_pdf_url }}" class="mp-btn mp-btn--ghost" target="_blank" rel="noopener" data-i18n="dev.cta">Download Full Plan</a>
+          <a href="{{ site_settings.development_plan_pdf }}" class="mp-btn mp-btn--ghost" target="_blank" rel="noopener" data-i18n="dev.cta">Download Full Plan</a>
         </div>
       </div>
       <div class="mp-devplan__visual">
-        <a href="{{ site_settings.development_plan_pdf_url }}" class="mp-devplan__document" target="_blank" rel="noopener" aria-label="Open 10-Year Development Plan PDF">
+        <a href="{{ site_settings.development_plan_pdf }}" class="mp-devplan__document" target="_blank" rel="noopener" aria-label="Open 10-Year Development Plan PDF">
           <div class="mp-devplan__doc-shadow" aria-hidden="true"></div>
           <div class="mp-devplan__doc-stack" aria-hidden="true"></div>
           <figure class="mp-devplan__doc-cover">
@@ -235,11 +235,6 @@
         <a href="{% url 'climate' %}" class="mp-cmd mp-cmd--md">
           <h3 data-i18n="portal.climate">Climate Action</h3>
           <p data-i18n="portal.climate_desc">Green policy &amp; documents</p>
-          <span class="mp-cmd__arrow" aria-hidden="true">→</span>
-        </a>
-        <a href="{% url 'procurement' %}" class="mp-cmd mp-cmd--sm">
-          <h3 data-i18n="portal.procurement">Procurement</h3>
-          <p data-i18n="portal.procurement_desc">Tenders &amp; notices</p>
           <span class="mp-cmd__arrow" aria-hidden="true">→</span>
         </a>
         <a href="{% url 'stats' %}" class="mp-cmd mp-cmd--sm">
