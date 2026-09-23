@@ -1475,8 +1475,10 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
   border-radius: 999px;
   color: var(--sx-ink-muted);
   background: var(--sx-surface);
+  font: inherit;
   font-size: 0.9rem;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .sx-page .site-search__filter:hover,
@@ -1585,10 +1587,22 @@ body.site-shock:not([data-page="home"]) .sx-brand__logo {
 }
 
 .sx-page .site-search__summary,
-.sx-page .site-search__empty {
+.sx-page .site-search__empty,
+.sx-page .site-search__hint {
   margin-bottom: 24px;
   color: var(--sx-ink-muted);
   font-size: 0.95rem;
+}
+
+.sx-page .site-search__results {
+  position: relative;
+  min-height: 2.5rem;
+  transition: opacity 0.15s ease;
+}
+
+.sx-page .site-search__results.is-loading {
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .sx-page .site-search__key {

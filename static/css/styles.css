@@ -3422,6 +3422,13 @@ body.lang-am .stat__number {
   padding: 8px 14px;
   border: 1px solid var(--gray-300);
   border-radius: 999px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
   color: var(--gray-700);
   background: #fff;
   font-size: 0.92rem;
@@ -3483,6 +3490,22 @@ body.lang-am .stat__number {
 
 .site-search__empty {
   color: var(--gray-600);
+}
+
+.site-search__hint {
+  margin: 8px 0 0;
+  color: var(--gray-600);
+}
+
+.site-search__results {
+  position: relative;
+  min-height: 2.5rem;
+  transition: opacity 0.15s ease;
+}
+
+.site-search__results.is-loading {
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 /* Pagination */

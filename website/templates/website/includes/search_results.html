@@ -1,0 +1,93 @@
+{% if query %}
+<nav class="site-search__filters" aria-label="Search filters" data-search-filters>
+  {% for value, label in results.filters %}
+  <button
+    type="button"
+    class="site-search__filter{% if results.active_type == value %} is-active{% endif %}"
+    data-search-type="{{ value }}"
+    {% if results.active_type == value %}aria-current="true"{% endif %}
+  >{{ label }}</button>
+  {% endfor %}
+</nav>
+<p class="site-search__summary">Found {{ total }} result{{ total|pluralize }} for “{{ query }}”.</p>
+
+{% if results.news %}
+<div class="site-search__section">
+  <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.news">News</h2>
+  <ul class="site-search__list">
+    {% for article in results.news %}
+    <li>
+      <a href="{% url 'news_detail' article.slug %}" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=article.title_en am=article.title_am %}</a>
+      <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=article.card_excerpt_en am=article.card_excerpt_am %}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if results.documents %}
+<div class="site-search__section">
+  <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.documents">Documents</h2>
+  <ul class="site-search__list">
+    {% for doc in results.documents %}
+    <li>
+      <a href="{{ doc.file_url }}" target="_blank" rel="noopener" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=doc.display_title_en am=doc.display_title_am %}</a>
+      {% if doc.description_en or doc.description_am %}
+      <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=doc.description_en am=doc.description_am %}</p>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if results.pages %}
+<div class="site-search__section">
+  <h2 class="section-title" style="font-size:1.35rem;" data-i18n="page.search.pages">Pages</h2>
+  <ul class="site-search__list">
+    {% for page in results.pages %}
+    <li><span class="site-search__key site-search__match">{{ page.key }}</span> — <span class="site-search__match">{% include 'website/includes/bilingual.html' with en=page.text_en am=page.text_am %}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if results.vacancies %}
+<div class="site-search__section">
+  <h2 class="section-title" style="font-size:1.35rem;">Vacancies</h2>
+  <ul class="site-search__list">
+    {% for vacancy in results.vacancies %}
+    <li>
+      <a href="{% url 'vacancies' %}" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=vacancy.title_en am=vacancy.title_am %}</a>
+      <p class="site-search__meta site-search__match">{{ vacancy.reference }}{% if vacancy.location_en %} · {{ vacancy.location_en }}{% endif %}{% if vacancy.deadline %} · Deadline {{ vacancy.deadline|date:"M j, Y" }}{% endif %}</p>
+      {% if vacancy.description_en or vacancy.description_am %}
+      <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=vacancy.description_en am=vacancy.description_am %}</p>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if results.departments %}
+<div class="site-search__section">
+  <h2 class="section-title" style="font-size:1.35rem;">Departments</h2>
+  <ul class="site-search__list">
+    {% for department in results.departments %}
+    <li>
+      <a href="{% url 'about' %}#departments" class="site-search__title site-search__match">{% include 'website/includes/bilingual.html' with en=department.name_en am=department.name_am %}</a>
+      {% if department.description_en or department.description_am %}
+      <p class="site-search__snippet site-search__match">{% include 'website/includes/bilingual.html' with en=department.description_en am=department.description_am %}</p>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if not total %}
+<p class="site-search__empty" data-i18n="page.search.empty">No results found. Try different keywords.</p>
+{% endif %}
+{% else %}
+<p class="site-search__hint" data-i18n="page.search.hint">Start typing to see matching news, documents, and pages.</p>
+{% endif %}

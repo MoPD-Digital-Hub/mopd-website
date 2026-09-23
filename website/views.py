@@ -587,17 +587,21 @@ def site_search(request):
     results = run_site_search(query, result_type=result_type)
     result_keys = ['news', 'documents', 'pages', 'vacancies', 'departments']
     total = sum(len(results[key]) for key in result_keys)
-    return render(
-        request,
-        'website/pages/search.html',
-        {
-            'current_page': 'search',
-            'page_id': 'search',
-            'query': results['query'],
-            'results': results,
-            'total': total,
-        },
+    context = {
+        'current_page': 'search',
+        'page_id': 'search',
+        'query': results['query'],
+        'results': results,
+        'total': total,
+    }
+    wants_partial = (
+        request.GET.get('partial') == '1'
+        or request.headers.get('X-Requested-With') == 'XMLHttpRequest'
     )
+    if wants_partial:
+        html = render_to_string('website/includes/search_results.html', context, request=request)
+        return HttpResponse(html)
+    return render(request, 'website/pages/search.html', context)
 
 
 def robots_txt(request):
