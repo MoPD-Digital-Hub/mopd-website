@@ -36,10 +36,12 @@ function initMpStagger() {
 
 function initSxLang() {
   const onLangClick = (btn) => {
-    if (typeof applyMopdLanguage === 'function') {
-      applyMopdLanguage(btn.dataset.lang);
+    const lang = btn.dataset.lang;
+    if (typeof window.applyMopdLanguage === 'function') {
+      window.applyMopdLanguage(lang);
+    } else if (typeof window.mopdSyncLangButtons === 'function') {
+      window.mopdSyncLangButtons(lang);
     }
-    mopdSyncLangButtons(btn.dataset.lang);
   };
 
   document.querySelectorAll('.sx-lang__btn, .mp-lang__btn, .lang-switch__btn').forEach((btn) => {

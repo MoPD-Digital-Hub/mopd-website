@@ -454,13 +454,20 @@ AM = {
 
 
 def js_escape(value: str) -> str:
-    return value.replace("\\", "\\\\").replace("'", "\\'")
+    return (
+        value.replace("\\", "\\\\")
+        .replace("'", "\\'")
+        .replace("\r\n", "\\n")
+        .replace("\n", "\\n")
+        .replace("\r", "\\n")
+    )
 
 
 def main() -> None:
     text = I18N_PATH.read_text(encoding="utf-8")
     start = text.index("  am: {")
-    end = text.index("\n  }\n};", start)
+    # Keep everything from the MOPD_I18N object close onward (`;` + runtime helpers).
+    end = text.index("\n};\n\n(function", start)
     lines = ["  am: {"]
     for key, value in AM.items():
         lines.append(f"    '{key}': '{js_escape(value)}',")
