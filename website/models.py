@@ -335,6 +335,28 @@ class Leader(models.Model):
     def __str__(self):
         return self.name_en
 
+    @property
+    def display_photo_url(self):
+        """Prefer committed static portraits (updated by collectstatic) over stale media/."""
+        from pathlib import Path
+
+        from django.conf import settings
+        from django.contrib.staticfiles import finders
+
+        for ext in ('.jpg', '.jpeg', '.png', '.webp'):
+            rel = f'img/leaders/{self.slug}{ext}'
+            if finders.find(rel):
+                return static(rel)
+            static_root = Path(getattr(settings, 'STATIC_ROOT', '') or '')
+            if static_root and (static_root / rel).is_file():
+                return static(rel)
+            local = Path(settings.BASE_DIR) / 'static' / rel
+            if local.is_file():
+                return static(rel)
+        if self.photo:
+            return self.photo.url
+        return ''
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name_en)

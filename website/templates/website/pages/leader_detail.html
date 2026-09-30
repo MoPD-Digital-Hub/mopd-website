@@ -18,9 +18,9 @@
   <section class="page-body page-body--narrow">
     <div class="container">
       <article class="article-page__body reveal">
-        {% if leader.photo %}
+        {% if leader.display_photo_url %}
         <figure class="article-page__hero-img">
-          <img src="{{ leader.photo.url }}" alt="{{ leader.name_en }}" class="content-img">
+          <img src="{{ leader.display_photo_url }}" alt="{{ leader.name_en }}" class="content-img">
         </figure>
         {% endif %}
         {% for para in leader.paragraphs.all %}
