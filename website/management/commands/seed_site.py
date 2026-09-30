@@ -157,7 +157,6 @@ LEADERS = [
         'bio_key': 'leader.2.bio',
         'photo_src': 'https://mopd.gov.et/media/photos/2023/06/27/Tirumar-Abate-1-768x609.jpg',
         'paragraph_keys': ['page.leader4.p1', 'leader.2.bio'],
-        'wide_photo': True,
         'sort_order': 2,
     },
     {
@@ -253,8 +252,17 @@ def join_paragraphs(keys, en, am, field='en'):
 def local_leader_photo_name(slug, source_url):
     suffix = Path(urlparse(source_url).path).suffix or '.jpg'
     media_name = f'leaders/{slug}{suffix}'
-    if (Path(settings.MEDIA_ROOT) / media_name).exists():
+    media_path = Path(settings.MEDIA_ROOT) / media_name
+    if media_path.exists():
         return media_name
+    # Prefer committed static portraits when media/ is empty (fresh deploys).
+    for static_suffix in (suffix, '.jpg', '.png', '.jpeg', '.webp'):
+        static_path = Path(settings.BASE_DIR) / 'static' / 'img' / 'leaders' / f'{slug}{static_suffix}'
+        if static_path.exists():
+            media_path.parent.mkdir(parents=True, exist_ok=True)
+            dest = Path(settings.MEDIA_ROOT) / f'leaders/{slug}{static_suffix}'
+            dest.write_bytes(static_path.read_bytes())
+            return f'leaders/{slug}{static_suffix}'
     return ''
 
 
