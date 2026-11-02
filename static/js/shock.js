@@ -136,23 +136,23 @@ function initSxHeroVideo() {
   if (!mount || !video) return;
 
   const src = mount.dataset.videoSrc || '';
-  const posterDelayMs = Math.max(0, parseInt(mount.dataset.videoDelay || '1200', 10));
+  if (!src) return;
+
+  // Accessibility only — always attempt playback otherwise (desktop + mobile).
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const posterDelayMs = Math.max(0, parseInt(mount.dataset.videoDelay || '3000', 10));
   let playbackStarted = false;
+  let playAttempts = 0;
 
-  // Poster-only on phones / reduced motion / constrained networks
-  const isMobile = window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
-  if (
-    !src ||
-    isMobile ||
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  ) {
-    return;
-  }
-
-  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  if (conn && (conn.saveData || /(^2g$|^slow-2g$|^3g$)/.test(conn.effectiveType || ''))) {
-    return;
-  }
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.setAttribute('muted', '');
+  video.setAttribute('playsinline', '');
+  video.setAttribute('webkit-playsinline', '');
+  video.loop = true;
+  video.preload = 'auto';
 
   const showVideo = () => {
     mount.classList.add('is-playing');
@@ -169,39 +169,60 @@ function initSxHeroVideo() {
     video.load();
   };
 
+  const tryPlay = () => {
+    video.muted = true;
+    const result = video.play();
+    if (result && typeof result.then === 'function') {
+      result.then(showVideo).catch(() => {
+        playAttempts += 1;
+        if (playAttempts < 8) {
+          setTimeout(tryPlay, 350 * playAttempts);
+        }
+      });
+    } else {
+      showVideo();
+    }
+  };
+
   const startPlayback = (skipDelay = false) => {
-    if (playbackStarted) return;
+    if (playbackStarted) {
+      tryPlay();
+      return;
+    }
     playbackStarted = true;
     ensureSource();
 
-    const play = () => {
-      video.play().then(showVideo).catch(() => {});
+    const kick = () => {
+      if (video.readyState >= 2) {
+        tryPlay();
+      } else {
+        video.addEventListener('canplay', tryPlay, { once: true });
+        tryPlay();
+      }
     };
 
     if (skipDelay || posterDelayMs === 0) {
-      play();
+      kick();
     } else {
-      setTimeout(play, posterDelayMs);
+      setTimeout(kick, posterDelayMs);
     }
   };
 
   video.addEventListener('playing', showVideo);
+  video.addEventListener('loadeddata', () => {
+    if (playbackStarted) tryPlay();
+  });
 
   const shield = mount.querySelector('.sx-hero__video-shield');
-  const heroMedia = mount.closest('.sx-hero__media');
+  const heroMedia = mount.closest('.mp-hero__media, .sx-hero__media');
   const kickPlay = () => startPlayback(true);
-  shield?.addEventListener('click', kickPlay);
-  heroMedia?.addEventListener('click', kickPlay);
+  shield?.addEventListener('pointerdown', kickPlay, { passive: true });
+  heroMedia?.addEventListener('pointerdown', kickPlay, { passive: true });
+  document.addEventListener('pointerdown', kickPlay, { once: true, passive: true });
+  document.addEventListener('touchstart', kickPlay, { once: true, passive: true });
 
-  // Wait for first paint / idle so CSS/fonts/images win the network race
-  const schedule = () => {
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => startPlayback(), { timeout: 2200 });
-    } else {
-      setTimeout(() => startPlayback(), 700);
-    }
-  };
-  requestAnimationFrame(schedule);
+  // Start ASAP after first paint — do not wait on idle/network heuristics.
+  requestAnimationFrame(() => startPlayback());
 }
 
 function initSxHeroFeed() {
