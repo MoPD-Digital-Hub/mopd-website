@@ -1,16 +1,17 @@
 {% load static website_extras %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="{% if brand.id == 'mons' %}brand-mons{% endif %}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Ministry of Planning and Development — Ethiopia{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}Official website of the Ministry of Planning and Development (MoPD), Ethiopia.{% endblock %}">
+  <title>{% block title %}{{ brand.title_en }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ brand.meta_en }}{% endblock %}">
   <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
-  <link rel="icon" href="{% static 'picture/favicon-32.png' %}" type="image/png" sizes="32x32">
+  <link rel="icon" href="{% static brand.favicon %}" type="image/png" sizes="32x32">
+  <link rel="shortcut icon" href="{% static brand.favicon %}" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/josefin-sans.css' %}?v=1">
   <link rel="stylesheet" href="{% static 'css/shock.css' %}?v=5">
   <link rel="stylesheet" href="{% static 'css/shock-premium.css' %}?v=3">
@@ -18,6 +19,9 @@
   <link rel="stylesheet" href="{% static 'css/civica-pages.css' %}?v=4">
   <link rel="stylesheet" href="{% static 'css/mopd.css' %}?v=36">
   <link rel="stylesheet" href="{% static 'css/mopd-art.css' %}?v=7">
+  {% if brand.theme_css %}
+  <link rel="stylesheet" href="{% static brand.theme_css %}?v=25">
+  {% endif %}
   {% block extra_head %}{% endblock %}
   <style id="mp-page-loader-critical">
     html.mp-loading, html.mp-loading body { overflow: hidden; }
@@ -29,10 +33,15 @@
       align-items: center;
       justify-content: center;
       background:
-        radial-gradient(ellipse 70% 50% at 80% 0%, rgba(77, 184, 122, 0.22), transparent 55%),
-        radial-gradient(ellipse 50% 40% at 10% 100%, rgba(201, 162, 39, 0.12), transparent 50%),
+        radial-gradient(ellipse 70% 50% at 80% 0%, rgba(111, 191, 142, 0.28), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 10% 100%, rgba(111, 191, 142, 0.12), transparent 50%),
+        {% if brand.id == 'mons' %}
+        linear-gradient(160deg, #ffffff 0%, #f4f7f5 48%, #eef5f0 100%);
+        color: #0e1a14;
+        {% else %}
         linear-gradient(160deg, #0a1f14 0%, #143325 48%, #0a1f14 100%);
-      color: #fff;
+        color: #fff;
+        {% endif %}
       transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s;
     }
     .mp-page-loader.is-done {
@@ -48,27 +57,31 @@
     .mp-page-loader__logo-wrap {
       width: min(240px, 68vw);
       margin: 0 auto 20px;
+      {% if brand.id != 'mons' %}
       filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.35));
+      {% endif %}
       animation: mpLoaderPulse 1.8s ease-in-out infinite;
     }
     .mp-page-loader__logo {
       display: block;
       width: 100%;
       height: auto;
+      {% if brand.id != 'mons' %}
       filter: brightness(0) invert(1);
+      {% endif %}
     }
     .mp-page-loader__sub {
       margin: 0 0 22px;
       font-size: 0.92rem;
       line-height: 1.5;
-      color: rgba(255, 255, 255, 0.72);
+      color: {% if brand.id == 'mons' %}rgba(14, 26, 20, 0.62){% else %}rgba(255, 255, 255, 0.72){% endif %};
     }
     .mp-page-loader__bar {
       width: min(220px, 70vw);
       height: 3px;
       margin: 0 auto;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.12);
+      background: {% if brand.id == 'mons' %}rgba(14, 26, 20, 0.1){% else %}rgba(255, 255, 255, 0.12){% endif %};
       overflow: hidden;
     }
     .mp-page-loader__bar > span {
@@ -76,7 +89,7 @@
       height: 100%;
       width: 40%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #4db87a, #c9a227, #4db87a);
+      background: linear-gradient(90deg, #6fbf8e, #3d9a68, #6fbf8e);
       background-size: 200% 100%;
       animation: mpLoaderBar 1.1s ease-in-out infinite;
     }
@@ -97,23 +110,24 @@
   <script>document.documentElement.classList.add('mp-loading');</script>
   <script>window.MOPD_I18N_DB = {{ translations_json|safe }};</script>
   <script>window.MOPD_LANGUAGES = {{ site_languages_json|safe }};</script>
+  <script>window.SITE_BRAND = "{{ brand.id }}";</script>
 </head>
-<body class="site-shock" data-page="{% block page_id %}{{ current_page }}{% endblock %}">
+<body class="site-shock {{ brand.body_class }}" data-brand="{{ brand.id }}" data-page="{% block page_id %}{{ current_page }}{% endblock %}">
 
   <div class="mp-page-loader" id="mpPageLoader" role="status" aria-live="polite" aria-busy="true" aria-label="Loading page">
     <div class="mp-page-loader__inner">
       <div class="mp-page-loader__logo-wrap">
         <img
           class="mp-page-loader__logo"
-          src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}"
-          alt="Ministry of Planning and Development"
+          src="{% static brand.logo %}"
+          alt="{{ brand.full_en }}"
           width="440"
           height="120"
           decoding="async"
           fetchpriority="high"
         >
       </div>
-      <p class="mp-page-loader__sub" data-i18n="loader.tagline">Ministry of Planning and Development</p>
+      <p class="mp-page-loader__sub" data-i18n="loader.tagline">{{ brand.full_en }}</p>
       <div class="mp-page-loader__bar" aria-hidden="true"><span></span></div>
     </div>
   </div>
@@ -127,8 +141,14 @@
 
   {% include 'website/includes/footer.html' %}
 
-  <script src="{% static 'js/i18n.js' %}?v=17"></script>
+  <script src="{% static 'js/i18n.js' %}?v=18"></script>
+  {% if brand.id == 'mons' %}
+  <script src="{% static 'js/i18n-mons.js' %}?v=3"></script>
+  {% endif %}
   <script src="{% static 'js/shock.js' %}?v=24"></script>
+  {% if brand.id == 'mons' %}
+  <script src="{% static 'js/mons.js' %}?v=1"></script>
+  {% endif %}
   {% block extra_js %}{% endblock %}
 </body>
 </html>

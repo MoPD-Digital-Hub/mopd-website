@@ -68,8 +68,8 @@ LEADERS_EN_DEFAULTS = {
     'page.leader1.p3': 'As Minister, she is responsible for overseeing the implementation of Ethiopia\'s long-term development plans. She has been a strong advocate for data-driven policymaking to ensure equality and opportunities for all citizens.',
 
     'leader.1.name': 'H.E. Bereket Fesehatsion',
-    'leader.1.role': 'State Minister',
-    'leader.1.bio': 'H.E. Bereket Fesehatsion serves as State Minister in the Ministry of Planning and Development.',
+    'leader.1.role': 'Minister',
+    'leader.1.bio': 'H.E. Bereket Fesehatsion serves as Minister in the Ministry of National Strategy.',
     'page.leader2.p1': 'He supports the Ministry\'s work in national planning, policy coordination, and development program implementation.',
 
     'leader.2.name': 'H.E. Tirumar Abate',
@@ -133,21 +133,21 @@ GALLERY_IMAGES = [
 
 LEADERS = [
     {
-        'slug': 'fitsum-assefa',
-        'name_key': 'leader.0.name',
-        'role_key': 'leader.0.role',
-        'bio_key': 'leader.0.bio',
-        'photo_src': 'https://mopd.gov.et/media/photos/2025/06/25/G92A3209_fVjDvC6.jpg',
-        'paragraph_keys': ['page.leader1.p1', 'page.leader1.p2', 'page.leader1.p3'],
-        'sort_order': 0,
-    },
-    {
         'slug': 'bereket-fesehatsion',
         'name_key': 'leader.1.name',
         'role_key': 'leader.1.role',
         'bio_key': 'leader.1.bio',
         'photo_src': 'https://mopd.gov.et/media/photos/2024/10/08/photo_2024-12320-08_11-20-54.png',
         'paragraph_keys': ['leader.1.bio', 'page.leader2.p1'],
+        'sort_order': 0,
+    },
+    {
+        'slug': 'fitsum-assefa',
+        'name_key': 'leader.0.name',
+        'role_key': 'leader.0.role',
+        'bio_key': 'leader.0.bio',
+        'photo_src': 'https://mopd.gov.et/media/photos/2025/06/25/G92A3209_fVjDvC6.jpg',
+        'paragraph_keys': ['page.leader1.p1', 'page.leader1.p2', 'page.leader1.p3'],
         'sort_order': 1,
     },
     {

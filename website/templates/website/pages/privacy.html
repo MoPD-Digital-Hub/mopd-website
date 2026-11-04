@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 
-{% block title %}Privacy Policy — MoPD{% endblock %}
+{% block title %}Privacy Policy — {{ brand.short }}{% endblock %}
 {% block page_id %}privacy{% endblock %}
 
 {% block content %}
@@ -17,7 +17,7 @@
   </section>
   <section class="page-body">
     <div class="container prose reveal">
-      <p data-i18n="page.privacy.p1">The Ministry of Planning and Development respects your privacy. Information submitted through contact forms or newsletter subscriptions is used only to respond to inquiries or send ministry updates.</p>
+      <p data-i18n="page.privacy.p1">The {{ brand.full_en }} respects your privacy. Information submitted through contact forms or newsletter subscriptions is used only to respond to inquiries or send ministry updates.</p>
       <p data-i18n="page.privacy.p2">We do not sell personal data. Data is stored securely and accessible only to authorized ministry staff.</p>
       <p data-i18n="page.privacy.p3">For questions about this policy, contact us at info@mopd.gov.et.</p>
     </div>

@@ -1,7 +1,7 @@
 {% extends 'website/base.html' %}
 
-{% block title %}FAQ — Ministry of Planning and Development{% endblock %}
-{% block meta_description %}Frequently asked questions about MoPD services, documents, procurement, vacancies, statistics, and contact channels.{% endblock %}
+{% block title %}FAQ — {{ brand.full_en }}{% endblock %}
+{% block meta_description %}Frequently asked questions about {{ brand.short }} services, documents, vacancies, statistics, and contact channels.{% endblock %}
 {% block page_id %}faq{% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
         <span data-i18n="page.faq.title">Frequently Asked Questions</span>
       </nav>
       <h1 class="page-hero__title" data-i18n="page.faq.title">Frequently Asked Questions</h1>
-      <p class="page-hero__desc" data-i18n="page.faq.desc">Find quick answers about ministry updates, publications, procurement, vacancies, statistics, and contacting MoPD.</p>
+      <p class="page-hero__desc" data-i18n="page.faq.desc">Find quick answers about ministry updates, publications, vacancies, statistics, and contacting {{ brand.short }}.</p>
     </div>
   </section>
 
@@ -38,7 +38,7 @@
         <div class="faq-list" aria-live="polite">
           <details class="faq-item" data-faq-item data-category="documents" open>
             <summary>
-              <span data-i18n="page.faq.q_documents">Where can I find official MoPD documents?</span>
+              <span data-i18n="page.faq.q_documents">Where can I find official {{ brand.short }} documents?</span>
             </summary>
             <p data-i18n="page.faq.a_documents">Browse, preview, and download published PDF documents on the Statistics Documents page.</p>
           </details>

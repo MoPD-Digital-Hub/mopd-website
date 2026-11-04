@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 {% load static %}
-{% block title %}Climate Change Overview — Ethiopia — MoPD{% endblock %}
+{% block title %}Climate Change Overview — Ethiopia — {{ brand.short }}{% endblock %}
 {% block meta_description %}Climate change overview for Ethiopia: national context, restoration, strategic evolution, targets, and governance.{% endblock %}
 {% block page_id %}climate{% endblock %}
 
@@ -550,7 +550,7 @@
           <article class="climate-gov-card">
             <span class="climate-gov-card__label">Institutional mandate</span>
             <h3>National Institutional Framework</h3>
-            <p>MoPD coordinates climate-resilient development under Proclamation No. 1263/2021, overseeing CRGE implementation, NDC coordination, climate monitoring, and strategic policy alignment. Sector ministries mainstream resilience into sectoral plans and implementation.</p>
+            <p>{{ brand.short }} coordinates climate-resilient development under Proclamation No. 1263/2021, overseeing CRGE implementation, NDC coordination, climate monitoring, and strategic policy alignment. Sector ministries mainstream resilience into sectoral plans and implementation.</p>
           </article>
           <article class="climate-gov-card">
             <span class="climate-gov-card__label">Coordination</span>

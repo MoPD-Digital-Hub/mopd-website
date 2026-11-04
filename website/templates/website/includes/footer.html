@@ -4,9 +4,13 @@
     <div class="mp-footer__top">
       <div>
         <a href="{% url 'home' %}">
-          <img src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}" alt="MoPD" class="mp-footer__logo">
+          <img src="{% static brand.logo %}" alt="{{ brand.short }}" class="mp-footer__logo">
         </a>
+        {% if brand.id == 'mons' %}
+        <p class="bilingual mp-footer__desc" data-en="The primary government institution responsible for national strategy and planning, shaping Ethiopia's sustainable growth." data-am="ለብሔራዊ ስትራቴጂና እቅድ የሚያገለግል ዋና የመንግሥት ተቋም፣ የኢትዮጵያን ዘላቂ እድገት የሚቀርጽ።">The primary government institution responsible for national strategy and planning, shaping Ethiopia's sustainable growth.</p>
+        {% else %}
         <p class="bilingual mp-footer__desc" data-en="{{ site_settings.footer_desc_en }}" data-am="{{ site_settings.footer_desc_am|default:site_settings.footer_desc_en }}">{{ site_settings.footer_desc_en }}</p>
+        {% endif %}
         <p style="margin-top:16px;font-size:0.875rem;">
           <a href="tel:{{ site_settings.phone|cut:' ' }}" style="color:var(--mp-mint);">{{ site_settings.phone }}</a>
           · <a href="mailto:{{ site_settings.email }}" style="color:rgba(255,255,255,0.65);">{{ site_settings.email }}</a>
@@ -15,7 +19,7 @@
       <div class="mp-footer__links">
         <div>
           <h4 data-i18n="footer.about">About</h4>
-          <a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a>
+          <a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">{{ brand.about_nav_en }}</a>
           <a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a>
           <a href="{% url 'contact' %}" data-i18n="nav.contact">Contact</a>
         </div>
@@ -35,7 +39,11 @@
       </div>
     </div>
     <div class="mp-footer__bottom">
+      {% if brand.id == 'mons' %}
+      <p class="bilingual" data-en="© 2026 Ministry of National Strategy. All rights reserved." data-am="© 2026 የብሔራዊ ስትራቴጂ ሚኒስቴር። ሁሉም መብቶች የተጠበቁ ናቸው።">© 2026 Ministry of National Strategy. All rights reserved.</p>
+      {% else %}
       <p class="bilingual" data-en="{{ site_settings.copyright_text_en }}" data-am="{{ site_settings.copyright_text_am|default:site_settings.copyright_text_en }}">{{ site_settings.copyright_text_en }}</p>
+      {% endif %}
       <div class="mp-footer__legal">
         <a href="{% url 'privacy' %}" data-i18n="footer.privacy">Privacy</a>
         <a href="{% url 'accessibility' %}" data-i18n="footer.accessibility">Accessibility</a>

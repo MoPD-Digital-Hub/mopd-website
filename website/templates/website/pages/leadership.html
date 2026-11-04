@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 {% load static %}
-{% block title %}Leadership — MoPD{% endblock %}
+{% block title %}Leadership — {{ brand.short }}{% endblock %}
 {% block page_id %}leadership{% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
         <span data-i18n="nav.sub.management">Management</span>
       </nav>
       <h1 class="page-hero__title" data-i18n="leadership.title">Ministry Management</h1>
-      <p class="page-hero__desc" data-i18n="page.leadership.desc">The minister and state ministers leading Ethiopia's national planning and development agenda.</p>
+      <p class="page-hero__desc" data-i18n="page.leadership.desc">{% if brand.id == 'mons' %}The minister and state ministers leading Ethiopia's national strategy agenda.{% else %}The minister and state ministers leading Ethiopia's national planning and development agenda.{% endif %}</p>
     </div>
   </section>
 

@@ -1,5 +1,5 @@
 {% extends 'website/base.html' %}
-{% block title %}Gallery — MoPD{% endblock %}
+{% block title %}Gallery — {{ brand.short }}{% endblock %}
 {% block page_id %}gallery{% endblock %}
 
 {% block content %}
@@ -27,7 +27,7 @@
           {% for image in album.images.all %}
           {% if image.image %}
           <button type="button" class="gallery__item" data-full="{{ image.image.url }}">
-            <img src="{{ image.image.url }}" alt="{% firstof image.alt_en 'MoPD gallery photo' %}">
+            <img src="{{ image.image.url }}" alt="{% firstof image.alt_en brand.short|add:' gallery photo' %}">
           </button>
           {% endif %}
           {% endfor %}

@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 
-{% block title %}Statistics Documents — MoPD{% endblock %}
+{% block title %}Statistics Documents — {{ brand.short }}{% endblock %}
 {% block page_id %}stats{% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
         <span data-i18n="nav.sub.stats">Statistics Documents</span>
       </nav>
       <h1 class="page-hero__title" data-i18n="page.stats.title">Data &amp; Statistics Documents</h1>
-      <p class="page-hero__desc" data-i18n="page.stats.desc">Official statistics frameworks, development programs, and monitoring tools published by MoPD.</p>
+      <p class="page-hero__desc" data-i18n="page.stats.desc">Official statistics frameworks, development programs, and monitoring tools published by {{ brand.short }}.</p>
     </div>
   </section>
 

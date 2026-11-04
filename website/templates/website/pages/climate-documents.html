@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 
-{% block title %}Climate Documents — MoPD{% endblock %}
+{% block title %}Climate Documents — {{ brand.short }}{% endblock %}
 {% block page_id %}climate_docs{% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
         <span data-i18n="nav.sub.climate_docs">Climate Documents</span>
       </nav>
       <h1 class="page-hero__title" data-i18n="page.climate_docs.title">Climate Related Documents</h1>
-      <p class="page-hero__desc" data-i18n="page.climate_docs.desc">Official climate policy frameworks, strategies, and national communications published by MoPD.</p>
+      <p class="page-hero__desc" data-i18n="page.climate_docs.desc">Official climate policy frameworks, strategies, and national communications published by {{ brand.short }}.</p>
     </div>
   </section>
 

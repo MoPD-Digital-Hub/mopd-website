@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 
-{% block title %}Procurement — MoPD{% endblock %}
+{% block title %}Procurement — {{ brand.short }}{% endblock %}
 {% block page_id %}procurement{% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
         <span data-i18n="page.procurement.title">Procurement</span>
       </nav>
       <h1 class="page-hero__title" data-i18n="page.procurement.title">Procurement &amp; Tenders</h1>
-      <p class="page-hero__desc" data-i18n="page.procurement.desc">Public procurement notices and tender documents published by MoPD.</p>
+      <p class="page-hero__desc" data-i18n="page.procurement.desc">Public procurement notices and tender documents published by {{ brand.short }}.</p>
     </div>
   </section>
 

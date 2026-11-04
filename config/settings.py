@@ -60,6 +60,10 @@ if DEBUG:
 
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
 
+# Brand / theme — local MoNS v2 by default when DEBUG; production stays MoPD unless set.
+_SITE_BRAND = os.environ.get('SITE_BRAND', 'mons' if DEBUG else 'mopd').strip().lower()
+SITE_BRAND = _SITE_BRAND if _SITE_BRAND in ('mons', 'mopd') else 'mopd'
+
 # Telegram — news notifications (group only; bots cannot message users without /start)
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_GROUP_ID = os.environ.get('TELEGRAM_GROUP_ID', '-5320625965')

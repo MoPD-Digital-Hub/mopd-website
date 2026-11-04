@@ -2,7 +2,7 @@
 <header class="mp-header" id="sxHeader">
   <div class="mp-header__inner">
     <a href="{% url 'home' %}" class="mp-header__brand">
-      <img src="{% static 'picture/EPDM-Illustration-SideText_Green.png' %}" alt="Ministry of Planning and Development">
+      <img src="{% static brand.logo %}" alt="{{ brand.full_en }}">
     </a>
 
     <nav class="mp-nav" aria-label="Primary">
@@ -10,7 +10,7 @@
         <li class="mp-nav__item">
           <a href="{% url 'about' %}" class="mp-nav__link{% if current_page|nav_active:'about' %} is-active{% endif %}" data-i18n="nav.about">About</a>
           <ul class="mp-nav__sub">
-            <li><a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a></li>
+            <li><a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">{{ brand.about_nav_en }}</a></li>
             <li><a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a></li>
           </ul>
         </li>
@@ -77,7 +77,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </button>
         <div class="sx-menu__group-links">
-          <a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">About MoPD</a>
+          <a href="{% url 'about' %}" data-i18n="nav.sub.about_mopd">{{ brand.about_nav_en }}</a>
           <a href="{% url 'leadership' %}" data-i18n="nav.sub.management">Management</a>
         </div>
       </div>

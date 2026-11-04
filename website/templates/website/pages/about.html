@@ -1,7 +1,7 @@
 {% extends 'website/base.html' %}
 {% load static %}
-{% block title %}About MoPD — Ministry of Planning and Development{% endblock %}
-{% block meta_description %}Learn about the Ministry of Planning and Development (MoPD).{% endblock %}
+{% block title %}{{ brand.about_nav_en }} — {{ brand.full_en }}{% endblock %}
+{% block meta_description %}Learn about the {{ brand.full_en }} ({{ brand.short }}).{% endblock %}
 {% block page_id %}about{% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/about-premium.css' %}?v=3">
@@ -14,10 +14,10 @@
         <nav class="breadcrumb" aria-label="Breadcrumb">
           <a href="{% url 'home' %}" data-i18n="breadcrumb.home">Home</a>
           <span>/</span>
-          <span data-i18n="page.about.title">About MoPD</span>
+          <span data-i18n="page.about.title">{{ brand.about_nav_en }}</span>
         </nav>
-        <h1 class="page-hero__title" data-i18n="page.about.title">About MoPD</h1>
-        <p class="page-hero__desc" data-i18n="about.lead">Welcome to the official website of the Ministry of Planning and Development (MoPD) in Ethiopia.</p>
+        <h1 class="page-hero__title" data-i18n="page.about.title">{{ brand.about_nav_en }}</h1>
+        <p class="page-hero__desc" data-i18n="about.lead">Welcome to the official website of the {{ brand.full_en }} ({{ brand.short }}) in Ethiopia.</p>
       </div>
     </section>
 
@@ -46,10 +46,10 @@
                   Federal Democratic Republic of Ethiopia
                 </span>
                 <h2 class="about-intro-banner__headline" data-i18n="about.lead">
-                  Welcome to the official website of the <em>Ministry of Planning and Development</em>
+                  Welcome to the official website of the <em>{{ brand.full_en }}</em>
                 </h2>
                 <p class="about-intro-banner__sub" data-i18n="about.p1">
-                  As Ethiopia's primary government institution for national planning and development, MoPD plays a vital role in shaping sustainable growth and socio-economic transformation.
+                  As Ethiopia's primary government institution for national strategy and planning, {{ brand.short }} plays a vital role in shaping sustainable growth and socio-economic transformation.
                 </p>
                 <div class="about-intro-banner__actions">
                   <a href="{% url 'contact' %}" class="btn btn--primary" data-i18n="about.cta">Get in Touch</a>
@@ -61,7 +61,7 @@
               </div>
               <div class="about-intro-banner__visual">
                 <div class="about-intro-banner__image-frame">
-                  <img src="{% static 'img/pages/mopd-about-banner.jpg' %}" alt="Ministry of Planning and Development" class="about-intro-banner__image">
+                  <img src="{% static 'img/pages/mopd-about-banner.jpg' %}" alt="{{ brand.full_en }}" class="about-intro-banner__image">
                   <div class="about-intro-banner__image-badge">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     <span>Est. 1991</span>
@@ -95,7 +95,7 @@
               <div class="about-story__text reveal">
                 <span class="section-tag">Our Purpose</span>
                 <h3 class="section-title" style="margin-bottom:20px">Driving Ethiopia's National Development Agenda</h3>
-                <p data-i18n="about.p2">Through this website, we provide comprehensive information about the MoPD's initiatives, projects, and services — including valuable resources, reports, and data related to our national development agenda.</p>
+                <p data-i18n="about.p2">Through this website, we provide comprehensive information about the {{ brand.short }}'s initiatives, projects, and services — including valuable resources, reports, and data related to our national development agenda.</p>
                 <p style="color:#5a6560;line-height:1.8;margin-top:12px">We coordinate all national development planning efforts, ensure effective public investment, and rigorously monitor outcomes to keep Ethiopia on track for its ambitious growth targets.</p>
               </div>
               <div class="about-story__cards">
@@ -141,8 +141,8 @@
               </div>
               <div class="about__visual about__visual--mission">
                 <blockquote class="mission-quote">
-                  <p data-i18n="mission.quote">"Ethiopia's current development agenda is rooted in the country's vision of making Ethiopia an “African Beacon of Prosperity”—through the implementation of the ten-year development plan."</p>
-                  <cite data-i18n="mission.cite">— Ministry of Planning and Development</cite>
+                  <p data-i18n="mission.quote">"To build efficient, data-driven, and accountable public systems that transform macroeconomic potential into inclusive, long-term development outcomes."</p>
+                  <cite data-i18n="mission.cite">— {{ brand.full_en }}</cite>
                 </blockquote>
               </div>
             </div>
@@ -202,7 +202,7 @@
       {% if departments %}
       <section class="organogram reveal" style="margin-top:64px;">
         <h2 class="section-title" data-i18n="page.about.organogram">Organizational Structure</h2>
-        <p class="organogram__lead" data-i18n="page.about.organogram_desc">Core directorates and units within the Ministry of Planning and Development.</p>
+        <p class="organogram__lead" data-i18n="page.about.organogram_desc">Core directorates and units within the {{ brand.full_en }}.</p>
         <div class="organogram__grid">
           {% for dept in departments %}
           <div class="organogram__card">

@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 
-{% block title %}Press Release — MoPD{% endblock %}
+{% block title %}Press Release — {{ brand.short }}{% endblock %}
 {% block page_id %}press{% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
         <span data-i18n="nav.sub.press">Press Release</span>
       </nav>
       <h1 class="page-hero__title" data-i18n="nav.sub.press">Press Release</h1>
-      <p class="page-hero__desc" data-i18n="page.press.desc">Official press releases and media statements from MoPD.</p>
+      <p class="page-hero__desc" data-i18n="page.press.desc">Official press releases and media statements from {{ brand.short }}.</p>
     </div>
   </section>
 

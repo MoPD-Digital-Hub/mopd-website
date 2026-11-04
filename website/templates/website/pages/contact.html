@@ -1,7 +1,7 @@
 {% extends 'website/base.html' %}
 {% load static %}
-{% block title %}Contact — Ministry of Planning and Development{% endblock %}
-{% block meta_description %}Contact the Ministry of Planning and Development, Ethiopia.{% endblock %}
+{% block title %}Contact — {{ brand.full_en }}{% endblock %}
+{% block meta_description %}Contact the {{ brand.full_en }}, Ethiopia.{% endblock %}
 {% block page_id %}contact{% endblock %}
 
 {% block content %}
@@ -87,7 +87,7 @@
               allowfullscreen=""
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              title="Ministry of Planning and Development — 6 Kilo, Addis Ababa"
+              title="{{ brand.full_en }} — 6 Kilo, Addis Ababa"
               data-i18n-title="contact.map_title">
             </iframe>
           </div>

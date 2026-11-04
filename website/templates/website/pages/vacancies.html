@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 
-{% block title %}Vacancies — MoPD{% endblock %}
+{% block title %}Vacancies — {{ brand.short }}{% endblock %}
 {% block page_id %}vacancies{% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
         <span data-i18n="page.vacancies.title">Vacancies</span>
       </nav>
       <h1 class="page-hero__title" data-i18n="page.vacancies.title">Vacancies</h1>
-      <p class="page-hero__desc" data-i18n="page.vacancies.desc">Current job openings at the Ministry of Planning and Development.</p>
+      <p class="page-hero__desc" data-i18n="page.vacancies.desc">Current job openings at the {{ brand.full_en }}.</p>
     </div>
   </section>
 
